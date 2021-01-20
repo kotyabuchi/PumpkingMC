@@ -1,0 +1,13 @@
+name: PumpkingFantasy
+version: @version@
+main: com.github.kotyabuchi.pumpkingmc.Main
+api-version: 1.16
+commands:
+  skill:
+  soundlist:
+  showsolidblock:
+  debugstuff:
+  home:
+  allentity:
+  shownbti:
+  customencha:
