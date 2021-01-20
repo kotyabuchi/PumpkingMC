@@ -1,8 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.Class
 
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.superBreaker
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
@@ -58,7 +58,7 @@ open class BlockBreakJobClass(jobClassType: JobClassType): com.github.kotyabuchi
                 item.amount *= dropAmount
                 exp += (itemExp * item.amount)
             }
-            if (superBreaker.isSuperBreaking(player)) exp *= 1.5
+            if (SuperBreaker.isSuperBreaking(player)) exp *= 1.5
 
             playerStatus.addSkillExp(jobClassType, exp)
             afterDropAction(event)

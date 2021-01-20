@@ -1,12 +1,11 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
-import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
-import com.github.kotyabuchi.pumpkingmc.superBreaker
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -24,7 +23,7 @@ object Excavation: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Job
         addExpMap(Material.CLAY, exp = 2)
 
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            superBreaker.enableSuperBreaker(player, jobClassType)
+            SuperBreaker.enableSuperBreaker(player, jobClassType)
         })
     }
     

@@ -26,7 +26,7 @@ import org.bukkit.scheduler.BukkitTask
 import kotlin.math.floor
 import kotlin.math.max
 
-class SuperBreaker: Listener {
+object SuperBreaker: Listener {
     private val superBreakers = mutableMapOf<Player, BukkitTask>()
     private val superBreakerItemBackup = mutableMapOf<Player, ItemStack>()
 

@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
-import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
@@ -10,7 +10,6 @@ import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
 import com.github.kotyabuchi.pumpkingmc.Utility.isOre
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
-import com.github.kotyabuchi.pumpkingmc.superBreaker
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -51,7 +50,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
         addExpMap(Material.EMERALD_ORE, exp = 10)
 
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            superBreaker.enableSuperBreaker(player, jobClassType)
+            SuperBreaker.enableSuperBreaker(player, jobClassType)
         })
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
             val pdc = player.persistentDataContainer

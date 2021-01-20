@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
-import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
@@ -9,7 +9,6 @@ import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
-import com.github.kotyabuchi.pumpkingmc.superBreaker
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Particle
@@ -44,7 +43,7 @@ object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Jo
             if (it.name.endsWith("_AXE")) addTool(it)
         }
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            superBreaker.enableSuperBreaker(player, jobClassType)
+            SuperBreaker.enableSuperBreaker(player, jobClassType)
         })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
             val pdc = player.persistentDataContainer

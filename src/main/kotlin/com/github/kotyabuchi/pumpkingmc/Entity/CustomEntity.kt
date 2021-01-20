@@ -32,6 +32,9 @@ class CustomEntity: Listener {
                     SlimeSkeleton.ride(entity as Skeleton, EntityType.MAGMA_CUBE)
                 }
             }
+            else -> {
+
+            }
         }
     }
 }
