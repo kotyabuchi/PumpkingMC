@@ -8,14 +8,11 @@ import org.bukkit.attribute.Attribute
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.enchantments.Enchantment
-import org.bukkit.entity.Enderman
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Zombie
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.entity.EntityTargetEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.inventory.ItemStack
@@ -35,7 +32,7 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
                 instance.server.onlinePlayers.forEach {
                     if (it.gameMode == GameMode.SURVIVAL || it.gameMode == GameMode.ADVENTURE) {
                         it.getNearbyEntities(32.0, 8.0, 32.0).forEach { entity ->
-                            if (entity.type == EntityType.ZOMBIE) {
+                            if (zombieTypes.contains(entity.type)) {
                                 entity as Zombie
                                 if (entity.target == null) {
                                     entity.target = it
