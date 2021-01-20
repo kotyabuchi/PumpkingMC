@@ -4,7 +4,6 @@ import com.github.kotyabuchi.pumpkingmc.Entity.Monster.CustomEntity.HollowKnight
 import com.github.kotyabuchi.pumpkingmc.Entity.Monster.CustomEntity.SlimeSkeleton
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Skeleton
-import org.bukkit.entity.Zombie
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntitySpawnEvent

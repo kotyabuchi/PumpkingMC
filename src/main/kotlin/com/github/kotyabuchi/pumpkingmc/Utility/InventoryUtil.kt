@@ -2,7 +2,6 @@ package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.PlayerGetItemEvent
 import com.github.kotyabuchi.pumpkingmc.instance
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack

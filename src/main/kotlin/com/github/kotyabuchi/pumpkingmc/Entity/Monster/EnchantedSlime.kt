@@ -1,16 +1,13 @@
 package com.github.kotyabuchi.pumpkingmc.Entity.Monster
 
 import com.destroystokyo.paper.event.entity.SlimePathfindEvent
-import com.destroystokyo.paper.event.entity.SlimeWanderEvent
 import com.github.kotyabuchi.pumpkingmc.instance
-import org.bukkit.Bukkit
 import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Slime
 import org.bukkit.event.EventHandler
 import org.bukkit.scheduler.BukkitRunnable
-import kotlin.math.sign
 
 class EnchantedSlime: MobExpansionMaster(EntityType.SLIME) {
 
