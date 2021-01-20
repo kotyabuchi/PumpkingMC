@@ -27,7 +27,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var instance: Main
-val superBreaker = SuperBreaker()
 
 class Main : JavaPlugin() {
 
@@ -78,7 +77,7 @@ class Main : JavaPlugin() {
 
         // Skill
             // ActiveSkill
-        pm.registerEvents(superBreaker, this)
+        pm.registerEvents(SuperBreaker, this)
             // ClassSkill
                 // CombatSkill
                     // Defensive
