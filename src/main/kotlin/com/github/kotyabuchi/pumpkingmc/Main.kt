@@ -112,13 +112,12 @@ class Main : JavaPlugin() {
     }
     
     private fun registerCommands() {
-        val utilCommand = UtilityCommand()
-        this.getCommand("showsolidblock")?.setExecutor(utilCommand)
-        this.getCommand("debugstuff")?.setExecutor(utilCommand)
-        this.getCommand("soundlist")?.setExecutor(utilCommand)
-        this.getCommand("allentity")?.setExecutor(utilCommand)
-        this.getCommand("shownbti")?.setExecutor(utilCommand)
-        this.getCommand("customencha")?.setExecutor(utilCommand)
+        this.getCommand("showsolidblock")?.setExecutor(UtilityCommand)
+        this.getCommand("debugstuff")?.setExecutor(UtilityCommand)
+        this.getCommand("soundlist")?.setExecutor(UtilityCommand)
+        this.getCommand("allentity")?.setExecutor(UtilityCommand)
+        this.getCommand("shownbti")?.setExecutor(UtilityCommand)
+        this.getCommand("customencha")?.setExecutor(UtilityCommand)
         this.getCommand("skill")?.setExecutor(SkillCommand())
         this.getCommand("home")?.setExecutor(homeCommand)
     }

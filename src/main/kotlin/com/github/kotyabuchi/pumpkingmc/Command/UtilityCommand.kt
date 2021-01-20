@@ -15,7 +15,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class UtilityCommand: CommandExecutor, TabCompleter {
+object UtilityCommand: CommandExecutor, TabCompleter {
     
     override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): MutableList<String> {
         return instance.onTabComplete(sender, cmd, label, args) ?: mutableListOf()
