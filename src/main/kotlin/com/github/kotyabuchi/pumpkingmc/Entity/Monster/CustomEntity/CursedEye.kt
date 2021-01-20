@@ -1,16 +1,11 @@
 package com.github.kotyabuchi.pumpkingmc.Entity.Monster.CustomEntity
 
 import com.github.kotyabuchi.pumpkingmc.Utility.createHead
-import de.tr7zw.changeme.nbtapi.NBTGameProfile
-import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Enderman
 import org.bukkit.entity.Vex
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.*
 
 object CursedEye {
 

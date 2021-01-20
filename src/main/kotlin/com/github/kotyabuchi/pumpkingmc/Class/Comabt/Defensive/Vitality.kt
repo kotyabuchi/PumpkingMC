@@ -3,7 +3,6 @@ package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Defensive
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.debugChat
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -12,8 +11,6 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityRegainHealthEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.scheduler.BukkitRunnable
-import org.spigotmc.event.player.PlayerSpawnLocationEvent
-import kotlin.math.floor
 
 object Vitality: JobClassMaster(JobClassType.VITALITY) {
 

@@ -3,7 +3,6 @@ package com.github.kotyabuchi.pumpkingmc.Entity.Monster
 import com.github.kotyabuchi.pumpkingmc.Utility.isLiquid
 import com.github.kotyabuchi.pumpkingmc.Utility.jump
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTEntity
 import org.bukkit.Color
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

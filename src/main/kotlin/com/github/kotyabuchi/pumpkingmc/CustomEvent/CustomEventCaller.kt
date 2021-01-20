@@ -1,10 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEvent
 
 import com.github.kotyabuchi.pumpkingmc.instance
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent
-import org.bukkit.scheduler.BukkitRunnable
 
 class CustomEventCaller: Listener {
 

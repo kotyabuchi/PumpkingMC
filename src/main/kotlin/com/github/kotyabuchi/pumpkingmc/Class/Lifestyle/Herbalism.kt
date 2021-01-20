@@ -1,6 +1,5 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
-import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
