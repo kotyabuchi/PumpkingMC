@@ -148,8 +148,13 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         if (player.isOnline) {
             val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
             event.burnTime = getFuelEfficiency(level, event.burnTime)
-            state.cookTimeTotal = getSmeltingEfficiency(level, state.cookTimeTotal)
-            state.update()
+            object : BukkitRunnable() {
+                override fun run() {
+                    val writeState = block.state as? Furnace ?: return
+                    writeState.cookTimeTotal = getSmeltingEfficiency(level, writeState.cookTimeTotal + 1)
+                    writeState.update()
+                }
+            }.runTaskLater(instance, 0)
         }
     }
 
@@ -166,13 +171,13 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         val status = player.getStatus()
         val level = status.getJobClassStatus(jobClassType).getLevel()
 
-        val multipleSmeltChange = level / 3
+        val multipleSmeltChange = level * 0.4
         var smeltAmount = 1 + floor(multipleSmeltChange / 100.0).toInt()
         if (Random.nextInt(100) < multipleSmeltChange % 100) smeltAmount++
         event.result.amount = smeltAmount
 
         val exp = expMap[event.source.type] ?: 0.1
-        status.addSkillExp(jobClassType, exp.toDouble() * 15 * event.result.amount)
+        status.addSkillExp(jobClassType, exp.toDouble() * 15 * smeltAmount)
 
         object : BukkitRunnable() {
             override fun run() {
@@ -185,7 +190,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
     }
 
     private fun getFuelEfficiency(level: Int, burnTime: Int): Int {
-        return round((1 + (level / 100.0)) * burnTime).toInt()
+        return round((1 + (level / 200.0)) * burnTime).toInt()
     }
 
     private fun getSmeltingEfficiency(level: Int, cookTime: Int): Int {
