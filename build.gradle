@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 apply plugin: 'kotlin'
 
-group = 'com.github.hinomiya'
+group = 'com.github.kunugiya'
 version = '1.0-SNAPSHOT'
 
 sourceCompatibility = '1.8'
@@ -42,7 +42,7 @@ processResources {
     }
 }
 buildscript {
-    ext.kotlin_version = '1.4.20'
+    ext.kotlin_version = '1.4.21'
     repositories {
         mavenCentral()
     }
