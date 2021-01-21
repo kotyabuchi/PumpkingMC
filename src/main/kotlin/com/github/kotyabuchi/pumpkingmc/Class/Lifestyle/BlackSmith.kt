@@ -147,7 +147,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         val player = instance.server.getPlayer(UUID.fromString(pdc.getOrDefault(key, PersistentDataType.STRING, ""))) ?: return
         if (player.isOnline) {
             val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
-            event.burnTime = round((1 + (level / 100.0)) * event.burnTime).toInt()
+            event.burnTime = getFuelEfficiency(level, event.burnTime)
             state.cookTimeTotal = getSmeltingEfficiency(level, state.cookTimeTotal)
             state.update()
         }
@@ -184,7 +184,11 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         }.runTaskLater(instance, 0)
     }
 
+    private fun getFuelEfficiency(level: Int, burnTime: Int): Int {
+        return round((1 + (level / 100.0)) * burnTime).toInt()
+    }
+
     private fun getSmeltingEfficiency(level: Int, cookTime: Int): Int {
-        return max(1, round(cookTime / (1 + (level / 200.0))).toInt())
+        return max(1, cookTime - floor(level / 5.0).toInt())
     }
 }
