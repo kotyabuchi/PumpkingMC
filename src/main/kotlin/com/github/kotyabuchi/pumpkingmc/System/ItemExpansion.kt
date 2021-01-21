@@ -117,8 +117,9 @@ class ItemExpansion {
                         setDurability(it)
                     }
                 } else {
-                    setMaxDurability(type.maxDurability.toInt())
-                    setDurability(type.maxDurability - it.damage)
+                    val maxDurability = round(type.maxDurability.toInt() * rarity.durabilityMultiple).toInt()
+                    setMaxDurability(maxDurability)
+                    setDurability(maxDurability - it.damage)
                 }
             }
         }
