@@ -146,7 +146,7 @@ class Main : JavaPlugin() {
         CustomEnchantment.registerEnchantment()
         clearBossBar()
 
-        removeLag.start()
+//        removeLag.start()
         startAutoSave()
 
 //        saveNewPlayerStatus()
