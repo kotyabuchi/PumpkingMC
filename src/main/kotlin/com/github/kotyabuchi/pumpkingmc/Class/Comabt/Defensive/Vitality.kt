@@ -10,7 +10,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityRegainHealthEvent
 import org.bukkit.event.player.PlayerLoginEvent
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.random.Random
 
 object Vitality: JobClassMaster(JobClassType.VITALITY) {
 
@@ -33,6 +39,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
     fun onDamage(event: EntityDamageEvent) {
         val player = event.entity as? Player ?: return
         val playerStatus = player.getStatus()
+        val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
         val cause = event.cause
         if (cause == EntityDamageEvent.DamageCause.FALL ||
                 cause == EntityDamageEvent.DamageCause.LAVA ||
@@ -48,8 +55,19 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
                 cause == EntityDamageEvent.DamageCause.CRAMMING ||
                 cause == EntityDamageEvent.DamageCause.CONTACT) return
         val amount = event.finalDamage
-        if (amount > 0) playerStatus.addSkillExp(jobClassType, amount)
-        event.damage = event.damage - playerStatus.getJobClassStatus(jobClassType).getLevel() / 75.0
+        if (amount > 0) {
+            playerStatus.addSkillExp(jobClassType, amount)
+
+            // Battle Healing -
+            val battleHealingChance = max(333, min(50, level * 10 / 300))
+            val battleHealingLevel = 1 + floor(level / 250.0).toInt()
+
+            if (Random.nextInt(1000) <= battleHealingChance) {
+                player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 3, battleHealingLevel, true, true))
+            }
+            // - Battle Healing
+        }
+        event.damage = event.damage - level / 75.0
     }
 
     @EventHandler
