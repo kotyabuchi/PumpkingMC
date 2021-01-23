@@ -3,6 +3,7 @@ package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Defensive
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
+import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -59,11 +60,12 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
             playerStatus.addSkillExp(jobClassType, amount)
 
             // Battle Healing -
-            val battleHealingChance = max(333, min(50, level * 10 / 300))
+            val battleHealingChance = min(333, max(50, level * 10 / 300))
             val battleHealingLevel = 1 + floor(level / 250.0).toInt()
 
             if (Random.nextInt(1000) <= battleHealingChance) {
                 player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 3, battleHealingLevel, true, true))
+                player.sendActionMessage("&c♡Battle Healing♡")
             }
             // - Battle Healing
         }
