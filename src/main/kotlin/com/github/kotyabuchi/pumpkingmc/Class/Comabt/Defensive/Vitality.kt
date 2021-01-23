@@ -47,7 +47,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
                 cause == EntityDamageEvent.DamageCause.HOT_FLOOR ||
                 cause == EntityDamageEvent.DamageCause.CRAMMING ||
                 cause == EntityDamageEvent.DamageCause.CONTACT) return
-        val amount = event.finalDamage / 3
+        val amount = event.finalDamage
         if (amount > 0) playerStatus.addSkillExp(jobClassType, amount)
         event.damage = event.damage - playerStatus.getJobClassStatus(jobClassType).getLevel() / 100.0
     }
