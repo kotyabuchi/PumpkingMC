@@ -5,6 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
 import com.github.kotyabuchi.pumpkingmc.Utility.toLore
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -12,6 +13,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -61,26 +63,30 @@ class CustomEnchantmentManager: Listener {
     @EventHandler
     fun onPrepare(event: PrepareAnvilEvent) {
         val inv = event.inventory
-        var result = event.result ?: return
-        val item0 = inv.getItem(0)
+        var result = ItemExpansion(event.result ?: return)
+        val item0 = inv.getItem(0) ?: return
         val item1 = inv.getItem(1)
-        val meta0 = item0?.itemMeta
+        val meta0 = item0.itemMeta ?: return
         val meta1 = item1?.itemMeta
 
+        val increasedDurability = ((meta0 as? Damageable)?.damage ?: 0) - ((event.result?.itemMeta as? Damageable)?.damage ?: 0)
+        result.increaseDurability(increasedDurability)
+
         val customEnchants = mutableMapOf<CustomEnchantmentMaster, Int>()
-        meta0?.enchants?.forEach { (enchant, level) ->
+        meta0.enchants.forEach { (enchant, level) ->
             if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
         }
         meta1?.enchants?.forEach { (enchant, level) ->
             if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
         }
         customEnchants.forEach { (enchant, level) ->
-            result.addEnchantment(enchant, level)
+            result.addEnchant(enchant, level)
         }
-        if (item0 != null && item1 != null && item0.type.hasDurability() && item0.type == item1.type) {
-            result = ItemExpansion(result).increaseDurability(ItemExpansion(item0).getDurability() + ItemExpansion(item1).getDurability()).item
+        if (item1 != null && item0.type.hasDurability() && item0.type == item1.type) {
+            result = result.increaseDurability(ItemExpansion(item1).getDurability())
         }
-        event.result = ItemExpansion(result).item
+
+        event.result = result.item
     }
 
     private fun ItemStack.addCustomEnchant(enchant: CustomEnchantmentMaster, _level: Int) {
