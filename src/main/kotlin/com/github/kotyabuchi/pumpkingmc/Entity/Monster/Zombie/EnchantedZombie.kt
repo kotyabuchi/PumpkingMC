@@ -57,7 +57,6 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
                 if (it.helmet?.type == Material.AIR) {
                     val helmet = ItemStack(Material.LEATHER_HELMET)
                     val meta = helmet.itemMeta as LeatherArmorMeta
-                    meta.addEnchant(Enchantment.DEPTH_STRIDER, 1, true)
                     when (zombie.type) {
                         EntityType.HUSK -> meta.setColor(Color.fromRGB(253, 203, 110))
                         EntityType.ZOMBIFIED_PIGLIN -> meta.setColor(Color.fromRGB(255, 118, 117))
