@@ -32,7 +32,7 @@ class EnchantedEnderman: MobExpansionMaster(EntityType.ENDERMAN) {
         }.runTaskTimer(instance, 0, 40)
 
         addStartFightAction { enderman ->
-            for (i in 0 until Random.nextInt(3)) {
+            if (Random.nextBoolean()) {
                 CursedEye.spawn(enderman as Enderman)
             }
             object : BukkitRunnable() {
