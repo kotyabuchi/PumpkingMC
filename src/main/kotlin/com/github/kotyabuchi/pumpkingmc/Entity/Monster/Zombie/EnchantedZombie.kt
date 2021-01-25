@@ -1,5 +1,6 @@
-package com.github.kotyabuchi.pumpkingmc.Entity.Monster
+package com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie
 
+import com.github.kotyabuchi.pumpkingmc.Entity.Monster.MobExpansionMaster
 import com.github.kotyabuchi.pumpkingmc.Utility.isGrass
 import com.github.kotyabuchi.pumpkingmc.Utility.isLiquid
 import com.github.kotyabuchi.pumpkingmc.instance

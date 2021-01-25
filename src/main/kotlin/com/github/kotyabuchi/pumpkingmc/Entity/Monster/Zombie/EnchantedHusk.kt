@@ -1,4 +1,4 @@
-package com.github.kotyabuchi.pumpkingmc.Entity.Monster
+package com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie
 
 import org.bukkit.Material
 import org.bukkit.entity.EntityType

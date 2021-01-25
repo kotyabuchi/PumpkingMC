@@ -19,6 +19,10 @@ import com.github.kotyabuchi.pumpkingmc.Entity.CustomEntity
 import com.github.kotyabuchi.pumpkingmc.Entity.DebugStuff
 import com.github.kotyabuchi.pumpkingmc.Entity.Friendly.EnchantedVillager
 import com.github.kotyabuchi.pumpkingmc.Entity.Monster.*
+import com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie.EnchantedDrowned
+import com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie.EnchantedHusk
+import com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie.EnchantedPiglin
+import com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie.EnchantedZombie
 import com.github.kotyabuchi.pumpkingmc.Menu.MenuController
 import com.github.kotyabuchi.pumpkingmc.System.*
 import com.github.kotyabuchi.pumpkingmc.System.Player.PlayerManager
