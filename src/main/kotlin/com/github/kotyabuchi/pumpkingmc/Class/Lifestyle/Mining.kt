@@ -157,6 +157,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
         if (event is BlockMineEvent) return
         val block = event.block
         val player = event.player
+        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
         val pdc = player.persistentDataContainer
         val item = player.inventory.itemInMainHand
         if (!getTool().contains(item.type)) return
@@ -165,10 +166,12 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
             val blockList = ArrayList<Block>()
             val rayBlock = player.rayTraceBlocks(6.0)?: return
             val lookingFace = rayBlock.hitBlockFace ?: return
+            val radius = floor(level / 100.0).toInt()
+            val range = (radius * -1)..radius
             when (lookingFace) {
                 BlockFace.UP, BlockFace.DOWN -> {
-                    for (x in -1..1) {
-                        for (z in -1..1) {
+                    for (x in range) {
+                        for (z in range) {
                             val checkBlock = block.location.add(x.toDouble(), 0.0, z.toDouble()).block
                             if (checkBlock.type == Material.BEDROCK) continue
                             if (checkBlock.type.isAir) continue
@@ -177,8 +180,8 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                     }
                 }
                 BlockFace.SOUTH, BlockFace.NORTH -> {
-                    for (x in -1..1) {
-                        for (y in -1..1) {
+                    for (x in range) {
+                        for (y in -1..(radius * 2 - 1)) {
                             val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
                             if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
                             if (checkBlock.type.isAir) continue
@@ -187,8 +190,8 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                     }
                 }
                 BlockFace.EAST, BlockFace.WEST -> {
-                    for (z in -1..1) {
-                        for (y in -1..1) {
+                    for (z in range) {
+                        for (y in -1..(radius * 2 - 1)) {
                             val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
                             if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
                             if (checkBlock.type.isAir) continue
