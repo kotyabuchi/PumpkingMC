@@ -38,7 +38,7 @@ class JobClassStatus {
     fun getLevel(): Int = level
     fun getExp(): Double = exp
     fun getTotalExp(): Double = totalExp
-    fun getNextLevelExp(targetLevel: Int = level): Int = round(targetLevel * targetLevel + 10.0 * targetLevel).toInt()
+    fun getNextLevelExp(targetLevel: Int = level): Int = round(targetLevel * targetLevel / 1.5 + 10.0 * targetLevel).toInt()
     fun getCombo(): Int = combo
     fun getRecentAddedExp(): Double = recentAddedExp
 
