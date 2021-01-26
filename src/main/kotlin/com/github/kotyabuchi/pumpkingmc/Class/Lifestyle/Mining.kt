@@ -127,7 +127,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                 }
                 it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
                 it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                if (enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
+                if ((event.isMultiBreak && block.location != it.location) && enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
                     it.type = stoneSlotItem.type
                     stoneSlotItem.amount--
                 } else {
@@ -204,7 +204,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                 }
             }
             blockList.forEach {
-                val mineEvent = BlockMineEvent(it, player)
+                val mineEvent = BlockMineEvent(it, player, true)
                 instance.server.pluginManager.callEvent(mineEvent)
                 event.isCancelled = true
                 if (!mineEvent.isCancelled) {
