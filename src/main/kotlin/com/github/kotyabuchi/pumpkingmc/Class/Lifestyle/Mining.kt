@@ -181,7 +181,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                 }
                 BlockFace.SOUTH, BlockFace.NORTH -> {
                     for (x in range) {
-                        for (y in -1..(radius * 2 - 1)) {
+                        for (y in -1 until (radius * 2 - 1)) {
                             val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
                             if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
                             if (checkBlock.type.isAir) continue
@@ -191,7 +191,7 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                 }
                 BlockFace.EAST, BlockFace.WEST -> {
                     for (z in range) {
-                        for (y in -1..(radius * 2 - 1)) {
+                        for (y in -1 until (radius * 2 - 1)) {
                             val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
                             if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
                             if (checkBlock.type.isAir) continue
