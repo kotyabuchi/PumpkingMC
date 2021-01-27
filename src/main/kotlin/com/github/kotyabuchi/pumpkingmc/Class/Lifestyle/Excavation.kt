@@ -1,11 +1,14 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
+import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
+import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -14,7 +17,7 @@ import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random
 
-object Excavation: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClassType.EXCAVATION) {
+object Excavation: BlockBreakJobClass(JobClassType.EXCAVATION) {
 
     init {
         Material.values().forEach {
@@ -26,9 +29,9 @@ object Excavation: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Job
             SuperBreaker.enableSuperBreaker(player, jobClassType)
         })
     }
-    
+
     @EventHandler
-    fun onBreak(event: BlockBreakEvent) {
+    fun onMine(event: BlockMineEvent) {
         val player = event.player
         val playerStatus = player.getStatus()
         val block = event.block
@@ -37,8 +40,9 @@ object Excavation: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Job
 
         if (!getTool().contains(item.type)) return
         if (type == Material.DIRT || type == Material.SAND || type == Material.GRASS_BLOCK || type == Material.GRAVEL || type == Material.CLAY ||
-                type == Material.FARMLAND || type == Material.GRASS_PATH || type == Material.COARSE_DIRT || type == Material.PODZOL ||
-                type == Material.RED_SAND || type == Material.SOUL_SAND || type == Material.SOUL_SOIL) {
+            type == Material.FARMLAND || type == Material.GRASS_PATH || type == Material.COARSE_DIRT || type == Material.PODZOL ||
+            type == Material.RED_SAND || type == Material.SOUL_SAND || type == Material.SOUL_SOIL) {
+
             addBrokenBlockList(block)
 
             val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
@@ -50,5 +54,19 @@ object Excavation: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Job
                 player.sendActionMessage("&dSoftTouch Mending +$mendingAmount")
             }
         }
+    }
+    
+    @EventHandler
+    fun onBreak(event: BlockBreakEvent) {
+        if (event is BlockMineEvent) return
+        val player = event.player
+        val block = event.block
+        val item = player.inventory.itemInMainHand
+
+        if (!getTool().contains(item.type)) return
+
+        val mineEvent = BlockMineEvent(block, player)
+        instance.server.pluginManager.callEvent(mineEvent)
+        if (mineEvent.isCancelled) event.isCancelled = true
     }
 }
