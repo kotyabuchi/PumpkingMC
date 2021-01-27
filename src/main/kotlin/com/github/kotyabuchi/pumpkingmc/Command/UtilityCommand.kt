@@ -59,6 +59,17 @@ object UtilityCommand: CommandExecutor, TabCompleter {
                     sender.sendMessage(NBTItem(item).toString())
                 }
             }
+            "showencha" -> {
+                val item = sender.inventory.itemInMainHand
+                if (!item.type.isAir) {
+                    item.itemMeta?.let { meta ->
+                        sender.sendMessage("====================")
+                        meta.enchants.forEach { (enchant, level) ->
+                            sender.sendMessage("${enchant.key.key} : $level")
+                        }
+                    }
+                }
+            }
             "customencha" -> {
                 val item = sender.inventory.itemInMainHand
                 if (!item.type.isAir) {

@@ -122,6 +122,7 @@ class Main : JavaPlugin() {
         this.getCommand("soundlist")?.setExecutor(UtilityCommand)
         this.getCommand("allentity")?.setExecutor(UtilityCommand)
         this.getCommand("shownbti")?.setExecutor(UtilityCommand)
+        this.getCommand("showencha")?.setExecutor(UtilityCommand)
         this.getCommand("customencha")?.setExecutor(UtilityCommand)
         this.getCommand("skill")?.setExecutor(SkillCommand())
         this.getCommand("home")?.setExecutor(homeCommand)
