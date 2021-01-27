@@ -12,7 +12,7 @@ import org.bukkit.event.block.BlockDropItemEvent
 import kotlin.math.floor
 import kotlin.random.Random
 
-open class BlockBreakJobClass(jobClassType: JobClassType): com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster(jobClassType) {
+open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobClassType) {
 
     private val expMap = mutableMapOf<Material, Int>()
     private val brokenBlockList = mutableListOf<Block>()
