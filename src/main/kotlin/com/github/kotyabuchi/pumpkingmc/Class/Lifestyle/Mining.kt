@@ -1,5 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
+import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
@@ -28,7 +29,7 @@ import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
-object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClassType.MINING) {
+object Mining: BlockBreakJobClass(JobClassType.MINING) {
 
     private val mineAssistKey = NamespacedKey(instance, name + "_MineAssist")
     private val stoneReplacerKey = NamespacedKey(instance, name + "_StoneReplacer")
@@ -127,12 +128,22 @@ object Mining: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClas
                 }
                 it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
                 it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                if ((event.isMultiBreak && block.location != it.location) && enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
-                    it.type = stoneSlotItem.type
-                    stoneSlotItem.amount--
+                if (enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
+                    if (event.isMultiBreak && block.location == it.location) {
+                        it.type = Material.AIR
+                    } else {
+                        it.type = stoneSlotItem.type
+                        stoneSlotItem.amount--
+                    }
                 } else {
                     it.type = Material.AIR
                 }
+//                if ((event.isMultiBreak && block.location != it.location) && enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
+//                    it.type = stoneSlotItem.type
+//                    stoneSlotItem.amount--
+//                } else {
+//                    it.type = Material.AIR
+//                }
                 instance.server.pluginManager.callEvent(BlockMineEvent(it, player))
             }
             drops.forEach { (t, u) ->
