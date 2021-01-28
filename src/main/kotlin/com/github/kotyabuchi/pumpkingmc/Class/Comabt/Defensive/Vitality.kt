@@ -69,7 +69,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
             }
             // - Battle Healing
         }
-        event.damage = event.damage - level / 75.0
+        event.damage = event.damage - level / 50.0
     }
 
     @EventHandler
