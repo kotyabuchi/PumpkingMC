@@ -50,11 +50,11 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
                 cause == EntityDamageEvent.DamageCause.STARVATION ||
                 cause == EntityDamageEvent.DamageCause.FIRE_TICK ||
                 cause == EntityDamageEvent.DamageCause.FIRE ||
-                cause == EntityDamageEvent.DamageCause.POISON ||
                 cause == EntityDamageEvent.DamageCause.MELTING ||
                 cause == EntityDamageEvent.DamageCause.HOT_FLOOR ||
                 cause == EntityDamageEvent.DamageCause.CRAMMING ||
-                cause == EntityDamageEvent.DamageCause.CONTACT) return
+                cause == EntityDamageEvent.DamageCause.CONTACT ||
+                cause == EntityDamageEvent.DamageCause.SUICIDE) return
         val amount = event.finalDamage
         if (amount > 0) {
             playerStatus.addSkillExp(jobClassType, amount)
