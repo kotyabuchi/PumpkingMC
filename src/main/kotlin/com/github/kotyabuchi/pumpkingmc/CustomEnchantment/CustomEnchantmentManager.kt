@@ -5,7 +5,6 @@ import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
 import com.github.kotyabuchi.pumpkingmc.Utility.toLore
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
