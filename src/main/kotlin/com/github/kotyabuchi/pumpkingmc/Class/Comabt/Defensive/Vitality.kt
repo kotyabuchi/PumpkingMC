@@ -60,7 +60,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
             playerStatus.addSkillExp(jobClassType, amount * 2)
 
             // Battle Healing -
-            val battleHealingChance = min(333, max(50, level * 10 / 300))
+            val battleHealingChance = min(100, max(500, level / 2))
             val battleHealingLevel = 1 + floor(level / 250.0).toInt()
 
             if (Random.nextInt(1000) <= battleHealingChance) {
