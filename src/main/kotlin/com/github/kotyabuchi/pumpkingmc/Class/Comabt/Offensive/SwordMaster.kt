@@ -20,7 +20,7 @@ object SwordMaster: JobClassMaster(JobClassType.SWORDMASTER) {
         Material.values().forEach {
             if (it.name.endsWith("_SWORD")) addTool(it)
         }
-        addAction(SkillCommand.RRR, 100, fun(player: Player) {
+        addAction(SkillCommand.RRR, 50, fun(player: Player) {
             if (!doubleAttackList.contains(player)) doubleAttackList.add(player)
             player.world.playSound(player.eyeLocation, Sound.BLOCK_BEACON_ACTIVATE, .4f, 2f)
             player.sendActionMessage("&eDoubleAttack ready")
