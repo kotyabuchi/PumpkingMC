@@ -1,7 +1,5 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
-import com.github.kotyabuchi.pumpkingmc.CustomEvent.PlayerGetItemEvent
-import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -10,7 +8,7 @@ import kotlin.math.min
 
 fun PlayerInventory.addItemOrDrop(player: Player, vararg items: ItemStack): Boolean {
     val addedItems = mutableMapOf<Int, ItemStack>()
-    val contents = this.contents
+    val contents = this.storageContents
 
     items.forEach { item ->
         var amount = item.amount
@@ -33,7 +31,10 @@ fun PlayerInventory.addItemOrDrop(player: Player, vararg items: ItemStack): Bool
                     amount -= canAddAmount
                 }
             }
-            if (amount <= 0) break
+            if (amount <= 0) {
+                player.sendMessage(index.toString())
+                break
+            }
         }
 
         if (amount > 0) {
@@ -42,23 +43,23 @@ fun PlayerInventory.addItemOrDrop(player: Player, vararg items: ItemStack): Bool
         }
     }
 
-    for ((index, addedItem) in addedItems) {
-        val getItemEvent = PlayerGetItemEvent(player, addedItem)
-        instance.server.pluginManager.callEvent(getItemEvent)
-        val itemBackup = getItemEvent.item
-        if (getItemEvent.isCancelled) {
-            val addedItemContent = contents[index]
-            if (addedItemContent.amount == addedItem.amount) {
-                this.setItem(index, null)
-            } else {
-                contents[index].amount -= addedItem.amount
-            }
-        } else if (itemBackup == null) {
-            this.setItem(index, null)
-        } else if (itemBackup.amount != addedItem.amount) {
-            contents[index].amount -= addedItem.amount
-        }
-    }
+//    for ((index, addedItem) in addedItems) {
+//        val getItemEvent = PlayerGetItemEvent(player, addedItem)
+//        instance.server.pluginManager.callEvent(getItemEvent)
+//        val itemBackup = getItemEvent.item
+//        if (getItemEvent.isCancelled) {
+//            val addedItemContent = contents[index]
+//            if (addedItemContent.amount == addedItem.amount) {
+//                this.setItem(index, null)
+//            } else {
+//                contents[index].amount -= addedItem.amount
+//            }
+//        } else if (itemBackup == null) {
+//            this.setItem(index, null)
+//        } else if (itemBackup.amount != addedItem.amount) {
+//            contents[index].amount -= addedItem.amount
+//        }
+//    }
     return addedItems.isNotEmpty()
 }
 
