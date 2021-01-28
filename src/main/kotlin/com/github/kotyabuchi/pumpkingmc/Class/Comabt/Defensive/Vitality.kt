@@ -55,9 +55,9 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
                 cause == EntityDamageEvent.DamageCause.CRAMMING ||
                 cause == EntityDamageEvent.DamageCause.CONTACT ||
                 cause == EntityDamageEvent.DamageCause.SUICIDE) return
-        val amount = event.finalDamage
+        val amount = event.damage
         if (amount > 0) {
-            playerStatus.addSkillExp(jobClassType, amount)
+            playerStatus.addSkillExp(jobClassType, amount * 2)
 
             // Battle Healing -
             val battleHealingChance = min(333, max(50, level * 10 / 300))
