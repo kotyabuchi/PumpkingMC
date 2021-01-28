@@ -47,6 +47,15 @@ class EnchantedEnderman: MobExpansionMaster(EntityType.ENDERMAN) {
                 }
             }.runTaskLater(instance, 10)
         }
+
+        addInFightAction(0 until 5) { enderman ->
+            enderman.target?.let { target ->
+                val loc = target.location.subtract(target.location.direction.setY(0).multiply(2))
+                loc.y = target.location.y
+                enderman.teleport(loc)
+                enderman.world.playSound(enderman.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f)
+            }
+        }
     }
 
     @EventHandler
