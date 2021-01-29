@@ -36,29 +36,34 @@ class CustomDurability: Listener {
         item.reduceDurability(event.damage)
         if (event.item.type.isArmors()) {
             val equipment = player.equipment ?: return
-            var slot = EquipmentSlot.CHEST
+            var equipmentSlot: EquipmentSlot? = null
             var find = false
             EquipmentSlot.values().forEach {
                 if (event.item == equipment.getItem(it)) {
-                    slot = it
+                    equipmentSlot = it
                     find = true
                 }
             }
             if (find) {
-                if (item.getDurability() <= 0) {
-                    equipment.setItem(slot, null)
-                    player.playSound(player.eyeLocation, Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1f, 1f)
-                } else {
-                    equipment.setItem(slot, item.item)
+                equipmentSlot?.let { slot ->
+                    if (item.getDurability() <= 0) {
+                        equipment.setItem(slot, null)
+                        player.playSound(player.eyeLocation, Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1f, 1f)
+                    } else {
+                        equipment.setItem(slot, item.item)
+                    }
                 }
             }
         } else if (event.item.type.isTools()) {
-            if (item.getDurability() <= 0) {
-                inv.setItem(inv.first(event.item), null)
-                player.playSound(player.eyeLocation, Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1f, 1f)
-                instance.server.pluginManager.callEvent(PlayerItemBreakEvent(player, item.item))
-            } else {
-                inv.setItem(inv.first(event.item), item.item)
+            val slot = inv.first(event.item)
+            if (slot != -1) {
+                if (item.getDurability() <= 0) {
+                    inv.setItem(inv.first(event.item), null)
+                    player.playSound(player.eyeLocation, Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1f, 1f)
+                    instance.server.pluginManager.callEvent(PlayerItemBreakEvent(player, item.item))
+                } else {
+                    inv.setItem(inv.first(event.item), item.item)
+                }
             }
         }
     }

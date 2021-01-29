@@ -1,9 +1,15 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.Enum.MaterialMiningLevel
+import com.github.kotyabuchi.pumpkingmc.instance
 import de.tr7zw.changeme.nbtapi.NBTItem
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
+import kotlin.random.Random
 
 fun Material.hasDurability(): Boolean {
     return this.isTools() || this.isWeapon() || this.isArmors()
@@ -132,6 +138,19 @@ fun Material.getMiningLevel(): MaterialMiningLevel? {
         Material.DIAMOND, Material.EMERALD -> MaterialMiningLevel.DIAMOND
         Material.NETHERITE_INGOT, Material.NETHER_STAR -> MaterialMiningLevel.NETHERITE
         else -> null
+    }
+}
+
+fun ItemStack.damage(player: Player, _amount: Int) {
+    if (this.itemMeta is Damageable) {
+        var amount = _amount
+        val damageChance = 100 / (this.getEnchantmentLevel(Enchantment.DURABILITY) + 1)
+        if (this.containsEnchantment(Enchantment.DURABILITY)) {
+            repeat(_amount) {
+                if (Random.nextInt(100) <= damageChance) amount--
+            }
+        }
+        if (amount > 0) instance.server.pluginManager.callEvent(PlayerItemDamageEvent(player, this, amount))
     }
 }
 
