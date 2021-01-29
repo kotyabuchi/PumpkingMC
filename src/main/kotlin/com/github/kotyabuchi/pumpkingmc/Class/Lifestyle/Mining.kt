@@ -8,6 +8,7 @@ import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
+import com.github.kotyabuchi.pumpkingmc.Utility.damage
 import com.github.kotyabuchi.pumpkingmc.Utility.isOre
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -24,6 +25,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
 import kotlin.math.floor
@@ -140,12 +142,6 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
                 } else {
                     it.type = Material.AIR
                 }
-//                if ((event.isMultiBreak && block.location != it.location) && enableStoneReplacer && stoneSlotItem != null && stoneSlotItem.amount > 0 && (stoneSlotItem.type == Material.STONE || stoneSlotItem.type == Material.COBBLESTONE)) {
-//                    it.type = stoneSlotItem.type
-//                    stoneSlotItem.amount--
-//                } else {
-//                    it.type = Material.AIR
-//                }
                 instance.server.pluginManager.callEvent(BlockMineEvent(it, player))
             }
             drops.forEach { (t, u) ->
@@ -162,6 +158,8 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
             itemExpansion.increaseDurability(mendingAmount)
             player.inventory.setItemInMainHand(itemExpansion.item)
             player.sendActionMessage("&dSoftTouch Mending +$mendingAmount")
+        } else {
+            player.inventory.itemInMainHand.damage(player, 1)
         }
     }
     
@@ -175,8 +173,8 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         val item = player.inventory.itemInMainHand
         if (!getTool().contains(item.type)) return
 
+        val blockList = mutableListOf(block)
         if (pdc.has(multiBreakKey, PersistentDataType.BYTE)) {
-            val blockList = ArrayList<Block>()
             val rayBlock = player.rayTraceBlocks(6.0)?: return
             val lookingFace = rayBlock.hitBlockFace ?: return
             val radius = floor(level / 100.0).toInt()
@@ -216,30 +214,22 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
                     player.sendMessage("Error")
                 }
             }
-            blockList.forEach {
-                val mineEvent = BlockMineEvent(it, player, true)
-                instance.server.pluginManager.callEvent(mineEvent)
-                event.isCancelled = true
-                if (!mineEvent.isCancelled) {
-                    it.getDrops(item, player).forEach { item ->
-                        val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
-                        val dropEvent = BlockDropItemEvent(it, it.state, player, mutableListOf(dropItem))
-                        instance.server.pluginManager.callEvent(dropEvent)
-                        if (dropEvent.items.isEmpty()) dropItem.remove()
-                    }
-                    it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
-                    it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                    it.type = Material.AIR
-                    val damageChance = 100 / (item.getEnchantmentLevel(Enchantment.DURABILITY) + 1)
-                    if (Random.nextInt(100) <= damageChance) {
-                        instance.server.pluginManager.callEvent(PlayerItemDamageEvent(player, item, 1))
-                    }
-                }
-            }
-        } else {
-            val mineEvent = BlockMineEvent(block, player)
+        }
+        blockList.forEach {
+            val mineEvent = BlockMineEvent(it, player, true)
             instance.server.pluginManager.callEvent(mineEvent)
-            if (mineEvent.isCancelled) event.isCancelled = true
+            event.isCancelled = true
+            if (!mineEvent.isCancelled) {
+                it.getDrops(item, player).forEach { item ->
+                    val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
+                    val dropEvent = BlockDropItemEvent(it, it.state, player, mutableListOf(dropItem))
+                    instance.server.pluginManager.callEvent(dropEvent)
+                    if (dropEvent.items.isEmpty()) dropItem.remove()
+                }
+                it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
+                it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
+                it.type = Material.AIR
+            }
         }
     }
 
