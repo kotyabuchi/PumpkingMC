@@ -17,10 +17,12 @@ import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import java.util.*
@@ -228,6 +230,10 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
                     it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
                     it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
                     it.type = Material.AIR
+                    val damageChance = 100 / (item.getEnchantmentLevel(Enchantment.DURABILITY) + 1)
+                    if (Random.nextInt(100) <= damageChance) {
+                        instance.server.pluginManager.callEvent(PlayerItemDamageEvent(player, item, 1))
+                    }
                 }
             }
         } else {
