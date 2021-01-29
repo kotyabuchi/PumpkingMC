@@ -10,6 +10,11 @@ fun Player.sendActionMessage(message: String) {
     this.sendMessage(blank.substring(0 until (blank.length - (message.length / 2))) + message.colorS())
 }
 
+fun Player.hasTag(tagName: String): Boolean {
+    val pdc = this.persistentDataContainer
+    return pdc.has(NamespacedKey(instance, tagName), PersistentDataType.BYTE)
+}
+
 fun Player.toggleTag(tagName: String): Boolean {
     val pdc = this.persistentDataContainer
     return if (pdc.has(NamespacedKey(instance, tagName), PersistentDataType.BYTE)) {
