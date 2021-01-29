@@ -31,10 +31,7 @@ fun PlayerInventory.addItemOrDrop(player: Player, vararg items: ItemStack): Bool
                     amount -= canAddAmount
                 }
             }
-            if (amount <= 0) {
-                player.sendMessage(index.toString())
-                break
-            }
+            if (amount <= 0) break
         }
 
         if (amount > 0) {
