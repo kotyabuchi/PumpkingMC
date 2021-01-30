@@ -3,6 +3,8 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
+import com.github.kotyabuchi.pumpkingmc.Utility.consume
+import com.github.kotyabuchi.pumpkingmc.Utility.findItemAmount
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.entity.Animals
 import org.bukkit.entity.Player
@@ -13,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.floor
+import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
@@ -35,12 +38,17 @@ object Breeding: JobClassMaster(JobClassType.BREEDING) {
         object : BukkitRunnable() {
             override fun run() {
                 if (!isLoveMode && entity.isLoveMode) {
+                    val animals = mutableListOf<Animals>()
                     entity.getNearbyEntities(1 + level / 50.0, 2.0, 1 + level / 50.0).forEach {
-                        if (it is Animals && entity.type == it.type && !it.isLoveMode && item.amount > 0) {
-                            it.loveModeTicks = entity.loveModeTicks
-                            it.breedCause = player.uniqueId
-                            item.amount--
+                        if (it is Animals && entity.type == it.type && !it.isLoveMode) {
+                            animals.add(it)
                         }
+                    }
+                    val amount = min(player.inventory.findItemAmount(item), animals.size)
+                    player.inventory.consume(item, amount)
+                    repeat(amount) {
+                        animals[it].loveModeTicks = entity.loveModeTicks
+                        animals[it].breedCause = player.uniqueId
                     }
                 }
             }
