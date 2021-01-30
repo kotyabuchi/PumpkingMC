@@ -8,6 +8,7 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
@@ -42,7 +43,7 @@ open class JobClassMaster(val jobClassType: JobClassType): Listener {
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onClick(event: PlayerInteractEvent) {
         val player = event.player
         if (!castingModeList.contains(player)) return
