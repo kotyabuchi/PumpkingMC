@@ -19,7 +19,7 @@ class DamagePopup: Listener {
 
     private val popupStands = mutableListOf<ArmorStand>()
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onDamage(event: EntityDamageEvent) {
         if (event.isCancelled) return
         val entity = event.entity as? LivingEntity ?: return
