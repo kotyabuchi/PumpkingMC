@@ -54,8 +54,7 @@ class EnchantedSkeleton: MobExpansionMaster(EntityType.SKELETON) {
         }
         addEndFightAction { skeleton ->
             weaponMap[skeleton]?.let {
-                val equipment = skeleton.equipment
-                equipment?.setItemInMainHand(it)
+                skeleton.equipment?.setItemInMainHand(it)
             }
             weaponMap.remove(skeleton)
             coolDown.remove(skeleton)
@@ -106,7 +105,9 @@ class EnchantedSkeleton: MobExpansionMaster(EntityType.SKELETON) {
         if (pdc.has(NamespacedKey(instance, "Melee"), PersistentDataType.BYTE)) {
             if (forceChange || canSwapWeapon(skeleton)) {
                 val equipment = skeleton.equipment ?: return
-                equipment.setItemInMainHand(weaponMap[skeleton])
+                weaponMap[skeleton]?.let {
+                    equipment.setItemInMainHand(it)
+                }
                 weaponMap.remove(skeleton)
                 swapCoolDown[skeleton] = System.currentTimeMillis()
                 pdc.remove(NamespacedKey(instance, "Melee"))
@@ -128,8 +129,10 @@ class EnchantedSkeleton: MobExpansionMaster(EntityType.SKELETON) {
         if (!pdc.has(NamespacedKey(instance, "Melee"), PersistentDataType.BYTE)) {
             if (canSwapWeapon(skeleton)) {
                 val equipment = skeleton.equipment ?: return
-                weaponMap[skeleton] = equipment.itemInMainHand.clone()
-                equipment.setItemInMainHand(ItemStack(Material.STONE_AXE))
+                if (equipment.itemInMainHand.type == Material.BOW) {
+                    weaponMap[skeleton] = equipment.itemInMainHand.clone()
+                    equipment.setItemInMainHand(ItemStack(Material.STONE_AXE))
+                }
                 setLastAttackTime(skeleton, System.currentTimeMillis())
                 swapCoolDown[skeleton] = System.currentTimeMillis()
                 pdc.set(NamespacedKey(instance, "Melee"), PersistentDataType.BYTE, 1)
