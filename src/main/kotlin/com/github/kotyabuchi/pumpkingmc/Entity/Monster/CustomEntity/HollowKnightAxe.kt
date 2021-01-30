@@ -26,7 +26,7 @@ object HollowKnightAxe {
             equipment.leggings = null
             equipment.boots = null
             shadowAxe.isSilent = true
-            shadowAxe.customName = "&kKnight".colorS()
+            shadowAxe.customName = "&kKnight&r".colorS()
             shadowAxe.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false))
             shadowAxe.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)?.baseValue = 0.32
         }
