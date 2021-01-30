@@ -84,3 +84,36 @@ fun Inventory.getFirstItem(): Pair<Int, ItemStack>? {
     }
     return null
 }
+
+fun Inventory.consume(itemStack: ItemStack, amount: Int = itemStack.amount, reverse: Boolean = false): Boolean {
+    var result = false
+    val contents = this.storageContents.clone()
+    if (reverse) contents.reverse()
+
+    var foundAmount = 0
+    for (item in contents) {
+        if (itemStack.isSimilar(item)) {
+            val useAmount = min(item.amount, amount - foundAmount)
+            foundAmount += useAmount
+            item.amount -= useAmount
+        }
+        if (foundAmount >= amount) {
+            result = true
+            break
+        }
+    }
+    if (result) {
+        this.storageContents = contents
+    }
+    return result
+}
+
+fun Inventory.findItemAmount(itemStack: ItemStack): Int {
+    var foundAmount = 0
+    for (item in contents) {
+        if (itemStack.isSimilar(item)) {
+            foundAmount += item.amount
+        }
+    }
+    return foundAmount
+}
