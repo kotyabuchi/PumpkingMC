@@ -1,5 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
+import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
@@ -31,7 +32,7 @@ import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random
 
-object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClassType.WOODCUTTING) {
+object Woodcutting: BlockBreakJobClass(JobClassType.WOODCUTTING) {
     
     private val treeAssistKey = NamespacedKey(instance, name + "_TreeAssist")
     private val treeAssistMap = mutableMapOf<Player, BukkitTask>()
@@ -41,6 +42,7 @@ object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Jo
     init {
         Material.values().forEach {
             if (it.name.endsWith("_AXE")) addTool(it)
+            if (it.isWood()) addExpMap(it, exp = 1)
         }
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
             SuperBreaker.enableSuperBreaker(player, jobClassType)
@@ -76,28 +78,6 @@ object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Jo
                 player.sendActionBar('&', "&cTree Fall Off")
             }
         })
-    }
-
-    @EventHandler
-    fun onMine(event: BlockMineEvent) {
-        val block = event.block
-        val player = event.player
-        val playerStatus = player.getStatus()
-        val jobClassStatus = playerStatus.getJobClassStatus(jobClassType)
-        val level = jobClassStatus.getLevel()
-        val item = player.inventory.itemInMainHand
-        if (!getTool().contains(item.type)) return
-        if (!isTargetBlock(block)) return
-
-        addBrokenBlockList(block)
-
-        if (getTool().contains(item.type) && level >= 100 && Random.nextInt(1000) < min(1000, level) / 2) {
-            val itemExpansion = ItemExpansion(item)
-            val mendingAmount = floor(level / 100.0).toInt()
-            itemExpansion.increaseDurability(mendingAmount)
-            player.inventory.setItemInMainHand(itemExpansion.item)
-            player.sendActionMessage("&dSoftTouch Mending +$mendingAmount")
-        }
     }
     
     @EventHandler
@@ -136,7 +116,7 @@ object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Jo
                         drops[drop.type] = (drops[drop.type] ?: 0) + drop.amount
                     }
                 }
-                addBrokenBlockList(it)
+                addBrokenBlockSet(it)
                 it.world.playSound(it.location, Sound.BLOCK_WOOD_BREAK, 1f, 1f)
                 it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
                 it.type = Material.AIR
@@ -197,7 +177,7 @@ object Woodcutting: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(Jo
                         }
                     }.runTaskLater(instance, it.y - y.toLong())
                 }
-                if (getTool().contains(item.type)) addBrokenBlockList(block)
+                if (getTool().contains(item.type)) addBrokenBlockSet(block)
             }
         }
     }

@@ -21,13 +21,13 @@ object Herbalism: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobC
         val blockData = block.blockData
         if (blockData is Ageable) {
             if (blockData.age == blockData.maximumAge) {
-                addBrokenBlockList(block)
+                addBrokenBlockSet(block)
             } else if (event.player.inventory.itemInMainHand.type.name.endsWith("_HOE")) {
                 event.isCancelled = true
             }
         } else {
             val type = block.type
-            if (type == Material.PUMPKIN || type == Material.MELON) addBrokenBlockList(block)
+            if (type == Material.PUMPKIN || type == Material.MELON) addBrokenBlockSet(block)
         }
     }
 
@@ -35,6 +35,6 @@ object Herbalism: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobC
     fun onDrop(event: BlockDropItemEvent) {
         val block = event.block
         val player = event.player
-        if (player.inventory.itemInMainHand.type.name.endsWith("_HOE") && containsBrokenBlockList(block)) block.type = event.blockState.type
+        if (player.inventory.itemInMainHand.type.name.endsWith("_HOE") && containsBrokenBlockSet(block)) block.type = event.blockState.type
     }
 }
