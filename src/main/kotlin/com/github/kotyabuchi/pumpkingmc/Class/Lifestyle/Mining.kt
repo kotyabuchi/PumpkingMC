@@ -5,9 +5,11 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
-import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.*
+import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
+import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
+import com.github.kotyabuchi.pumpkingmc.Utility.isOre
+import com.github.kotyabuchi.pumpkingmc.Utility.toggleTag
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -16,28 +18,26 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
-import kotlin.math.floor
-import kotlin.math.min
 import kotlin.math.round
-import kotlin.random.Random
 
 object Mining: BlockBreakJobClass(JobClassType.MINING) {
 
+    private val stoneSet = setOf(Material.STONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE, Material.NETHERRACK,
+        Material.SANDSTONE, Material.SMOOTH_SANDSTONE, Material.CHISELED_SANDSTONE, Material.RED_SANDSTONE,
+        Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.MOSSY_COBBLESTONE, Material.BASALT, Material.BLACKSTONE)
     private val mineAssistKey = name + "_MineAssist"
     private val stoneReplacerKey = name + "_StoneReplacer"
-    private val multiBreakKey = name + "_MultiBreak"
-    private val groundLevelingAssistKey = name + "_GroundLevelingAssist"
 
     init {
         Material.values().forEach {
             if (it.name.endsWith("_PICKAXE")) addTool(it)
         }
-        addExpMap(Material.STONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE, Material.NETHERRACK,
-                Material.SANDSTONE, Material.SMOOTH_SANDSTONE, Material.CHISELED_SANDSTONE, Material.RED_SANDSTONE,
-                Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.MOSSY_COBBLESTONE, Material.BASALT, Material.BLACKSTONE, exp = 1)
+        stoneSet.forEach {
+            addExpMap(it, exp = 1)
+            addGroundLevelingAssist(it)
+        }
         addExpMap(Material.COAL_ORE, exp = 2)
         addExpMap(Material.IRON_ORE, Material.END_STONE, Material.GLOWSTONE, exp = 3)
         addExpMap(Material.REDSTONE_ORE, Material.NETHER_QUARTZ_ORE, exp = 4)
@@ -45,6 +45,7 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         addExpMap(Material.LAPIS_ORE, exp = 7)
         addExpMap(Material.DIAMOND_ORE, exp = 8)
         addExpMap(Material.EMERALD_ORE, exp = 10)
+        addGroundLevelingAssist(Material.COBBLESTONE)
 
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
             SuperBreaker.enableSuperBreaker(player, jobClassType)
@@ -96,12 +97,10 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         val inv = player.inventory
         val playerStatus = player.getStatus()
         val jobClassStatus = playerStatus.getJobClassStatus(jobClassType)
-        val level = jobClassStatus.getLevel()
         val item = player.inventory.itemInMainHand
+
         if (!getTool().contains(item.type)) return
         if (!isTargetBlock(block)) return
-
-        addBrokenBlockList(block)
 
         if (block.type.isOre() && player.hasTag(mineAssistKey)) {
             event.isCancelled = true
@@ -140,99 +139,6 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
                 val dropEvent = BlockDropItemEvent(block, blockState, player, mutableListOf(dropItem))
                 instance.server.pluginManager.callEvent(dropEvent)
                 if (dropEvent.items.isEmpty()) dropItem.remove()
-            }
-        }
-
-        if (level >= 100 && Random.nextInt(1000) < min(1000, level) / 2) {
-            val itemExpansion = ItemExpansion(item)
-            val mendingAmount = floor(level / 100.0).toInt()
-            itemExpansion.increaseDurability(mendingAmount)
-            player.inventory.setItemInMainHand(itemExpansion.item)
-            player.sendActionMessage("&dSoftTouch Mending +$mendingAmount")
-        } else {
-            player.inventory.itemInMainHand.damage(player, 1)
-        }
-    }
-    
-    @EventHandler
-    fun onBreak(event: BlockBreakEvent) {
-        if (event is BlockMineEvent) return
-        val block = event.block
-        val player = event.player
-        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
-        val item = player.inventory.itemInMainHand
-        if (!getTool().contains(item.type)) return
-        event.isCancelled = true
-
-        val blockList = mutableListOf(block)
-        if (player.hasTag(groundLevelingAssistKey)) {
-            val rayBlock = player.rayTraceBlocks(8.0)
-            rayBlock?.hitBlockFace?.reverse()?.let { lookingFace->
-                val targetBlock = block.getRelative(lookingFace)
-                if (targetBlock.type.isAir) {
-                    if (player.inventory.consume(ItemExpansion(ItemStack(Material.STONE)).item)) {
-                        targetBlock.type = Material.STONE
-                    } else if (player.inventory.consume(ItemExpansion(ItemStack(Material.COBBLESTONE)).item)) {
-                        targetBlock.type = Material.COBBLESTONE
-                    }
-                }
-            }
-        }
-
-        if (player.hasTag(multiBreakKey)) {
-            val rayBlock = player.rayTraceBlocks(8.0)
-            val lookingFace = rayBlock?.hitBlockFace
-            val radius = floor(level / 100.0).toInt()
-            val range = (radius * -1)..radius
-            when (lookingFace) {
-                BlockFace.UP, BlockFace.DOWN -> {
-                    for (x in range) {
-                        for (z in range) {
-                            val checkBlock = block.location.add(x.toDouble(), 0.0, z.toDouble()).block
-                            if (checkBlock.type == Material.BEDROCK) continue
-                            if (checkBlock.type.isAir) continue
-                            blockList.add(checkBlock)
-                        }
-                    }
-                }
-                BlockFace.SOUTH, BlockFace.NORTH -> {
-                    for (x in range) {
-                        for (y in -1 until (radius * 2)) {
-                            val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
-                            if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
-                            if (checkBlock.type.isAir) continue
-                            blockList.add(checkBlock)
-                        }
-                    }
-                }
-                BlockFace.EAST, BlockFace.WEST -> {
-                    for (z in range) {
-                        for (y in -1 until (radius * 2)) {
-                            val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
-                            if (checkBlock.y <= 1 || checkBlock.type == Material.BEDROCK) continue
-                            if (checkBlock.type.isAir) continue
-                            blockList.add(checkBlock)
-                        }
-                    }
-                }
-                else -> {
-                    player.sendMessage("Error")
-                }
-            }
-        }
-        blockList.forEach {
-            val mineEvent = BlockMineEvent(it, player, true)
-            instance.server.pluginManager.callEvent(mineEvent)
-            if (!mineEvent.isCancelled) {
-                it.getDrops(item, player).forEach { item ->
-                    val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
-                    val dropEvent = BlockDropItemEvent(it, it.state, player, mutableListOf(dropItem))
-                    instance.server.pluginManager.callEvent(dropEvent)
-                    if (dropEvent.items.isEmpty()) dropItem.remove()
-                }
-                it.world.playSound(it.location, it.soundGroup.breakSound, 1f, .75f)
-                it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                it.type = Material.AIR
             }
         }
     }
