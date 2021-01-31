@@ -10,19 +10,22 @@ enum class JobClassType(private val icon: Material, val regularName: String, val
     PARKOUR(Material.LEATHER_BOOTS, "Parkour", listOf()),
     UNARMED(Material.IRON_BARS, "Unarmed", listOf()),
     SWORDMASTER(Material.IRON_SWORD, "SwordMaster", listOf(
-        "RRR: Double Attack (100Lv)",
-        "次の攻撃が2回攻撃になる"
+        "RRR: Double Attack (50Lv)",
+        "次の攻撃が2回攻撃になる",
+        "",
+        "LLL: Blink Strike (100Lv)",
+        "一定距離をブリンクし、範囲内の敵を攻撃する"
     )),
     BATTLEAXE(Material.IRON_AXE, "BattleAxe", listOf()),
     ARCHERY(Material.BOW, "Bow", listOf(
         "RRR: Strong Shot (50Lv)",
         "次の矢の速度が上昇する",
         "",
-        "LLL: Arc Shot (400Lv)",
-        "範囲内に矢の雨を降らせる",
+        "LRL: Gravity Shot (100Lv)",
+        "着弾点に引き寄せられる矢を射る",
         "",
-        "LRL: Gravity Shot (200Lv)",
-        "着弾点に引き寄せられる矢を射る"
+        "LLL: Arc Shot (200Lv)",
+        "範囲内に矢の雨を降らせる"
     )),
     MINING(Material.DIAMOND_PICKAXE, "Mining", listOf(
         "RRR: Super Breaker (25Lv)",
@@ -35,11 +38,17 @@ enum class JobClassType(private val icon: Material, val regularName: String, val
         "鉱石を破壊した際につながった鉱石も一括で破壊する",
         "",
         "LLR: Multi Breaker (100Lv)",
-        "破壊したブロックを中心に3x3の範囲を一括で破壊する"
+        "破壊したブロックを中心に3x3の範囲を一括で破壊する",
+        "",
+        "LRR: Ground Leveling Assis (200Lv)",
+        "破壊したブロックの裏にブロックが無い時に手持ちの石を設置する"
     )),
     EXCAVATION(Material.IRON_SHOVEL, "Excavation", listOf(
         "RRR: Super Breaker (25Lv)",
-        "一定時間採掘速度が上昇する"
+        "一定時間採掘速度が上昇する",
+        "",
+        "LLR: Multi Breaker (100Lv)",
+        "破壊したブロックを中心に3x3の範囲を一括で破壊する"
     )),
     WOODCUTTING(Material.STONE_AXE, "WoodCutting", listOf(
         "RRR: Super Breaker (25Lv)",
