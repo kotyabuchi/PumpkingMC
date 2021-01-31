@@ -71,3 +71,27 @@ fun Material.getWoodType(): WoodType? {
         else -> null
     }
 }
+
+fun BlockFace.reverse(): BlockFace {
+    return when (this) {
+        BlockFace.UP -> BlockFace.DOWN
+        BlockFace.DOWN -> BlockFace.UP
+        BlockFace.EAST -> BlockFace.WEST
+        BlockFace.NORTH -> BlockFace.SOUTH
+        BlockFace.SOUTH -> BlockFace.NORTH
+        BlockFace.WEST -> BlockFace.EAST
+        BlockFace.SELF -> BlockFace.SELF
+        BlockFace.NORTH_EAST -> BlockFace.SOUTH_WEST
+        BlockFace.NORTH_WEST -> BlockFace.SOUTH_EAST
+        BlockFace.SOUTH_EAST -> BlockFace.NORTH_WEST
+        BlockFace.SOUTH_WEST -> BlockFace.NORTH_EAST
+        BlockFace.EAST_NORTH_EAST -> BlockFace.WEST_SOUTH_WEST
+        BlockFace.EAST_SOUTH_EAST -> BlockFace.WEST_NORTH_WEST
+        BlockFace.NORTH_NORTH_EAST -> BlockFace.SOUTH_SOUTH_WEST
+        BlockFace.NORTH_NORTH_WEST -> BlockFace.SOUTH_SOUTH_EAST
+        BlockFace.SOUTH_SOUTH_EAST -> BlockFace.NORTH_NORTH_WEST
+        BlockFace.SOUTH_SOUTH_WEST -> BlockFace.NORTH_NORTH_EAST
+        BlockFace.WEST_NORTH_WEST -> BlockFace.EAST_SOUTH_EAST
+        BlockFace.WEST_SOUTH_WEST -> BlockFace.EAST_NORTH_EAST
+    }
+}

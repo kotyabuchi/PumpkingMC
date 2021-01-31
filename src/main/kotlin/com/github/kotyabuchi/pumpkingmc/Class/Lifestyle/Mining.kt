@@ -7,27 +7,18 @@ import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
-import com.github.kotyabuchi.pumpkingmc.Utility.damage
-import com.github.kotyabuchi.pumpkingmc.Utility.isOre
-import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
+import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
-import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.Damageable
-import org.bukkit.persistence.PersistentDataType
-import java.util.*
 import kotlin.math.floor
 import kotlin.math.min
 import kotlin.math.round
@@ -35,9 +26,10 @@ import kotlin.random.Random
 
 object Mining: BlockBreakJobClass(JobClassType.MINING) {
 
-    private val mineAssistKey = NamespacedKey(instance, name + "_MineAssist")
-    private val stoneReplacerKey = NamespacedKey(instance, name + "_StoneReplacer")
-    private val multiBreakKey = NamespacedKey(instance, name + "_MultiBreak")
+    private val mineAssistKey = name + "_MineAssist"
+    private val stoneReplacerKey = name + "_StoneReplacer"
+    private val multiBreakKey = name + "_MultiBreak"
+    private val groundLevelingAssistKey = name + "_GroundLevelingAssist"
 
     init {
         Material.values().forEach {
@@ -58,39 +50,39 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
             SuperBreaker.enableSuperBreaker(player, jobClassType)
         })
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
-            val pdc = player.persistentDataContainer
-            if (pdc.has(stoneReplacerKey, PersistentDataType.BYTE)) {
-                pdc.remove(stoneReplacerKey)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cStone Replacer Off")
-            } else {
-                pdc.set(stoneReplacerKey, PersistentDataType.BYTE, 1)
+            if (player.toggleTag(stoneReplacerKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
                 player.sendActionBar('&', "&aStone Replacer On")
+            } else {
+                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+                player.sendActionBar('&', "&cStone Replacer Off")
             }
         })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
-            val pdc = player.persistentDataContainer
-            if (pdc.has(mineAssistKey, PersistentDataType.BYTE)) {
-                pdc.remove(mineAssistKey)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cMine Assist Off")
-            } else {
-                pdc.set(mineAssistKey, PersistentDataType.BYTE, 1)
+            if (player.toggleTag(mineAssistKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
                 player.sendActionBar('&', "&aMine Assist On")
+            } else {
+                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+                player.sendActionBar('&', "&cMine Assist Off")
             }
         })
         addAction(SkillCommand.LLR, 100, fun(player: Player) {
-            val pdc = player.persistentDataContainer
-            if (pdc.has(multiBreakKey, PersistentDataType.BYTE)) {
-                pdc.remove(multiBreakKey)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cMulti Break Off")
-            } else {
-                pdc.set(multiBreakKey, PersistentDataType.BYTE, 1)
+            if (player.toggleTag(multiBreakKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
                 player.sendActionBar('&', "&aMulti Break On")
+            } else {
+                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+                player.sendActionBar('&', "&cMulti Break Off")
+            }
+        })
+        addAction(SkillCommand.LRR, 200, fun(player: Player) {
+            if (player.toggleTag(groundLevelingAssistKey)) {
+                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+                player.sendActionBar('&', "&aGround Leveling Assist On")
+            } else {
+                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+                player.sendActionBar('&', "&cGround Leveling Assist Off")
             }
         })
     }
@@ -102,7 +94,6 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         val player = event.player
         val playerLoc = player.location
         val inv = player.inventory
-        val pdc = player.persistentDataContainer
         val playerStatus = player.getStatus()
         val jobClassStatus = playerStatus.getJobClassStatus(jobClassType)
         val level = jobClassStatus.getLevel()
@@ -112,7 +103,7 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
 
         addBrokenBlockList(block)
 
-        if (block.type.isOre() && pdc.has(mineAssistKey, PersistentDataType.BYTE)) {
+        if (block.type.isOre() && player.hasTag(mineAssistKey)) {
             event.isCancelled = true
             val oreList: MutableList<Block> = mutableListOf()
             searchOre(block, oreList, mutableListOf())
@@ -120,7 +111,7 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
             jobClassStatus.addCombo(oreList.size)
             val drops = mutableMapOf<Material, Int>()
             val stoneSlotItem = inv.getItem(inv.heldItemSlot + 1)
-            val enableStoneReplacer = pdc.has(mineAssistKey, PersistentDataType.BYTE) && inv.getItem(inv.heldItemSlot + 1) != null
+            val enableStoneReplacer = player.hasTag(stoneReplacerKey) && inv.getItem(inv.heldItemSlot + 1) != null
             oreList.sortWith { block1, block2 ->
                 round(block2.location.distance(playerLoc) - block1.location.distance(playerLoc)).toInt()
             }
@@ -169,14 +160,28 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         val block = event.block
         val player = event.player
         val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
-        val pdc = player.persistentDataContainer
         val item = player.inventory.itemInMainHand
         if (!getTool().contains(item.type)) return
+        event.isCancelled = true
 
         val blockList = mutableListOf(block)
-        if (pdc.has(multiBreakKey, PersistentDataType.BYTE)) {
-            val rayBlock = player.rayTraceBlocks(6.0)?: return
-            val lookingFace = rayBlock.hitBlockFace ?: return
+        if (player.hasTag(groundLevelingAssistKey)) {
+            val rayBlock = player.rayTraceBlocks(8.0)
+            rayBlock?.hitBlockFace?.reverse()?.let { lookingFace->
+                val targetBlock = block.getRelative(lookingFace)
+                if (targetBlock.type.isAir) {
+                    if (player.inventory.consume(ItemExpansion(ItemStack(Material.STONE)).item)) {
+                        targetBlock.type = Material.STONE
+                    } else if (player.inventory.consume(ItemExpansion(ItemStack(Material.COBBLESTONE)).item)) {
+                        targetBlock.type = Material.COBBLESTONE
+                    }
+                }
+            }
+        }
+
+        if (player.hasTag(multiBreakKey)) {
+            val rayBlock = player.rayTraceBlocks(8.0)
+            val lookingFace = rayBlock?.hitBlockFace
             val radius = floor(level / 100.0).toInt()
             val range = (radius * -1)..radius
             when (lookingFace) {
@@ -218,7 +223,6 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         blockList.forEach {
             val mineEvent = BlockMineEvent(it, player, true)
             instance.server.pluginManager.callEvent(mineEvent)
-            event.isCancelled = true
             if (!mineEvent.isCancelled) {
                 it.getDrops(item, player).forEach { item ->
                     val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
