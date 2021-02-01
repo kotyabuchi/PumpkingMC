@@ -91,6 +91,7 @@ class Telekinesis: CustomEnchantmentMaster("Telekinesis") {
 
         event.items.forEach {
             inv.addItemOrDrop(player, it.itemStack)
+            it.remove()
         }
         event.items.clear()
         blocks.remove(block)
