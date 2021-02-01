@@ -67,9 +67,9 @@ data class PlayerStatus(val player: Player) {
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f)
     }
 
-    fun addSkillExp(jobClassType: JobClassType, point: Double) {
+    fun addSkillExp(jobClassType: JobClassType, point: Double, increaseCombo: Int = 1) {
         val jobClassStatus = getJobClassStatus(jobClassType)
-        if (jobClassStatus.addExp(point) == JobClassStatus.AddExpResult.LEVEL_UP) noticeLevelUp(jobClassType)
+        if (jobClassStatus.addExp(point, increaseCombo) == JobClassStatus.AddExpResult.LEVEL_UP) noticeLevelUp(jobClassType)
         val addedExp = jobClassStatus.getRecentAddedExp()
         val combo = jobClassStatus.getCombo()
         val skillName = jobClassType.regularName

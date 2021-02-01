@@ -42,8 +42,8 @@ class JobClassStatus {
     fun getCombo(): Int = combo
     fun getRecentAddedExp(): Double = recentAddedExp
 
-    fun addExp(point: Double): AddExpResult {
-        addCombo(1)
+    fun addExp(point: Double, increaseCombo: Int = 1): AddExpResult {
+        addCombo(increaseCombo)
         val expMultiple = 1 + combo * 0.002
         val addExp = point * expMultiple
         recentAddedExp = addExp
