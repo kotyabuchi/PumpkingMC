@@ -74,20 +74,20 @@ open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobCla
             } else {
                 var exp = 0.0
                 val doubleDropChance = playerStatus.getJobClassStatus(jobClassType).getLevel() / 3
-                var dropAmount = 1 + floor(doubleDropChance / 100.0).toInt()
+                var multiDropAmount = 1 + floor(doubleDropChance / 100.0).toInt()
                 if (Random.nextInt(100) < doubleDropChance % 100) {
-                    dropAmount++
+                    multiDropAmount++
                     player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 1.0f)
                 }
+                val itemExp = expMap[blockState.type] ?: 1
                 event.items.forEach {
                     val item = it.itemStack
-                    val itemExp = expMap[blockState.type] ?: 1
-                    item.amount *= dropAmount
+                    item.amount *= multiDropAmount
                     exp += (itemExp * item.amount)
                 }
                 if (SuperBreaker.isSuperBreaking(player)) exp *= 1.5
 
-                playerStatus.addSkillExp(jobClassType, exp)
+                playerStatus.addSkillExp(jobClassType, exp, multiDropAmount)
                 afterDropAction(event)
             }
         }
