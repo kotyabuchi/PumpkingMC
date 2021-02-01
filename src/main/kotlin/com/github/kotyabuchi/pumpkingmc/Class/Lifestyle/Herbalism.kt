@@ -1,40 +1,36 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
+import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
 import org.bukkit.event.EventHandler
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 
-object Herbalism: com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass(JobClassType.HERBALISM) {
+object Herbalism: BlockBreakJobClass(JobClassType.HERBALISM) {
 
     init {
         Material.values().forEach {
             if (it.name.endsWith("_HOE")) addTool(it)
         }
+        addExpMap(Material.WHEAT, Material.CARROTS, Material.POTATOES, Material.BEETROOTS, exp = 1)
+        addExpMap(Material.MELON, exp = 3)
+        addExpMap(Material.PUMPKIN, exp = 4)
     }
-    
+
     @EventHandler
-    fun onBreak(event: BlockBreakEvent) {
-        val block = event.block
-        val blockData = block.blockData
-        if (blockData is Ageable) {
-            if (blockData.age == blockData.maximumAge) {
-                addBrokenBlockSet(block)
-            } else if (event.player.inventory.itemInMainHand.type.name.endsWith("_HOE")) {
-                event.isCancelled = true
-            }
-        } else {
-            val type = block.type
-            if (type == Material.PUMPKIN || type == Material.MELON) addBrokenBlockSet(block)
-        }
+    fun onMine(event: BlockMineEvent) {
+        val blockData = event.block.blockData
+        val item = event.player.inventory.itemInMainHand
+        if (getTool().contains(item.type) && blockData is Ageable && blockData.age != blockData.maximumAge) event.isCancelled = true
     }
 
     @EventHandler
     fun onDrop(event: BlockDropItemEvent) {
         val block = event.block
-        val player = event.player
-        if (player.inventory.itemInMainHand.type.name.endsWith("_HOE") && containsBrokenBlockSet(block)) block.type = event.blockState.type
+        if (getTool().contains(event.player.inventory.itemInMainHand.type) && containsBrokenBlockSet(block)) {
+            block.type = event.blockState.type
+        }
     }
 }
