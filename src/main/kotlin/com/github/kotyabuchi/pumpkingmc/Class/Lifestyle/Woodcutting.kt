@@ -3,12 +3,13 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
-import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.*
+import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
+import com.github.kotyabuchi.pumpkingmc.Utility.getWoodType
+import com.github.kotyabuchi.pumpkingmc.Utility.isLeave
+import com.github.kotyabuchi.pumpkingmc.Utility.isWood
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -28,16 +29,14 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
-import kotlin.math.floor
-import kotlin.math.min
 import kotlin.random.Random
 
-object Woodcutting: BlockBreakJobClass(JobClassType.WOODCUTTING) {
+object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
     
-    private val treeAssistKey = NamespacedKey(instance, name + "_TreeAssist")
+    private val treeAssistKey = NamespacedKey(instance, jobClassName + "_TreeAssist")
     private val treeAssistMap = mutableMapOf<Player, BukkitTask>()
     
-    private val logFallKey = NamespacedKey(instance, name + "_LogFall")
+    private val logFallKey = NamespacedKey(instance, jobClassName + "_LogFall")
 
     init {
         Material.values().forEach {
@@ -45,7 +44,7 @@ object Woodcutting: BlockBreakJobClass(JobClassType.WOODCUTTING) {
             if (it.isWood()) addExpMap(it, exp = 1)
         }
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, jobClassType)
+            SuperBreaker.enableSuperBreaker(player, this)
         })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
             val pdc = player.persistentDataContainer
@@ -88,7 +87,7 @@ object Woodcutting: BlockBreakJobClass(JobClassType.WOODCUTTING) {
         val blockState = block.state
         val player = event.player
         val playerStatus = player.getStatus()
-        val jobClassStatus = playerStatus.getJobClassStatus(jobClassType)
+        val jobClassStatus = playerStatus.getJobClassStatus(this)
         val item = player.inventory.itemInMainHand
         val pdc = player.persistentDataContainer
         if (!material.isWood()) return

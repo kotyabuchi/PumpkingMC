@@ -82,7 +82,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                     when (args.size) {
                         1 -> {
                             JobClassType.values().forEach {
-                                val jobClassStatus = sender.getStatus().getJobClassStatus(it)
+                                val jobClassStatus = sender.getStatus().getJobClassStatus(it.jobClass)
                                 val stringBuilder = StringBuilder()
                                 stringBuilder.append("=+-------------------------+=\n")
                                 stringBuilder.append(it.regularName + "\n")
@@ -96,7 +96,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                         }
                         2 -> {
                             if (checkExistSkill(args[1])) {
-                                val jobClassStatus = sender.getStatus().getJobClassStatus(JobClassType.valueOf(args[1]))
+                                val jobClassStatus = sender.getStatus().getJobClassStatus(JobClassType.valueOf(args[1]).jobClass)
                                 val stringBuilder = StringBuilder()
                                 stringBuilder.append("=+-------------------------+=\n")
                                 stringBuilder.append(args[1].toUpperCase() + "\n")
@@ -113,7 +113,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                         3 -> {
                             if (checkExistSkill(args[1])) {
                                 val targetPlayer = instance.server.getPlayer(args[2]) ?: return true
-                                val jobClassStatus = targetPlayer.getStatus().getJobClassStatus(JobClassType.valueOf(args[1]))
+                                val jobClassStatus = targetPlayer.getStatus().getJobClassStatus(JobClassType.valueOf(args[1]).jobClass)
                                 val stringBuilder = StringBuilder()
                                 stringBuilder.append("=+-------------------------+=\n")
                                 stringBuilder.append(args[1].toUpperCase() + "\n")
@@ -134,7 +134,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                     if (args.size < 4) return true
                     if (checkExistSkill(args[1])) {
                         val target = if (args.size == 5) instance.server.getPlayer(args[4]) ?: return true else sender
-                        val skill = JobClassType.valueOf(args[1])
+                        val skill = JobClassType.valueOf(args[1]).jobClass
                         val playerStatus = target.getStatus()
                         val jobClassStatus = playerStatus.getJobClassStatus(skill)
                         when (args[2]) {
@@ -165,7 +165,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                     if (args.size < 4) return true
                     if (checkExistSkill(args[1])) {
                         val target = if (args.size == 5) instance.server.getPlayer(args[4]) ?: return true else sender
-                        val skill = JobClassType.valueOf(args[1])
+                        val skill = JobClassType.valueOf(args[1]).jobClass
                         val playerStatus = target.getStatus()
                         val jobClassStatus = playerStatus.getJobClassStatus(skill)
                         when (args[2]) {
@@ -193,10 +193,11 @@ class SkillCommand: CommandExecutor, TabCompleter {
                 }
                 "reset" -> {
                     if (!sender.isOp) return true
+                    val jobClass = JobClassType.valueOf(args[1]).jobClass
                     when (args.size) {
                         2 -> {
                             if (checkExistSkill(args[1])) {
-                                sender.getStatus().getJobClassStatus(JobClassType.valueOf(args[1])).reset()
+                                sender.getStatus().getJobClassStatus(jobClass).reset()
                                 sender.sendMessage("スキル[${args[1]}]をリセットしました")
                             } else {
                                 sender.sendMessage(ChatColor.RED.toString() + "スキル[${args[1]}]は存在しません")
@@ -205,7 +206,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                         3 -> {
                             if (checkExistSkill(args[1])) {
                                 val targetPlayer = instance.server.getPlayer(args[2]) ?: return true
-                                targetPlayer.getStatus().getJobClassStatus(JobClassType.valueOf(args[1])).reset()
+                                targetPlayer.getStatus().getJobClassStatus(jobClass).reset()
                                 sender.sendMessage("${targetPlayer}さんのスキル[${args[1]}]をリセットしました")
                             } else {
                                 sender.sendMessage(ChatColor.RED.toString() + "スキル[${args[1]}]は存在しません")
@@ -218,11 +219,12 @@ class SkillCommand: CommandExecutor, TabCompleter {
                     val target = if (args.size == 2) instance.server.getPlayer(args[1]) ?: sender else sender
                     val playerStatus = target.getStatus()
                     val pdc = target.persistentDataContainer
-                    JobClassType.values().forEach { skill ->
-                        val jobClassStatus = playerStatus.getJobClassStatus(skill)
-                        val expKey = NamespacedKey(instance, skill.name + "_Exp")
-                        val levelKey = NamespacedKey(instance, skill.name + "_Level")
-                        val totalExpKey = NamespacedKey(instance, skill.name + "_TotalExp")
+                    JobClassType.values().forEach {
+                        val jobClass = it.jobClass
+                        val jobClassStatus = playerStatus.getJobClassStatus(jobClass)
+                        val expKey = NamespacedKey(instance, jobClass.jobClassName + "_Exp")
+                        val levelKey = NamespacedKey(instance, jobClass.jobClassName + "_Level")
+                        val totalExpKey = NamespacedKey(instance, jobClass.jobClassName + "_TotalExp")
                         val exp = pdc.get(expKey, PersistentDataType.DOUBLE)
                         val level = pdc.get(levelKey, PersistentDataType.INTEGER)
                         exp?.let { jobClassStatus.setExp(it) }
@@ -230,7 +232,7 @@ class SkillCommand: CommandExecutor, TabCompleter {
                         pdc.remove(expKey)
                         pdc.remove(levelKey)
                         pdc.remove(totalExpKey)
-                        playerStatus.setJobClassStatus(skill, jobClassStatus)
+                        playerStatus.setJobClassStatus(jobClass, jobClassStatus)
                     }
                 }
             }

@@ -2,13 +2,12 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import org.bukkit.Material
 import org.bukkit.block.data.Ageable
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockDropItemEvent
 
-object Herbalism: BlockBreakJobClass(JobClassType.HERBALISM) {
+object Herbalism: BlockBreakJobClass("Herbalism") {
 
     init {
         Material.values().forEach {

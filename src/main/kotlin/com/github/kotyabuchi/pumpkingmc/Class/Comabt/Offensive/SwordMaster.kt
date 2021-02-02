@@ -2,7 +2,6 @@ package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.destroystokyo.paper.ParticleBuilder
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
@@ -24,7 +23,7 @@ import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.round
 
-object SwordMaster: JobClassMaster(JobClassType.SWORDMASTER) {
+object SwordMaster: JobClassMaster("SWORDMASTER") {
 
     private val doubleAttackList = mutableListOf<Player>()
     private val blinkStrikeList = mutableListOf<Player>()
@@ -62,7 +61,7 @@ object SwordMaster: JobClassMaster(JobClassType.SWORDMASTER) {
         if (!item.type.name.endsWith("_SWORD")) return
         if (doubleAttackList.contains(player)) doubleAttack(player, event)
         val amount = event.finalDamage
-        player.getStatus().addSkillExp(jobClassType, amount)
+        player.getStatus().addSkillExp(this, amount)
     }
 
     @EventHandler

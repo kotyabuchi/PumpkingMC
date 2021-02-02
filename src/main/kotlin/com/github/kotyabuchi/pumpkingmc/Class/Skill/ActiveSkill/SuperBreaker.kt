@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
 
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
+import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -32,8 +32,8 @@ object SuperBreaker: Listener {
 
     fun isSuperBreaking(player: Player): Boolean = superBreakers.containsKey(player)
 
-    fun enableSuperBreaker(player: Player, jobClassType: JobClassType) {
-        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+    fun enableSuperBreaker(player: Player, jobClass: JobClassMaster) {
+        val level = player.getStatus().getJobClassStatus(jobClass).getLevel()
         val bossBarKey = NamespacedKey(instance, "SuperBreaker_" + player.uniqueId.toString())
         if (level < 10) {
             player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)

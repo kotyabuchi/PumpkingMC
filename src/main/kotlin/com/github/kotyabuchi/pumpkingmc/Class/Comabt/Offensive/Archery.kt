@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.drawCircle
@@ -22,7 +21,7 @@ import org.bukkit.util.Vector
 import kotlin.math.*
 import kotlin.random.Random
 
-object Archery: JobClassMaster(JobClassType.ARCHERY) {
+object Archery: JobClassMaster("ARCHERY") {
 
     private val passBlocks: MutableSet<Material> = mutableSetOf()
     private val strongShoot: MutableList<Player> = mutableListOf()
@@ -39,7 +38,7 @@ object Archery: JobClassMaster(JobClassType.ARCHERY) {
             if (!strongShoot.contains(player)) {
                 strongShoot.add(player)
                 player.world.playSound(player.eyeLocation, Sound.BLOCK_BEACON_ACTIVATE, .4f, 2f)
-                player.sendActionMessage("&eStrongShoot ready x${1 + (player.getStatus().getJobClassStatus(jobClassType).getLevel() / 100.0).floor2Digits()}")
+                player.sendActionMessage("&eStrongShoot ready x${1 + (player.getStatus().getJobClassStatus(this).getLevel() / 100.0).floor2Digits()}")
             }
         })
         addAction(SkillCommand.LLL, 400, fun (player: Player) {
@@ -58,7 +57,7 @@ object Archery: JobClassMaster(JobClassType.ARCHERY) {
         val arrow = event.damager as? Arrow ?: return
         val player = arrow.shooter as? Player ?: return
         val status = player.getStatus()
-        val jobClassStatus = status.getJobClassStatus(jobClassType)
+        val jobClassStatus = status.getJobClassStatus(this)
         val entity = event.entity
         if (entity !is LivingEntity) return
 
@@ -79,13 +78,13 @@ object Archery: JobClassMaster(JobClassType.ARCHERY) {
                 }
             }
         }
-        player.getStatus().addSkillExp(jobClassType, event.finalDamage)
+        player.getStatus().addSkillExp(this, event.finalDamage)
     }
 
     @EventHandler
     fun onShot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
-        val jobClassStatus = player.getStatus().getJobClassStatus(jobClassType)
+        val jobClassStatus = player.getStatus().getJobClassStatus(this)
         val level = jobClassStatus.getLevel()
         val arrow = event.projectile as? Arrow ?: return
         if (strongShoot.contains(player)) shootStrongShoot(player, arrow, level)
@@ -108,7 +107,7 @@ object Archery: JobClassMaster(JobClassType.ARCHERY) {
     private fun readyArchShot(player: Player) {
         player.sendActionMessage("&eArcShoot ready")
         arcShotMap[player] = object : BukkitRunnable() {
-            val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+            val level = player.getStatus().getJobClassStatus(this@Archery).getLevel()
             val circle = drawCircle((level / 100.0).floor2Digits())
             override fun run() {
                 val eyeLoc = player.eyeLocation

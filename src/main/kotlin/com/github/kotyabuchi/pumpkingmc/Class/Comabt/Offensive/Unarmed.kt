@@ -8,7 +8,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
-object Unarmed: JobClassMaster(JobClassType.UNARMED) {
+object Unarmed: JobClassMaster("UNARMED") {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
@@ -20,9 +20,9 @@ object Unarmed: JobClassMaster(JobClassType.UNARMED) {
         if (!item.type.isAir) return
         val isCritical = event.damage >= 1.5
         event.damage++
-        event.damage += playerStatus.getJobClassStatus(jobClassType).getLevel() / 100.0
+        event.damage += playerStatus.getJobClassStatus(this).getLevel() / 100.0
         if (isCritical) event.damage = event.damage * 1.5
         val amount = event.finalDamage
-        playerStatus.addSkillExp(jobClassType, amount)
+        playerStatus.addSkillExp(this, amount)
     }
 }

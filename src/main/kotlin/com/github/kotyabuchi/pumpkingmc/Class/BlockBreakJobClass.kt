@@ -26,15 +26,15 @@ import kotlin.math.floor
 import kotlin.math.min
 import kotlin.random.Random
 
-open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobClassType) {
+open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName) {
 
     private val expMap = mutableMapOf<Material, Int>()
     private val brokenBlockSet = mutableSetOf<Block>()
     private val canGetExpWithHand = true
     private val placedBlock = mutableMapOf<Block, BukkitTask>()
     private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
-    val multiBreakKey = name + "_MultiBreak"
-    val groundLevelingAssistKey = name + "_GroundLevelingAssist"
+    val multiBreakKey = jobClassName + "_MultiBreak"
+    val groundLevelingAssistKey = jobClassName + "_GroundLevelingAssist"
 
     fun addExpMap(vararg materials: Material, exp: Int) {
         materials.forEach {
@@ -73,7 +73,7 @@ open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobCla
                 placedBlock.remove(block)
             } else {
                 var exp = 0.0
-                val doubleDropChance = playerStatus.getJobClassStatus(jobClassType).getLevel() / 3
+                val doubleDropChance = playerStatus.getJobClassStatus(this).getLevel() / 3
                 var multiDropAmount = 1 + floor(doubleDropChance / 100.0).toInt()
                 if (Random.nextInt(100) < doubleDropChance % 100) {
                     multiDropAmount++
@@ -87,7 +87,7 @@ open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobCla
                 }
                 if (SuperBreaker.isSuperBreaking(player)) exp *= 1.5
 
-                playerStatus.addSkillExp(jobClassType, exp, multiDropAmount)
+                playerStatus.addSkillExp(this, exp, multiDropAmount)
                 afterDropAction(event)
             }
         }
@@ -118,7 +118,7 @@ open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobCla
         if (!isTargetBlock(block)) return
         addBrokenBlockSet(block)
 
-        val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
+        val level = playerStatus.getJobClassStatus(this).getLevel()
         if (item.itemMeta is Damageable) {
             if (level >= 100 && Random.nextInt(1000) < min(1000, level) / 2) {
                 val itemExpansion = ItemExpansion(item)
@@ -137,7 +137,7 @@ open class BlockBreakJobClass(jobClassType: JobClassType): JobClassMaster(jobCla
         if (event is BlockMineEvent) return
         if (event.isCancelled) return
         val player = event.player
-        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+        val level = player.getStatus().getJobClassStatus(this).getLevel()
         val block = event.block
         val itemStack = player.inventory.itemInMainHand
 

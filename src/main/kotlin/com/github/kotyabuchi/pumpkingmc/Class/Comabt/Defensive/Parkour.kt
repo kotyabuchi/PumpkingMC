@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Defensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import org.bukkit.Sound
@@ -11,13 +10,13 @@ import org.bukkit.event.entity.EntityDamageEvent
 import kotlin.math.min
 import kotlin.random.Random
 
-object Parkour: JobClassMaster(JobClassType.PARKOUR) {
+object Parkour: JobClassMaster("PARKOUR") {
 
     @EventHandler
     fun onDamage(event: EntityDamageEvent) {
         val player = event.entity as? Player ?: return
         val playerStatus = player.getStatus()
-        val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
+        val level = playerStatus.getJobClassStatus(this).getLevel()
         val cause = event.cause
         if (cause == EntityDamageEvent.DamageCause.FALL) {
             val expAmount = event.finalDamage
@@ -36,7 +35,7 @@ object Parkour: JobClassMaster(JobClassType.PARKOUR) {
                 player.sendActionMessage("&6***Hero landing!***")
                 player.playSound(player.location, Sound.BLOCK_PISTON_CONTRACT, 0.2f, 2f)
             }
-            playerStatus.addSkillExp(jobClassType, expAmount)
+            playerStatus.addSkillExp(this, expAmount)
         }
     }
 }

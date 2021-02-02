@@ -1,10 +1,11 @@
 package com.github.kotyabuchi.pumpkingmc.Class
 
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
+import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -15,9 +16,9 @@ import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.EquipmentSlot
 
-open class JobClassMaster(val jobClassType: JobClassType): Listener {
+open class JobClassMaster(val jobClassName: String): Listener {
 
-    val name = jobClassType.regularName
+    fun getExpBossBarKey(player: Player): NamespacedKey = NamespacedKey(instance, this.jobClassName + "_ExpBar_" + player.uniqueId.toString())
 
     private val targetTool: MutableList<Material> = mutableListOf()
     private val castingModeList: MutableList<Player> = mutableListOf()
@@ -104,7 +105,7 @@ open class JobClassMaster(val jobClassType: JobClassType): Listener {
             val needLevel = needLevelMap[skillCommand]
             if (action == null || needLevel == null) {
                 notRegisterActionNotice(player)
-            } else if (player.getStatus().getJobClassStatus(jobClassType).getLevel() < needLevel) {
+            } else if (player.getStatus().getJobClassStatus(this).getLevel() < needLevel) {
                 notEnoughLevelNotice(player, needLevel)
             } else {
                 action.invoke(player)
