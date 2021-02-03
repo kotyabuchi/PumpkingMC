@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
@@ -43,9 +42,6 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             if (it.name.endsWith("_AXE")) addTool(it)
             if (it.isWood()) addExpMap(it, exp = 1)
         }
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, this)
-        })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
             val pdc = player.persistentDataContainer
             if (pdc.has(treeAssistKey, PersistentDataType.BYTE)) {

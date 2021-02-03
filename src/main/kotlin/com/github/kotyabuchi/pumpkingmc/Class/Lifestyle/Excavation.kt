@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Utility.toggleTag
 import org.bukkit.Material
@@ -23,9 +22,6 @@ object Excavation: BlockBreakJobClass("EXCAVATION") {
         }
         addExpMap(Material.CLAY, exp = 2)
 
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, this)
-        })
         addAction(SkillCommand.LLR, 100, fun(player: Player) {
             if (player.toggleTag(multiBreakKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)

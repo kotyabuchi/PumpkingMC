@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
@@ -46,9 +45,6 @@ object Mining: BlockBreakJobClass("Mining") {
         addExpMap(Material.EMERALD_ORE, exp = 10)
         addGroundLevelingAssist(Material.COBBLESTONE)
 
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, this)
-        })
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
             if (player.toggleTag(stoneReplacerKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)

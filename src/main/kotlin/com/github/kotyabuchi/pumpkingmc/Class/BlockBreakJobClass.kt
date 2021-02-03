@@ -2,7 +2,7 @@ package com.github.kotyabuchi.pumpkingmc.Class
 
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
+import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.*
@@ -13,6 +13,7 @@ import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Item
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
@@ -27,7 +28,6 @@ import kotlin.math.min
 import kotlin.random.Random
 
 open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName) {
-
     private val expMap = mutableMapOf<Material, Int>()
     private val brokenBlockSet = mutableSetOf<Block>()
     private val canGetExpWithHand = true
@@ -35,6 +35,12 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
     private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
     val multiBreakKey = jobClassName + "_MultiBreak"
     val groundLevelingAssistKey = jobClassName + "_GroundLevelingAssist"
+
+    init {
+        addAction(SkillCommand.RRR, 25, fun(player: Player) {
+            SuperBreaker.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
+        })
+    }
 
     fun addExpMap(vararg materials: Material, exp: Int) {
         materials.forEach {
@@ -85,7 +91,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
                     item.amount *= multiDropAmount
                     exp += (itemExp * item.amount)
                 }
-                if (SuperBreaker.isSuperBreaking(player)) exp *= 1.5
+                if (SuperBreaker.isEnabledSkill(player.uniqueId)) exp *= 1.5
 
                 playerStatus.addSkillExp(this, exp, multiDropAmount)
                 afterDropAction(event)
