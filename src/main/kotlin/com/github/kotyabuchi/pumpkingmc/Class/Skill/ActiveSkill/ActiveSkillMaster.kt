@@ -43,8 +43,6 @@ interface ActiveSkillMaster: Listener {
                         }
                     }.runTaskLater(instance, calcActiveTime(level).toLong())
                 }
-
-                player.sendActionBar('&', "&a$skillName Enabled")
             }
         }
     }
@@ -53,8 +51,6 @@ interface ActiveSkillMaster: Listener {
         disableAction(player)
         activePlayers[player.uniqueId]?.cancel()
         activePlayers.remove(player.uniqueId)
-
-        player.sendActionBar('&', "&c$skillName Disabled")
     }
 
     fun startCoolTime(uuid: UUID) {

@@ -66,6 +66,7 @@ object SuperBreaker: ToolLinkedSkill {
             }
         }.runTaskTimer(instance, 0, 1)
         skillItemBackup[player.uniqueId] = backup
+        player.sendActionBar('&', "&a$skillName Enabled")
     }
 
     override fun disableAction(player: Player) {
@@ -88,5 +89,6 @@ object SuperBreaker: ToolLinkedSkill {
             }
         }
         skillItemBackup.remove(uuid)
+        player.sendActionBar('&', "&c$skillName Disabled")
     }
 }
