@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShoot
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.drawCircle
@@ -24,7 +25,6 @@ import kotlin.random.Random
 object Archery: JobClassMaster("ARCHERY") {
 
     private val passBlocks: MutableSet<Material> = mutableSetOf()
-    private val strongShoot: MutableList<Player> = mutableListOf()
     private val arcShotMap: MutableMap<Player, BukkitTask> = mutableMapOf()
     private val gravityShot: MutableList<Player> = mutableListOf()
 
@@ -35,11 +35,7 @@ object Archery: JobClassMaster("ARCHERY") {
         addTool(Material.BOW)
         addTool(Material.CROSSBOW)
         addAction(SkillCommand.RRR, 50, fun (player: Player) {
-            if (!strongShoot.contains(player)) {
-                strongShoot.add(player)
-                player.world.playSound(player.eyeLocation, Sound.BLOCK_BEACON_ACTIVATE, .4f, 2f)
-                player.sendActionMessage("&eStrongShoot ready x${1 + (player.getStatus().getJobClassStatus(this).getLevel() / 100.0).floor2Digits()}")
-            }
+            StrongShoot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
         })
         addAction(SkillCommand.LLL, 400, fun (player: Player) {
             if (!arcShotMap.contains(player)) readyArchShot(player)
@@ -87,7 +83,6 @@ object Archery: JobClassMaster("ARCHERY") {
         val jobClassStatus = player.getStatus().getJobClassStatus(this)
         val level = jobClassStatus.getLevel()
         val arrow = event.projectile as? Arrow ?: return
-        if (strongShoot.contains(player)) shootStrongShoot(player, arrow, level)
         if (gravityShot.contains(player)) shootGravityArrow(player, arrow, level)
         if (arcShotMap.containsKey(player)) shootArcShot(player, level)
     }
@@ -121,12 +116,6 @@ object Archery: JobClassMaster("ARCHERY") {
                 }
             }
         }.runTaskTimer(instance, 0, 2)
-    }
-
-    private fun shootStrongShoot(player: Player, arrow: Arrow, level: Int) {
-        strongShoot.remove(player)
-        val multiple = 1 + level / 100.0
-        arrow.velocity = arrow.velocity.multiply(multiple)
     }
 
     private fun shootGravityArrow(player: Player, arrow: Arrow, level: Int) {
