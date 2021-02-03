@@ -3,11 +3,12 @@ package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Sound
 import org.bukkit.entity.Player
+import org.bukkit.event.Listener
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
-interface ActiveSkillMaster {
+interface ActiveSkillMaster: Listener {
 
     val skillName: String
     val cost: Int
@@ -20,9 +21,7 @@ interface ActiveSkillMaster {
 
     fun calcActiveTime(level: Int): Int
 
-    fun isEnabledSkill(uuid: UUID): Boolean {
-        return activePlayers.contains(uuid)
-    }
+    fun isEnabledSkill(uuid: UUID): Boolean = activePlayers.contains(uuid)
 
     fun enableAction(player: Player, level: Int)
 
