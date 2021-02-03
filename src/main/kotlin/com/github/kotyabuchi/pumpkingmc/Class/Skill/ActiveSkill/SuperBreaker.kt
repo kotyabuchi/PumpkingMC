@@ -21,7 +21,8 @@ object SuperBreaker: ToolLinkedSkill {
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 25
-    override var description: String = ""
+    override val description: String = ""
+    override val hasActiveTime: Boolean = true
     override val activePlayers: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override val skillItemBackup: MutableMap<UUID, ItemStack> = mutableMapOf()

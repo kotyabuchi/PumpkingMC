@@ -9,13 +9,12 @@ import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
 interface ActiveSkillMaster: Listener {
-
     val skillName: String
     val cost: Int
     val coolTime: Long
     val needLevel: Int
-    var description: String
-
+    val description: String
+    val hasActiveTime: Boolean
     val activePlayers: MutableMap<UUID, BukkitTask>
     val coolTimePlayers: MutableList<UUID>
 
@@ -37,11 +36,13 @@ interface ActiveSkillMaster: Listener {
                 disableSkill(player)
             } else {
                 enableAction(player, level)
-                activePlayers[uuid] = object : BukkitRunnable() {
-                    override fun run() {
-                        disableSkill(player)
-                    }
-                }.runTaskLater(instance, calcActiveTime(level).toLong())
+                if (hasActiveTime) {
+                    activePlayers[uuid] = object : BukkitRunnable() {
+                        override fun run() {
+                            disableSkill(player)
+                        }
+                    }.runTaskLater(instance, calcActiveTime(level).toLong())
+                }
 
                 player.sendActionBar('&', "&a$skillName Enabled")
             }
