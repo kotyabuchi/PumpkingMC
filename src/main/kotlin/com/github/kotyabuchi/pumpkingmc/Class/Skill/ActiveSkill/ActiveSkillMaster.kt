@@ -15,7 +15,8 @@ interface ActiveSkillMaster: Listener {
     val needLevel: Int
     val description: String
     val hasActiveTime: Boolean
-    val activePlayers: MutableMap<UUID, BukkitTask>
+    val activePlayers: MutableMap<UUID, Int>
+    val activeTimeMap: MutableMap<UUID, BukkitTask>
     val coolTimePlayers: MutableList<UUID>
 
     fun calcActiveTime(level: Int): Int
@@ -36,8 +37,9 @@ interface ActiveSkillMaster: Listener {
                 disableSkill(player)
             } else {
                 enableAction(player, level)
+                activePlayers[uuid] = level
                 if (hasActiveTime) {
-                    activePlayers[uuid] = object : BukkitRunnable() {
+                    activeTimeMap[uuid] = object : BukkitRunnable() {
                         override fun run() {
                             disableSkill(player)
                         }
@@ -48,9 +50,11 @@ interface ActiveSkillMaster: Listener {
     }
 
     fun disableSkill(player: Player) {
+        val uuid = player.uniqueId
         disableAction(player)
-        activePlayers[player.uniqueId]?.cancel()
-        activePlayers.remove(player.uniqueId)
+        activeTimeMap[uuid]?.cancel()
+        activeTimeMap.remove(uuid)
+        activePlayers.remove(uuid)
     }
 
     fun startCoolTime(uuid: UUID) {
