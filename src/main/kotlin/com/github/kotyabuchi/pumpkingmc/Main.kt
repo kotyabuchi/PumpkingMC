@@ -11,6 +11,7 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.DoubleAttack
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
 import com.github.kotyabuchi.pumpkingmc.Command.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Command.UtilityCommand
@@ -86,10 +87,14 @@ class Main : JavaPlugin() {
 
         // Skill
             // ActiveSkill
+                // Archery
         pm.registerEvents(ArcShot, this)
         pm.registerEvents(GravityShot, this)
         pm.registerEvents(StrongShot, this)
+                // BlockBreak
         pm.registerEvents(SuperBreaker, this)
+                // SwordMaster
+        pm.registerEvents(DoubleAttack, this)
             // ClassSkill
                 // CombatSkill
                     // Defensive

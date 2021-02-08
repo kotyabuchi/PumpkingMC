@@ -2,7 +2,9 @@ package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.destroystokyo.paper.ParticleBuilder
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.DoubleAttack
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
+import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -25,7 +27,6 @@ import kotlin.math.round
 
 object SwordMaster: JobClassMaster("SWORDMASTER") {
 
-    private val doubleAttackList = mutableListOf<Player>()
     private val blinkStrikeList = mutableListOf<Player>()
 
     private val transparentBlocks = mutableSetOf<Material>()
@@ -37,11 +38,7 @@ object SwordMaster: JobClassMaster("SWORDMASTER") {
         }
 
         addAction(SkillCommand.RRR, 50, fun(player: Player) {
-            if (!doubleAttackList.contains(player)) {
-                doubleAttackList.add(player)
-                player.world.playSound(player.eyeLocation, Sound.BLOCK_BEACON_ACTIVATE, .4f, 2f)
-                player.sendActionMessage("&eDoubleAttack ready")
-            }
+            DoubleAttack.enableSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LLL, 100, fun(player: Player) {
             if (!blinkStrikeList.contains(player)) {
@@ -59,7 +56,6 @@ object SwordMaster: JobClassMaster("SWORDMASTER") {
         val item = player.inventory.itemInMainHand
 
         if (!item.type.name.endsWith("_SWORD")) return
-        if (doubleAttackList.contains(player)) doubleAttack(player, event)
         val amount = event.finalDamage
         player.getStatus().addSkillExp(this, amount)
     }
@@ -149,12 +145,5 @@ object SwordMaster: JobClassMaster("SWORDMASTER") {
                 }
             }.runTaskLater(instance, 5)
         }
-    }
-
-    private fun doubleAttack(player: Player, event: EntityDamageByEntityEvent) {
-        doubleAttackList.remove(player)
-        val entity = event.entity as? LivingEntity ?: return
-        entity.damage(event.damage, player)
-        entity.noDamageTicks = 0
     }
 }
