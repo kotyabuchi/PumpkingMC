@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
 object DoubleAttack: ActiveSkillMaster {
-    override val skillName: String = "Double Attack"
+    override val skillName: String = "DoubleAttack"
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 50
