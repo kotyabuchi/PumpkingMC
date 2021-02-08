@@ -26,7 +26,7 @@ object ArcShot: ToolLinkedSkill {
     override val skillName: String = "SuperBreaker"
     override val cost: Int = 0
     override val coolTime: Long = 0
-    override val needLevel: Int = 25
+    override val needLevel: Int = 200
     override val description: String = ""
     override val hasActiveTime: Boolean = true
     override val activePlayers: MutableMap<UUID, Int> = mutableMapOf()
@@ -90,7 +90,7 @@ object ArcShot: ToolLinkedSkill {
 
         if (pdc.has(arcShotArrowKey, PersistentDataType.INTEGER)) {
             event.isCancelled = true
-            entity.damage((pdc.get(arcShotArrowKey, PersistentDataType.INTEGER) ?: 1) / 200.0, player)
+            entity.damage((pdc.getOrDefault(arcShotArrowKey, PersistentDataType.INTEGER, 1)) / 200.0, player)
             entity.noDamageTicks = 0
         }
     }
