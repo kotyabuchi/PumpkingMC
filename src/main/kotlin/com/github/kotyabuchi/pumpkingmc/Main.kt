@@ -8,6 +8,8 @@ import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.SwordMaster
 import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.Unarmed
 import com.github.kotyabuchi.pumpkingmc.Class.Lifestyle.*
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ArcShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.GravityShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShoot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
 import com.github.kotyabuchi.pumpkingmc.Command.SkillCommand
@@ -85,6 +87,8 @@ class Main : JavaPlugin() {
         // Skill
             // ActiveSkill
         pm.registerEvents(ArcShot, this)
+        pm.registerEvents(GravityShot, this)
+        pm.registerEvents(StrongShoot, this)
         pm.registerEvents(SuperBreaker, this)
             // ClassSkill
                 // CombatSkill
