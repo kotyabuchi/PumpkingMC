@@ -3,7 +3,7 @@ package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ArcShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.GravityShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShoot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShot
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
@@ -32,7 +32,7 @@ object Archery: JobClassMaster("ARCHERY") {
         addTool(Material.BOW)
         addTool(Material.CROSSBOW)
         addAction(SkillCommand.RRR, 50, fun (player: Player) {
-            StrongShoot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
+            StrongShot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
         })
         addAction(SkillCommand.LLL, 200, fun (player: Player) {
             ArcShot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
