@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class
 
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion

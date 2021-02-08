@@ -1,5 +1,6 @@
-package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
+package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak
 
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToolLinkedSkill
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.ChatColor

@@ -1,9 +1,9 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ArcShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.GravityShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus

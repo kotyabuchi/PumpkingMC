@@ -1,5 +1,6 @@
-package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
+package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery
 
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToolLinkedSkill
 import com.github.kotyabuchi.pumpkingmc.Utility.drawCircle
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage

@@ -7,10 +7,10 @@ import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.BattleAxe
 import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.SwordMaster
 import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.Unarmed
 import com.github.kotyabuchi.pumpkingmc.Class.Lifestyle.*
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ArcShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.GravityShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.StrongShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
 import com.github.kotyabuchi.pumpkingmc.Command.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Command.UtilityCommand
