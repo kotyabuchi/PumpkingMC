@@ -1,11 +1,9 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
 
-import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.Archery
 import com.github.kotyabuchi.pumpkingmc.Utility.drawCircle
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTEntity
 import org.bukkit.*
 import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.Arrow
@@ -36,6 +34,8 @@ object ArcShot: ToolLinkedSkill {
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override val skillItemBackup: MutableMap<UUID, ItemStack> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 40 + level / 25 * 30
+
+    private val arcShotArrowKey: NamespacedKey = NamespacedKey(instance, "ArcShot_Arrow")
 
     private val passBlocks: MutableSet<Material> = mutableSetOf()
     private val arcShotMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
@@ -75,7 +75,6 @@ object ArcShot: ToolLinkedSkill {
     fun onShot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
         activePlayers[player.uniqueId]?.let {
-            player.sendMessage(NBTEntity(event.projectile).toString().replace(",", ",\n"))
             event.projectile.remove()
             shootArcShot(player, it)
         }
@@ -84,10 +83,14 @@ object ArcShot: ToolLinkedSkill {
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
         val arrow = event.damager as? Arrow ?: return
+        val player = arrow.shooter as? Player ?: return
         val entity = event.entity
         if (entity !is LivingEntity) return
+        val pdc = arrow.persistentDataContainer
 
-        if (arrow.persistentDataContainer.has(NamespacedKey(instance, "ArcShot_Arrow"), PersistentDataType.INTEGER)) {
+        if (pdc.has(arcShotArrowKey, PersistentDataType.INTEGER)) {
+            event.isCancelled = true
+            entity.damage((pdc.get(arcShotArrowKey, PersistentDataType.INTEGER) ?: 1) / 200.0, player)
             entity.noDamageTicks = 0
         }
     }
@@ -97,7 +100,7 @@ object ArcShot: ToolLinkedSkill {
         val arrow = event.entity as? Arrow ?: return
         val block = event.hitBlock
 
-        if (block != null && arrow.persistentDataContainer.has(NamespacedKey(instance, "ArcShot_Arrow"), PersistentDataType.INTEGER)) {
+        if (block != null && arrow.persistentDataContainer.has(arcShotArrowKey, PersistentDataType.INTEGER)) {
             arrow.remove()
         }
     }
@@ -115,15 +118,17 @@ object ArcShot: ToolLinkedSkill {
         eyeLoc.y = round(eyeLoc.y)
 
         val damage = level / 200.0
+        val arrowAmount = level * 1.5
+        val arrowPerOneTime = round(level / 100.0 * 2).toInt()
 
         object : BukkitRunnable() {
             var count = 0
             override fun run() {
-                if (count >= 500) {
+                if (count >= arrowAmount) {
                     cancel()
                 } else {
-                    repeat(10) {
-                        val r = sqrt(Random.nextDouble(0.0, radius))
+                    repeat(arrowPerOneTime) {
+                        val r = sqrt(Random.nextDouble(.0, radius))
                         val theta = Random.nextDouble(-Math.PI, Math.PI)
                         val x = r * cos(theta)
                         val y = Random.nextInt(50) / 10.0 + 20
@@ -136,7 +141,7 @@ object ArcShot: ToolLinkedSkill {
                         skillArrow.shooter = player
                         skillArrow.damage = damage
                         skillArrow.pierceLevel = 127
-                        skillArrow.persistentDataContainer.set(NamespacedKey(instance, "ArcShot_Arrow"), PersistentDataType.INTEGER, level)
+                        skillArrow.persistentDataContainer.set(arcShotArrowKey, PersistentDataType.INTEGER, level)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Disable_LongShotBonus"), PersistentDataType.BYTE, 1)
                         count++
                     }
