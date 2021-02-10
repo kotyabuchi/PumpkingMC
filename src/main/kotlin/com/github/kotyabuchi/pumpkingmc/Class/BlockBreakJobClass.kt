@@ -4,6 +4,7 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Super
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
+import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -38,7 +39,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
 
     init {
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
+            SuperBreaker.toggleSkill(player, player.getJobClassLevel(this))
         })
     }
 

@@ -32,6 +32,14 @@ interface ActiveSkillMaster: Listener {
 
     fun disableAction(player: Player)
 
+    fun toggleSkill(player: Player, level: Int) {
+        if (isEnabledSkill(player)) {
+            disableSkill(player)
+        } else {
+            enableSkill(player, level)
+        }
+    }
+
     fun enableSkill(player: Player, level: Int) {
         val uuid = player.uniqueId
         if (needLevel > level) {
