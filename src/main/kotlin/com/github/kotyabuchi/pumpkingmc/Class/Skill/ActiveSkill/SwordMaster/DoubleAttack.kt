@@ -17,7 +17,7 @@ object DoubleAttack: ActiveSkillMaster {
     override val needLevel: Int = 50
     override var description: String = "次の攻撃が2回攻撃になる"
     override val hasActiveTime: Boolean = false
-    override val activePlayers: MutableMap<UUID, Int> = mutableMapOf()
+    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override fun calcActiveTime(level: Int): Int = 0
@@ -37,7 +37,7 @@ object DoubleAttack: ActiveSkillMaster {
         val item = player.inventory.itemInMainHand
         if (!item.type.name.endsWith("_SWORD")) return
 
-        if (isEnabledSkill(player.uniqueId)) {
+        if (isEnabledSkill(player)) {
             disableSkill(player)
             entity.damage(event.damage, player)
             entity.noDamageTicks = 0

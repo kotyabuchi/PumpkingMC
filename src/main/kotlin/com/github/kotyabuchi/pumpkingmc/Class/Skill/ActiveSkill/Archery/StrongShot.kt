@@ -18,7 +18,7 @@ object StrongShot: ActiveSkillMaster {
     override val needLevel: Int = 50
     override var description: String = "次の矢の速度が上昇する"
     override val hasActiveTime: Boolean = false
-    override val activePlayers: MutableMap<UUID, Int> = mutableMapOf()
+    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override fun calcActiveTime(level: Int): Int = 0
@@ -38,8 +38,8 @@ object StrongShot: ActiveSkillMaster {
         val player = event.entity as? Player ?: return
         val uuid = player.uniqueId
         val arrow = event.projectile as? Arrow ?: return
-        if (!isEnabledSkill(uuid)) return
-        val level = activePlayers[uuid] ?: 1
+        if (!isEnabledSkill(player)) return
+        val level = activePlayerLevelMap[uuid] ?: 1
         val multiple = getVelocityMultiply(level)
         arrow.velocity = arrow.velocity.multiply(multiple)
         disableSkill(player)

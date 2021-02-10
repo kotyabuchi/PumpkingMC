@@ -27,7 +27,7 @@ object GravityShot: ActiveSkillMaster {
     override val needLevel: Int = 100
     override var description: String = ""
     override val hasActiveTime: Boolean = false
-    override val activePlayers: MutableMap<UUID, Int> = mutableMapOf()
+    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override fun calcActiveTime(level: Int): Int = 0
@@ -47,8 +47,8 @@ object GravityShot: ActiveSkillMaster {
         val player = event.entity as? Player ?: return
         val uuid = player.uniqueId
         val arrow = event.projectile as? Arrow ?: return
-        if (!isEnabledSkill(uuid)) return
-        val level = activePlayers[uuid] ?: 1
+        if (!isEnabledSkill(player)) return
+        val level = activePlayerLevelMap[uuid] ?: 1
         arrow.persistentDataContainer.set(gravityShotArrowKey, PersistentDataType.INTEGER, level)
         disableSkill(player)
     }

@@ -91,7 +91,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
                     item.amount *= multiDropAmount
                     exp += (itemExp * item.amount)
                 }
-                if (SuperBreaker.isEnabledSkill(player.uniqueId)) exp *= 1.5
+                if (SuperBreaker.isEnabledSkill(player)) exp *= 1.5
 
                 playerStatus.addSkillExp(this, exp, multiDropAmount)
                 afterDropAction(event)

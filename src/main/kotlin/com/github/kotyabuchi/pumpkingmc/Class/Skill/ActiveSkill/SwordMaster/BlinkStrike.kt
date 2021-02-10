@@ -29,7 +29,7 @@ object BlinkStrike: ActiveSkillMaster {
     override val needLevel: Int = 100
     override var description: String = "一定距離をブリンクし、範囲内の敵を攻撃する"
     override val hasActiveTime: Boolean = false
-    override val activePlayers: MutableMap<UUID, Int> = mutableMapOf()
+    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
     override fun calcActiveTime(level: Int): Int = 0
@@ -55,14 +55,13 @@ object BlinkStrike: ActiveSkillMaster {
         if (event.hand != EquipmentSlot.HAND) return
         if (!event.action.name.startsWith("LEFT_CLICK_")) return
         val player = event.player
-        val uuid = player.uniqueId
         val playerLoc = player.location.clone()
         val dire = player.eyeLocation.direction.normalize().multiply(.5)
 
         val item = player.inventory.itemInMainHand
         if (!item.type.name.endsWith("_SWORD")) return
 
-        if (isEnabledSkill(uuid)) {
+        if (isEnabledSkill(player)) {
             disableSkill(player)
 
             val targetBlock = player.getTargetBlock(transparentBlocks, 20)
