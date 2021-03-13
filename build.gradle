@@ -28,8 +28,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.5.0"
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
     compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.32.3.2'
     compile "io.reactivex.rxjava3:rxjava:3.0.7"
@@ -42,7 +41,7 @@ processResources {
     }
 }
 buildscript {
-    ext.kotlin_version = '1.4.21'
+    ext.kotlin_version = '1.4.31'
     repositories {
         mavenCentral()
     }

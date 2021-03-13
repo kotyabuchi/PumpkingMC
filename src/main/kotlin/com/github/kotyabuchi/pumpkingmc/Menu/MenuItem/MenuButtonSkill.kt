@@ -12,13 +12,12 @@ import org.bukkit.inventory.ItemFlag
 class MenuButtonSkill(jobClassType: JobClassType, player: Player): MenuButtonBase() {
 
     init {
-        val jobClassStatus = player.getStatus().getJobClassStatus(jobClassType)
+        val jobClassStatus = player.getStatus().getJobClassStatus(jobClassType.jobClass)
         val lore = mutableListOf<String>()
         lore.add("Level: ${jobClassStatus.getLevel()}")
         lore.add("Need Exp: ${jobClassStatus.getExp().floor2Digits()}/${jobClassStatus.getNextLevelExp()}")
         lore.add("Total Exp: ${jobClassStatus.getTotalExp().floor2Digits()}")
         lore.add("")
-        lore.addAll(jobClassType.commands)
         menuItem = ItemStackGenerator(jobClassType.getIcon()).setDisplayName(jobClassType.name.beginWithUpperCase()).setFlag(ItemFlag.HIDE_ATTRIBUTES).setLore(lore).setMenuItemTag().generate()
     }
 

@@ -1,10 +1,10 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
+import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
 import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
@@ -22,13 +22,13 @@ import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
 import kotlin.math.round
 
-object Mining: BlockBreakJobClass(JobClassType.MINING) {
+object Mining: BlockBreakJobClass("Mining") {
 
     private val stoneSet = setOf(Material.STONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE, Material.NETHERRACK,
         Material.SANDSTONE, Material.SMOOTH_SANDSTONE, Material.CHISELED_SANDSTONE, Material.RED_SANDSTONE,
         Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.MOSSY_COBBLESTONE, Material.BASALT, Material.BLACKSTONE)
-    private val mineAssistKey = name + "_MineAssist"
-    private val stoneReplacerKey = name + "_StoneReplacer"
+    private val mineAssistKey = jobClassName + "_MineAssist"
+    private val stoneReplacerKey = jobClassName + "_StoneReplacer"
 
     init {
         Material.values().forEach {
@@ -47,9 +47,6 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         addExpMap(Material.EMERALD_ORE, exp = 10)
         addGroundLevelingAssist(Material.COBBLESTONE)
 
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, jobClassType)
-        })
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
             if (player.toggleTag(stoneReplacerKey)) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
@@ -69,13 +66,7 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
             }
         })
         addAction(SkillCommand.LLR, 100, fun(player: Player) {
-            if (player.toggleTag(multiBreakKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aMulti Break On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cMulti Break Off")
-            }
+            MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRR, 200, fun(player: Player) {
             if (player.toggleTag(groundLevelingAssistKey)) {
@@ -96,7 +87,7 @@ object Mining: BlockBreakJobClass(JobClassType.MINING) {
         val playerLoc = player.location
         val inv = player.inventory
         val playerStatus = player.getStatus()
-        val jobClassStatus = playerStatus.getJobClassStatus(jobClassType)
+        val jobClassStatus = playerStatus.getJobClassStatus(this)
         val item = player.inventory.itemInMainHand
 
         if (!getTool().contains(item.type)) return

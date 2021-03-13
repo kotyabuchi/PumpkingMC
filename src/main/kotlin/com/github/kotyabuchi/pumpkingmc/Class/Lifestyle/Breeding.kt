@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.consume
 import com.github.kotyabuchi.pumpkingmc.Utility.findItemAmount
@@ -19,7 +18,7 @@ import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
-object Breeding: JobClassMaster(JobClassType.BREEDING) {
+object Breeding: JobClassMaster("BREEDING") {
 
     @EventHandler
     fun onClickAnimals(event: PlayerInteractEntityEvent) {
@@ -28,7 +27,7 @@ object Breeding: JobClassMaster(JobClassType.BREEDING) {
         val player = event.player
         val entity = event.rightClicked as? Animals ?: return
 
-        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+        val level = player.getStatus().getJobClassStatus(this).getLevel()
         if (level < 50) return
 
         val item = player.inventory.itemInMainHand
@@ -69,7 +68,7 @@ object Breeding: JobClassMaster(JobClassType.BREEDING) {
             breeder.sendMessage("&e繁殖可能数を超えています ($foundCount/30)")
         } else {
             val status = breeder.getStatus()
-            val level = status.getJobClassStatus(jobClassType).getLevel()
+            val level = status.getJobClassStatus(this).getLevel()
 
             var amount = floor(level / 200.0).toInt() + 1
             if (Random.nextInt(200) <= level % 200) amount++
@@ -79,7 +78,7 @@ object Breeding: JobClassMaster(JobClassType.BREEDING) {
             }
 
             event.experience = round(event.experience * (1 + level / 100.0) * amount).toInt()
-            status.addSkillExp(jobClassType, 100.0 * amount)
+            status.addSkillExp(this, 100.0 * amount)
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -16,7 +15,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-object Repair: JobClassMaster(JobClassType.REPAIR) {
+object Repair: JobClassMaster("REPAIR") {
     
     @EventHandler
     fun onClickAnvil(event: PlayerInteractEvent) {
@@ -86,7 +85,7 @@ object Repair: JobClassMaster(JobClassType.REPAIR) {
         if (damageable.damage == 0) return
 
         val playerStatus = player.getStatus()
-        val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
+        val level = playerStatus.getJobClassStatus(this).getLevel()
         val needLevel = (needTier - 1) * 20
         if (level < needLevel) {
             player.sendActionBar('&', "&cNot enough levels (Need Lv.$needLevel)")
@@ -113,7 +112,7 @@ object Repair: JobClassMaster(JobClassType.REPAIR) {
         
         var repairMultiple = (level / 500) + 1
         if ((level - (500 * (repairMultiple - 1))) / 5 > Random.nextInt(100)) repairMultiple++
-        playerStatus.addSkillExp(jobClassType, baseExp * repairMultiple * anvilTier)
+        playerStatus.addSkillExp(this, baseExp * repairMultiple * anvilTier)
         
         var repairAmount = 0
         val name = repairItem.type.name

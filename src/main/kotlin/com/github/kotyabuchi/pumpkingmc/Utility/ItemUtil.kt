@@ -15,27 +15,57 @@ fun Material.hasDurability(): Boolean {
     return this.isTools() || this.isWeapon() || this.isArmors()
 }
 
+fun Material.isSword(): Boolean {
+    return this == Material.WOODEN_SWORD ||
+            this == Material.STONE_SWORD ||
+            this == Material.IRON_SWORD ||
+            this == Material.GOLDEN_SWORD ||
+            this == Material.DIAMOND_SWORD ||
+            this == Material.NETHERITE_SWORD
+}
+
+fun Material.isPickAxe(): Boolean {
+    return this == Material.WOODEN_PICKAXE ||
+            this == Material.STONE_PICKAXE ||
+            this == Material.IRON_PICKAXE ||
+            this == Material.GOLDEN_PICKAXE ||
+            this == Material.DIAMOND_PICKAXE ||
+            this == Material.NETHERITE_PICKAXE
+}
+
+fun Material.isAxe(): Boolean {
+    return this == Material.WOODEN_AXE ||
+            this == Material.STONE_AXE ||
+            this == Material.IRON_AXE ||
+            this == Material.GOLDEN_AXE ||
+            this == Material.DIAMOND_AXE ||
+            this == Material.NETHERITE_AXE
+}
+
+fun Material.isShovel(): Boolean {
+    return this == Material.WOODEN_SHOVEL ||
+            this == Material.STONE_SHOVEL ||
+            this == Material.IRON_SHOVEL ||
+            this == Material.GOLDEN_SHOVEL ||
+            this == Material.DIAMOND_SHOVEL ||
+            this == Material.NETHERITE_SHOVEL
+}
+
+fun Material.isHoe(): Boolean {
+    return this == Material.WOODEN_HOE ||
+            this == Material.STONE_HOE ||
+            this == Material.IRON_HOE ||
+            this == Material.GOLDEN_HOE ||
+            this == Material.DIAMOND_HOE ||
+            this == Material.NETHERITE_HOE
+}
+
 fun Material.isTools(): Boolean {
     return this == Material.SHIELD ||
-            this == Material.WOODEN_HOE ||
-            this == Material.WOODEN_PICKAXE ||
-            this == Material.WOODEN_SHOVEL ||
-            this == Material.STONE_HOE ||
-            this == Material.STONE_PICKAXE ||
-            this == Material.STONE_SHOVEL ||
-            this == Material.IRON_HOE ||
-            this == Material.IRON_PICKAXE ||
-            this == Material.IRON_SHOVEL ||
-            this == Material.GOLDEN_HOE ||
-            this == Material.GOLDEN_PICKAXE ||
-            this == Material.GOLDEN_SHOVEL ||
-            this == Material.DIAMOND_HOE ||
-            this == Material.DIAMOND_PICKAXE ||
-            this == Material.DIAMOND_SHOVEL ||
-            this == Material.NETHERITE_HOE ||
-            this == Material.NETHERITE_PICKAXE ||
-            this == Material.NETHERITE_SHOVEL ||
-            this == Material.NETHERITE_SWORD ||
+            this.isPickAxe() ||
+            this.isShovel() ||
+            this.isHoe() ||
+            this.isAxe() ||
             this == Material.FISHING_ROD ||
             this == Material.FLINT_AND_STEEL
 }
@@ -43,18 +73,8 @@ fun Material.isTools(): Boolean {
 fun Material.isWeapon(): Boolean {
     return this == Material.BOW ||
             this == Material.CROSSBOW ||
-            this == Material.WOODEN_AXE ||
-            this == Material.WOODEN_SWORD ||
-            this == Material.STONE_AXE ||
-            this == Material.STONE_SWORD ||
-            this == Material.IRON_AXE ||
-            this == Material.IRON_SWORD ||
-            this == Material.GOLDEN_AXE ||
-            this == Material.GOLDEN_SWORD ||
-            this == Material.DIAMOND_AXE ||
-            this == Material.DIAMOND_SWORD ||
-            this == Material.NETHERITE_AXE ||
-            this == Material.NETHERITE_SWORD
+            this.isSword() ||
+            this.isAxe()
 }
 
 fun Material.isArmors(): Boolean {

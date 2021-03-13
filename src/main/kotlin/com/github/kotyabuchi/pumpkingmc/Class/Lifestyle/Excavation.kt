@@ -1,18 +1,15 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
-import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
+import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.Utility.toggleTag
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.block.BlockBreakEvent
 
-object Excavation: BlockBreakJobClass(JobClassType.EXCAVATION) {
+object Excavation: BlockBreakJobClass("EXCAVATION") {
 
     private val dirtSet = setOf(Material.DIRT, Material.SAND, Material.GRASS_BLOCK, Material.GRAVEL, Material.FARMLAND,
         Material.GRASS_PATH, Material.COARSE_DIRT, Material.PODZOL, Material.RED_SAND, Material.SOUL_SAND, Material.SOUL_SOIL)
@@ -27,17 +24,8 @@ object Excavation: BlockBreakJobClass(JobClassType.EXCAVATION) {
         }
         addExpMap(Material.CLAY, exp = 2)
 
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.enableSuperBreaker(player, jobClassType)
-        })
         addAction(SkillCommand.LLR, 100, fun(player: Player) {
-            if (player.toggleTag(multiBreakKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aMulti Break On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cMulti Break Off")
-            }
+            MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRR, 200, fun(player: Player) {
             if (player.toggleTag(groundLevelingAssistKey)) {

@@ -52,7 +52,7 @@ fun initDB() {
 }
 
 fun loadPlayerStatus(vararg players: Player): List<PlayerStatus> {
-    initDB()
+//    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
     val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
     var pstmt: PreparedStatement
@@ -69,9 +69,8 @@ fun loadPlayerStatus(vararg players: Player): List<PlayerStatus> {
 
                     while (skillRs.next()) {
                         val jobClassStatus = JobClassStatus()
-                        val skill = JobClassType.valueOf(skillRs.getString("skill_name"))
                         jobClassStatus.setTotalExp(skillRs.getDouble("skill_total_exp"))
-                        playerStatus.setJobClassStatus(skill, jobClassStatus)
+                        playerStatus.setJobClassStatus(JobClassType.valueOf(skillRs.getString("skill_name")).jobClass, jobClassStatus)
                     }
 
                     pstmt = conn.prepareStatement("SELECT * FROM homes WHERE uuid = ?")
@@ -106,7 +105,7 @@ fun loadPlayerStatus(vararg players: Player): List<PlayerStatus> {
 fun savePlayerStatus(vararg statusList: PlayerStatus = getAllPlayerStatus().toTypedArray()) {
     println("&a[System]プレイヤーステータスをデータベースに保存開始...".colorS())
     var success = true
-    initDB()
+//    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
     var stmt: Statement
     val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
@@ -127,7 +126,7 @@ fun savePlayerStatus(vararg statusList: PlayerStatus = getAllPlayerStatus().toTy
                     statusList.forEach { status ->
                         JobClassType.values().forEach { skill ->
                             skills[skill]?.let { skillId ->
-                                val jobClassStatus = status.getJobClassStatus(skill)
+                                val jobClassStatus = status.getJobClassStatus(skill.jobClass)
                                 pstmt.setString(1, status.player.uniqueId.toString())
                                 pstmt.setInt(2, skillId)
                                 pstmt.setDouble(3, jobClassStatus.getTotalExp())
@@ -158,7 +157,7 @@ fun savePlayerStatus(vararg statusList: PlayerStatus = getAllPlayerStatus().toTy
 
 @Synchronized
 fun removeHome(homeId: Int) {
-    initDB()
+//    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
     val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
     var pstmt: PreparedStatement
@@ -174,7 +173,7 @@ fun removeHome(homeId: Int) {
 }
 
 fun addHome(player: Player, homeName: String, location: Location): Int? {
-    initDB()
+//    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
     val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
     var pstmt: PreparedStatement
@@ -213,7 +212,7 @@ fun addHome(player: Player, homeName: String, location: Location): Int? {
 }
 
 fun changeHomeIcon(player: Player, home: Home, icon: Material) {
-    initDB()
+//    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
     val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
     var pstmt: PreparedStatement
@@ -246,44 +245,3 @@ fun startAutoSave() {
         }
     }.runTaskTimer(instance, 20 * 60 * 5, 20 * 60 * 5)
 }
-//
-//@Synchronized
-//fun saveNewPlayerStatus() {
-//    println("&a[System]プレイヤーステータスをデータベースに保存開始...".colorS())
-//    var success = true
-//    initDB()
-//    val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
-//    var stmt: Statement
-//    val dbHeader = "jdbc:sqlite:" + dbFile.absolutePath
-//    var pstmt: PreparedStatement
-//    try {
-//        DriverManager.getConnection(dbHeader).use { conn ->  //try-with-resources
-//            conn.autoCommit = false
-//            stmt = conn.createStatement()
-//            val skillRs = stmt.executeQuery("SELECT * FROM player_skill_status")
-//            conn.commit()
-//
-//            pstmt = conn.prepareStatement("REPLACE INTO new_player_skill_status VALUES (?, ?, ?)")
-//            while (skillRs.next()) {
-//                val jobClassStatus = JobClassStatus()
-//                jobClassStatus.setExp(skillRs.getDouble("skill_exp"))
-//                jobClassStatus.setLevel(skillRs.getInt("skill_level"))
-//
-//                pstmt.setString(1, skillRs.getString("uuid"))
-//                pstmt.setInt(2, skillRs.getInt("skill_id"))
-//                pstmt.setDouble(3, jobClassStatus.getTotalExp())
-//                pstmt.addBatch()
-//            }
-//            pstmt.executeBatch()
-//            conn.commit()
-//        }
-//    } catch (e: SQLException) {
-//        e.printStackTrace()
-//        success = false
-//    }
-//    if (success) {
-//        println("&a[System]プレイヤーステータスをデータベースに保存完了".colorS())
-//    } else {
-//        println("&4[System]プレイヤーステータスをデータベースに保存失敗".colorS())
-//    }
-//}

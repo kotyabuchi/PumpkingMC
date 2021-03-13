@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType
 import java.lang.Integer.max
 import kotlin.random.Random
 
-object BattleAxe: JobClassMaster(JobClassType.BATTLEAXE) {
+object BattleAxe: JobClassMaster("BATTLEAXE") {
 
     private fun getHeavyBlowChange(level: Int): Int = max(500, level)
 
@@ -27,7 +27,7 @@ object BattleAxe: JobClassMaster(JobClassType.BATTLEAXE) {
         if (!item.type.name.endsWith("_AXE")) return
 
         val status = player.getStatus()
-        val jobClass = status.getJobClassStatus(jobClassType)
+        val jobClass = status.getJobClassStatus(this)
         val level = jobClass.getLevel()
 
         // Heavy Blow -
@@ -42,6 +42,6 @@ object BattleAxe: JobClassMaster(JobClassType.BATTLEAXE) {
         // - Heavy Blow
 
         val amount = event.finalDamage
-        player.getStatus().addSkillExp(jobClassType, amount)
+        player.getStatus().addSkillExp(this, amount)
     }
 }

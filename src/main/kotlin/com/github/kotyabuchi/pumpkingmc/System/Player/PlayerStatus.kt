@@ -1,11 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.System.Player
 
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
+import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Menu.MenuBase
-import com.github.kotyabuchi.pumpkingmc.Utility.colorS
-import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
-import com.github.kotyabuchi.pumpkingmc.Utility.floor3Digits
-import com.github.kotyabuchi.pumpkingmc.Utility.savePlayerStatus
+import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Sound
 import org.bukkit.boss.BarColor
@@ -22,8 +19,8 @@ data class PlayerStatus(val player: Player) {
 
     val homes = mutableListOf<Home>()
 
-    private val jobClassStatusMap = mutableMapOf<JobClassType, JobClassStatus>()
-    private val expBarMap = mutableMapOf<JobClassType, BukkitTask>()
+    private val jobClassStatusMap = mutableMapOf<JobClassMaster, JobClassStatus>()
+    private val expBarMap = mutableMapOf<JobClassMaster, BukkitTask>()
 
     fun closeMenu() {
         openingMenu?.doCloseMenuAction(player)
@@ -61,51 +58,51 @@ data class PlayerStatus(val player: Player) {
         openingMenuPage = page
     }
 
-    fun noticeLevelUp(jobClassType: JobClassType) {
-        val jobClassStatus = getJobClassStatus(jobClassType)
-        player.sendTitle("Level Up!", "${jobClassType.regularName} Lv. ${jobClassStatus.getLevel()}", 10, 20 * 2, 10)
+    fun noticeLevelUp(jobClass: JobClassMaster) {
+        val jobClassStatus = getJobClassStatus(jobClass)
+        player.sendTitle("Level Up!", "${jobClass.jobClassName} Lv. ${jobClassStatus.getLevel()}", 10, 20 * 2, 10)
         player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 1.0f)
     }
 
-    fun addSkillExp(jobClassType: JobClassType, point: Double, increaseCombo: Int = 1) {
-        val jobClassStatus = getJobClassStatus(jobClassType)
-        if (jobClassStatus.addExp(point, increaseCombo) == JobClassStatus.AddExpResult.LEVEL_UP) noticeLevelUp(jobClassType)
+    fun addSkillExp(jocClass: JobClassMaster, point: Double, increaseCombo: Int = 1) {
+        val jobClassStatus = getJobClassStatus(jocClass)
+        if (jobClassStatus.addExp(point, increaseCombo) == JobClassStatus.AddExpResult.LEVEL_UP) noticeLevelUp(jocClass)
         val addedExp = jobClassStatus.getRecentAddedExp()
         val combo = jobClassStatus.getCombo()
-        val skillName = jobClassType.regularName
+        val skillName = jocClass.jobClassName.beginWithUpperCase()
 
-        if (expBarMap.containsKey(jobClassType)) {
-            expBarMap[jobClassType]!!.cancel()
-            expBarMap.remove(jobClassType)
+        if (expBarMap.containsKey(jocClass)) {
+            expBarMap[jocClass]!!.cancel()
+            expBarMap.remove(jocClass)
         }
         val exp = jobClassStatus.getExp()
         val nextLevelExp = jobClassStatus.getNextLevelExp()
         var title = "$skillName Lv.${jobClassStatus.getLevel()} ${exp.floor2Digits()}/$nextLevelExp"
         title += if (addedExp > 0) " &a+${addedExp.floor2Digits()} " else " &c+${addedExp.floor2Digits()} "
         title += " &6${combo}Combo(x${(1 + combo * 0.002).floor3Digits()})"
-        val bossBar = instance.server.getBossBar(jobClassType.getExpBossBarKey(player)) ?: instance.server.createBossBar(jobClassType.getExpBossBarKey(player), title, BarColor.GREEN, BarStyle.SEGMENTED_10)
+        val bossBar = instance.server.getBossBar(jocClass.getExpBossBarKey(player)) ?: instance.server.createBossBar(jocClass.getExpBossBarKey(player), title, BarColor.GREEN, BarStyle.SEGMENTED_10)
         bossBar.apply {
             isVisible = true
             addPlayer(player)
             setTitle(title.colorS())
             progress = exp / nextLevelExp
         }
-        expBarMap[jobClassType] = object : BukkitRunnable() {
+        expBarMap[jocClass] = object : BukkitRunnable() {
             override fun run() {
                 jobClassStatus.resetCombo()
                 bossBar.removeAll()
                 bossBar.isVisible = false
             }
         }.runTaskLater(instance, 20 * 6)
-        setJobClassStatus(jobClassType, jobClassStatus)
+        setJobClassStatus(jocClass, jobClassStatus)
     }
 
-    fun setJobClassStatus(jobClassType: JobClassType, jobClassStatus: JobClassStatus) {
-        jobClassStatusMap[jobClassType] = jobClassStatus
+    fun setJobClassStatus(jobClass: JobClassMaster, jobClassStatus: JobClassStatus) {
+        jobClassStatusMap[jobClass] = jobClassStatus
     }
 
-    fun getJobClassStatus(jobClassType: JobClassType): JobClassStatus {
-        return jobClassStatusMap[jobClassType] ?: JobClassStatus()
+    fun getJobClassStatus(jobClass: JobClassMaster): JobClassStatus {
+        return jobClassStatusMap[jobClass] ?: JobClassStatus()
     }
 
     fun save() {

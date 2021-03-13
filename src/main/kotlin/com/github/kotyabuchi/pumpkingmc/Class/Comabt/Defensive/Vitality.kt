@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Defensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -19,7 +18,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-object Vitality: JobClassMaster(JobClassType.VITALITY) {
+object Vitality: JobClassMaster("VITALITY") {
 
     init {
         instance.server.onlinePlayers.forEach {
@@ -40,7 +39,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
     fun onDamage(event: EntityDamageEvent) {
         val player = event.entity as? Player ?: return
         val playerStatus = player.getStatus()
-        val level = playerStatus.getJobClassStatus(jobClassType).getLevel()
+        val level = playerStatus.getJobClassStatus(this).getLevel()
         val cause = event.cause
         if (cause == EntityDamageEvent.DamageCause.FALL ||
                 cause == EntityDamageEvent.DamageCause.LAVA ||
@@ -57,7 +56,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
                 cause == EntityDamageEvent.DamageCause.SUICIDE) return
         val amount = event.damage
         if (amount > 0) {
-            playerStatus.addSkillExp(jobClassType, amount * 2)
+            playerStatus.addSkillExp(this, amount * 2)
 
             // Battle Healing -
             val battleHealingChance = min(50, max(500, level / 2))
@@ -76,9 +75,9 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
     fun onHeal(event: EntityRegainHealthEvent) {
         val player = event.entity as? Player ?: return
         val playerStatus = player.getStatus()
-        event.amount = event.amount * (1 + playerStatus.getJobClassStatus(jobClassType).getLevel() / 100.0)
+        event.amount = event.amount * (1 + playerStatus.getJobClassStatus(this).getLevel() / 100.0)
         val amount = event.amount
-        if (amount > 0) playerStatus.addSkillExp(jobClassType, amount)
+        if (amount > 0) playerStatus.addSkillExp(this, amount)
     }
 
     override fun levelUpEvent(player: Player) {
@@ -87,7 +86,7 @@ object Vitality: JobClassMaster(JobClassType.VITALITY) {
 
     private fun setHealth(player: Player) {
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.let {
-            val newHealth = it.defaultValue + player.getStatus().getJobClassStatus(jobClassType).getLevel() / 10.0
+            val newHealth = it.defaultValue + player.getStatus().getJobClassStatus(this).getLevel() / 10.0
             it.baseValue = newHealth
         }
     }

@@ -7,7 +7,14 @@ import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.BattleAxe
 import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.SwordMaster
 import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.Unarmed
 import com.github.kotyabuchi.pumpkingmc.Class.Lifestyle.*
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakExcavation
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.BlinkStrike
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.DoubleAttack
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
 import com.github.kotyabuchi.pumpkingmc.Command.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Command.UtilityCommand
@@ -26,6 +33,7 @@ import com.github.kotyabuchi.pumpkingmc.Entity.Monster.Zombie.EnchantedZombie
 import com.github.kotyabuchi.pumpkingmc.Menu.MenuController
 import com.github.kotyabuchi.pumpkingmc.System.*
 import com.github.kotyabuchi.pumpkingmc.System.Player.PlayerManager
+import com.github.kotyabuchi.pumpkingmc.Utility.getServerVersion
 import com.github.kotyabuchi.pumpkingmc.Utility.initDB
 import com.github.kotyabuchi.pumpkingmc.Utility.savePlayerStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.startAutoSave
@@ -83,7 +91,18 @@ class Main : JavaPlugin() {
 
         // Skill
             // ActiveSkill
+                // Archery
+        pm.registerEvents(ArcShot, this)
+        pm.registerEvents(GravityShot, this)
+        pm.registerEvents(StrongShot, this)
+                // BlockBreak
+                    // MultiBreak
+        pm.registerEvents(MultiBreakExcavation, this)
+        pm.registerEvents(MultiBreakMining, this)
         pm.registerEvents(SuperBreaker, this)
+                // SwordMaster
+        pm.registerEvents(BlinkStrike, this)
+        pm.registerEvents(DoubleAttack, this)
             // ClassSkill
                 // CombatSkill
                     // Defensive
@@ -155,7 +174,7 @@ class Main : JavaPlugin() {
         startAutoSave()
 
 //        saveNewPlayerStatus()
-        println("PumpkingFantasy Enabled")
+        println("PumpkingFantasy Enabled in ${getServerVersion()}")
     }
     
     override fun onDisable() {

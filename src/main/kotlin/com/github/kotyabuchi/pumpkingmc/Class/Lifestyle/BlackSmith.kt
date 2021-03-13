@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -26,7 +25,7 @@ import kotlin.math.max
 import kotlin.math.round
 import kotlin.random.Random
 
-object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
+object BlackSmith: JobClassMaster("BLACKSMITH") {
 
     private val key = NamespacedKey(instance, "FURNACE_HOLDER")
     private val expMap = mutableMapOf<Material, Float>()
@@ -106,7 +105,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
                 if (!pdc.has(key, PersistentDataType.STRING)) return
                 val player = instance.server.getPlayer(UUID.fromString(pdc.getOrDefault(key, PersistentDataType.STRING, ""))) ?: return
                 if (player.isOnline) {
-                    val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+                    val level = player.getStatus().getJobClassStatus(this@BlackSmith).getLevel()
                     state.cookTimeTotal = getSmeltingEfficiency(level, state.cookTimeTotal)
                     state.update()
                 }
@@ -129,7 +128,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
                     if (!pdc.has(key, PersistentDataType.STRING)) return
                     val player = instance.server.getPlayer(UUID.fromString(pdc.getOrDefault(key, PersistentDataType.STRING, ""))) ?: return
                     if (player.isOnline) {
-                        val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+                        val level = player.getStatus().getJobClassStatus(this@BlackSmith).getLevel()
                         state.cookTimeTotal = getSmeltingEfficiency(level, state.cookTimeTotal)
                         state.update()
                     }
@@ -146,7 +145,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         if (!pdc.has(key, PersistentDataType.STRING)) return
         val player = instance.server.getPlayer(UUID.fromString(pdc.getOrDefault(key, PersistentDataType.STRING, ""))) ?: return
         if (player.isOnline) {
-            val level = player.getStatus().getJobClassStatus(jobClassType).getLevel()
+            val level = player.getStatus().getJobClassStatus(this).getLevel()
             event.burnTime = getFuelEfficiency(level, event.burnTime)
             object : BukkitRunnable() {
                 override fun run() {
@@ -169,7 +168,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         val player = instance.server.getPlayer(UUID.fromString(pdc.getOrDefault(key, PersistentDataType.STRING, ""))) ?: return
         if (!player.isOnline) return
         val status = player.getStatus()
-        val level = status.getJobClassStatus(jobClassType).getLevel()
+        val level = status.getJobClassStatus(this).getLevel()
 
         val multipleSmeltChange = level * 0.4
         var smeltAmount = 1 + floor(multipleSmeltChange / 100.0).toInt()
@@ -177,7 +176,7 @@ object BlackSmith: JobClassMaster(JobClassType.BLACKSMITH) {
         event.result.amount = smeltAmount
 
         val exp = expMap[event.source.type] ?: 0.1
-        status.addSkillExp(jobClassType, exp.toDouble() * 15 * smeltAmount)
+        status.addSkillExp(this, exp.toDouble() * 15 * smeltAmount)
 
         object : BukkitRunnable() {
             override fun run() {

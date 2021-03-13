@@ -1,5 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.System.Player
 
+import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
 import com.github.kotyabuchi.pumpkingmc.Utility.loadPlayerStatus
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.entity.Player
@@ -15,6 +16,10 @@ fun Player.getStatus(): PlayerStatus {
     val uuid = this.uniqueId
     if (!playerStatusMap.containsKey(uuid)) playerStatusMap[uuid] = PlayerStatus(this)
     return playerStatusMap[uuid]!!
+}
+
+fun Player.getJobClassLevel(jobClass: JobClassMaster): Int {
+    return this.getStatus().getJobClassStatus(jobClass).getLevel()
 }
 
 fun getAllPlayerStatus(): Collection<PlayerStatus> {
