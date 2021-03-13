@@ -6,17 +6,13 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.Doub
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import org.bukkit.Material
-import org.bukkit.Sound
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
 object SwordMaster: JobClassMaster("SWORDMASTER") {
-
-    private val blinkStrikeList = mutableListOf<Player>()
 
     init {
         Material.values().forEach {

@@ -1,7 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import org.bukkit.Sound

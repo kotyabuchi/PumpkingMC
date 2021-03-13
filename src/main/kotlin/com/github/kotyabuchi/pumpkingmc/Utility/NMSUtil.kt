@@ -3,7 +3,6 @@ package com.github.kotyabuchi.pumpkingmc.Utility
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 fun getServerVersion(): String {
     return Bukkit.getServer().javaClass.`package`.name.substring(23)
