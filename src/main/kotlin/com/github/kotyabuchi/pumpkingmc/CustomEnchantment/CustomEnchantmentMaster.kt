@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 
 import com.github.kotyabuchi.pumpkingmc.instance
+import net.kyori.adventure.text.Component
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.enchantments.EnchantmentTarget
@@ -49,5 +50,9 @@ open class CustomEnchantmentMaster(private val name: String): Enchantment(Namesp
 
     override fun canEnchantItem(item: ItemStack): Boolean {
         return true
+    }
+
+    override fun displayName(level: Int): Component {
+        return Component.text("$name $level")
     }
 }
