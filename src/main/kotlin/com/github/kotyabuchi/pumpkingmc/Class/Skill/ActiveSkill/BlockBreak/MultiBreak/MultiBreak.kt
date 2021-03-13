@@ -4,6 +4,8 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ActiveSkillMaste
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.Sound
@@ -48,12 +50,12 @@ open class MultiBreak: ActiveSkillMaster {
 
     override fun enableAction(player: Player, level: Int) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionMessage("&a$skillName On")
+        player.sendActionBar(Component.text("$skillName On", NamedTextColor.GREEN))
     }
 
     override fun disableAction(player: Player) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionMessage("&c$skillName Off")
+        player.sendActionBar(Component.text("$skillName Off", NamedTextColor.RED))
     }
 
     @EventHandler(priority = EventPriority.HIGH)
