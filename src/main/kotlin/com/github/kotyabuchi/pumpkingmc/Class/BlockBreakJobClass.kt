@@ -141,7 +141,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
     fun onBlockBreak(event: BlockBreakEvent) {
         if (event is BlockMineEvent) return
         val player = event.player
-        val level = player.getStatus().getJobClassStatus(this).getLevel()
         val block = event.block
         val itemStack = player.inventory.itemInMainHand
 
@@ -166,48 +165,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
                     }
                 }
             }
-
-//            if (player.hasTag(multiBreakKey)) {
-//                val rayBlock = player.rayTraceBlocks(6.0)?: return
-//                val lookingFace = rayBlock.hitBlockFace ?: return
-//                val radius = floor(level / 100.0).toInt()
-//                val range = (radius * -1)..radius
-//                when (lookingFace) {
-//                    BlockFace.UP, BlockFace.DOWN -> {
-//                        for (x in range) {
-//                            for (z in range) {
-//                                val checkBlock = block.location.add(x.toDouble(), 0.0, z.toDouble()).block
-//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-//                                if (checkBlock.type.isAir) continue
-//                                blockList.add(checkBlock)
-//                            }
-//                        }
-//                    }
-//                    BlockFace.SOUTH, BlockFace.NORTH -> {
-//                        for (x in range) {
-//                            for (y in -1 until (radius * 2)) {
-//                                val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
-//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-//                                if (checkBlock.type.isAir) continue
-//                                blockList.add(checkBlock)
-//                            }
-//                        }
-//                    }
-//                    BlockFace.EAST, BlockFace.WEST -> {
-//                        for (z in range) {
-//                            for (y in -1 until (radius * 2)) {
-//                                val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
-//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-//                                if (checkBlock.type.isAir) continue
-//                                blockList.add(checkBlock)
-//                            }
-//                        }
-//                    }
-//                    else -> {
-//                        player.sendMessage("Error")
-//                    }
-//                }
-//            }
         }
         val mineEvent = BlockMineEvent(block, player, player.hasTag(multiBreakKey))
         instance.server.pluginManager.callEvent(mineEvent)
