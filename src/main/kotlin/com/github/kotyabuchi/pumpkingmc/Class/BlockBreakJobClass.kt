@@ -9,10 +9,8 @@ import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.Block
-import org.bukkit.block.BlockFace
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -142,7 +140,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
     @EventHandler(priority = EventPriority.HIGH)
     fun onBlockBreak(event: BlockBreakEvent) {
         if (event is BlockMineEvent) return
-        if (event.isCancelled) return
         val player = event.player
         val level = player.getStatus().getJobClassStatus(this).getLevel()
         val block = event.block
@@ -153,7 +150,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
         if (!usingTool && (canGetExpWithHand && !itemStack.type.isAir)) return
 
         event.isCancelled = true
-        val blockList = mutableListOf(block)
 
         if (usingTool) {
             if (player.hasTag(groundLevelingAssistKey)) {
@@ -171,69 +167,63 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
                 }
             }
 
-            if (player.hasTag(multiBreakKey)) {
-                val rayBlock = player.rayTraceBlocks(6.0)?: return
-                val lookingFace = rayBlock.hitBlockFace ?: return
-                val radius = floor(level / 100.0).toInt()
-                val range = (radius * -1)..radius
-                when (lookingFace) {
-                    BlockFace.UP, BlockFace.DOWN -> {
-                        for (x in range) {
-                            for (z in range) {
-                                val checkBlock = block.location.add(x.toDouble(), 0.0, z.toDouble()).block
-                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-                                if (checkBlock.type.isAir) continue
-                                blockList.add(checkBlock)
-                            }
-                        }
-                    }
-                    BlockFace.SOUTH, BlockFace.NORTH -> {
-                        for (x in range) {
-                            for (y in -1 until (radius * 2)) {
-                                val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
-                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-                                if (checkBlock.type.isAir) continue
-                                blockList.add(checkBlock)
-                            }
-                        }
-                    }
-                    BlockFace.EAST, BlockFace.WEST -> {
-                        for (z in range) {
-                            for (y in -1 until (radius * 2)) {
-                                val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
-                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
-                                if (checkBlock.type.isAir) continue
-                                blockList.add(checkBlock)
-                            }
-                        }
-                    }
-                    else -> {
-                        player.sendMessage("Error")
-                    }
-                }
-            }
+//            if (player.hasTag(multiBreakKey)) {
+//                val rayBlock = player.rayTraceBlocks(6.0)?: return
+//                val lookingFace = rayBlock.hitBlockFace ?: return
+//                val radius = floor(level / 100.0).toInt()
+//                val range = (radius * -1)..radius
+//                when (lookingFace) {
+//                    BlockFace.UP, BlockFace.DOWN -> {
+//                        for (x in range) {
+//                            for (z in range) {
+//                                val checkBlock = block.location.add(x.toDouble(), 0.0, z.toDouble()).block
+//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
+//                                if (checkBlock.type.isAir) continue
+//                                blockList.add(checkBlock)
+//                            }
+//                        }
+//                    }
+//                    BlockFace.SOUTH, BlockFace.NORTH -> {
+//                        for (x in range) {
+//                            for (y in -1 until (radius * 2)) {
+//                                val checkBlock = block.location.add(x.toDouble(), y.toDouble(), 0.0).block
+//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
+//                                if (checkBlock.type.isAir) continue
+//                                blockList.add(checkBlock)
+//                            }
+//                        }
+//                    }
+//                    BlockFace.EAST, BlockFace.WEST -> {
+//                        for (z in range) {
+//                            for (y in -1 until (radius * 2)) {
+//                                val checkBlock = block.location.add(0.0, y.toDouble(), z.toDouble()).block
+//                                if (checkBlock.getDrops(itemStack, player).isEmpty()) continue
+//                                if (checkBlock.type.isAir) continue
+//                                blockList.add(checkBlock)
+//                            }
+//                        }
+//                    }
+//                    else -> {
+//                        player.sendMessage("Error")
+//                    }
+//                }
+//            }
         }
-        blockList.forEach {
-            val mineEvent = BlockMineEvent(it, player, true)
-            instance.server.pluginManager.callEvent(mineEvent)
-            if (!mineEvent.isCancelled) {
-                val dropItems = mutableListOf<Item>()
-                it.getDrops(itemStack, player).forEach { item ->
-                    val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
-                    dropItems.add(dropItem)
-                }
-                val state = it.state
-                if (it != block) {
-                    it.world.playSound(it.location.add(.5, .5, .5), it.soundGroup.breakSound, 1f, .75f)
-                    it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, .0, it.blockData)
-                }
-                it.type = Material.AIR
-                val dropEvent = BlockDropItemEvent(it, state, player, dropItems)
-                instance.server.pluginManager.callEvent(dropEvent)
-                if (dropEvent.items.isEmpty()) {
-                    dropItems.forEach { item ->
-                        item.remove()
-                    }
+        val mineEvent = BlockMineEvent(block, player, player.hasTag(multiBreakKey))
+        instance.server.pluginManager.callEvent(mineEvent)
+        if (!mineEvent.isCancelled) {
+            val dropItems = mutableListOf<Item>()
+            block.getDrops(itemStack, player).forEach { item ->
+                val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
+                dropItems.add(dropItem)
+            }
+            val state = block.state
+            block.type = Material.AIR
+            val dropEvent = BlockDropItemEvent(block, state, player, dropItems)
+            instance.server.pluginManager.callEvent(dropEvent)
+            if (dropEvent.items.isEmpty()) {
+                dropItems.forEach { item ->
+                    item.remove()
                 }
             }
         }
