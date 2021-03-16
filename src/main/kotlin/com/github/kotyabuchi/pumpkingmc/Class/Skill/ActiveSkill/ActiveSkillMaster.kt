@@ -26,7 +26,7 @@ interface ActiveSkillMaster: Listener {
 
     fun calcActiveTime(level: Int): Int
 
-    fun isEnabledSkill(player: Player): Boolean = player.hasTag(skillName)
+    fun isEnabledSkill(player: Player): Boolean = player.hasTag(getSkillNamespacedKey())
 
     fun enableAction(player: Player, level: Int)
 
