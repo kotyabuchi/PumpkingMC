@@ -10,6 +10,7 @@ import com.github.kotyabuchi.pumpkingmc.Class.Lifestyle.*
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakExcavation
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
@@ -38,6 +39,7 @@ import com.github.kotyabuchi.pumpkingmc.Utility.initDB
 import com.github.kotyabuchi.pumpkingmc.Utility.savePlayerStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.startAutoSave
 import org.bukkit.NamespacedKey
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
 lateinit var instance: Main
@@ -185,5 +187,9 @@ class Main : JavaPlugin() {
         clearBossBar()
         damagePopup.clearPopup()
         removeLag.stop()
+    }
+
+    fun registerEvent(listener: Listener) {
+        server.pluginManager.registerEvents(listener, this)
     }
 }

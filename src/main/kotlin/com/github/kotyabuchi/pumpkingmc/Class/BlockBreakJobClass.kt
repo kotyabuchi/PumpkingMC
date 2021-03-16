@@ -6,7 +6,9 @@ import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
-import com.github.kotyabuchi.pumpkingmc.Utility.*
+import com.github.kotyabuchi.pumpkingmc.Utility.damage
+import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
+import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -18,7 +20,6 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -31,9 +32,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
     private val brokenBlockSet = mutableSetOf<Block>()
     private val canGetExpWithHand = true
     private val placedBlock = mutableMapOf<Block, BukkitTask>()
-    private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
     val multiBreakKey = jobClassName + "_MultiBreak"
-    val groundLevelingAssistKey = jobClassName + "_GroundLevelingAssist"
 
     init {
         addAction(SkillCommand.RRR, 25, fun(player: Player) {
@@ -53,10 +52,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
 
     fun addBrokenBlockSet(block: Block) {
         brokenBlockSet.add(block)
-    }
-
-    fun addGroundLevelingAssist(vararg materials: Material) {
-        groundLevelingAssisBlockSet.addAll(materials)
     }
 
     fun containsBrokenBlockSet(block: Block): Boolean {
@@ -150,22 +145,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
 
         event.isCancelled = true
 
-        if (usingTool) {
-            if (player.hasTag(groundLevelingAssistKey)) {
-                val rayBlock = player.rayTraceBlocks(8.0)
-                rayBlock?.hitBlockFace?.reverse()?.let { lookingFace->
-                    val targetBlock = block.getRelative(lookingFace)
-                    if (targetBlock.type.isAir) {
-                        for (groundLevelingMaterial in groundLevelingAssisBlockSet) {
-                            if (player.inventory.consume(ItemExpansion(ItemStack(groundLevelingMaterial)).item)) {
-                                targetBlock.type = groundLevelingMaterial
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-        }
         val mineEvent = BlockMineEvent(block, player, player.hasTag(multiBreakKey))
         instance.server.pluginManager.callEvent(mineEvent)
         if (!mineEvent.isCancelled) {

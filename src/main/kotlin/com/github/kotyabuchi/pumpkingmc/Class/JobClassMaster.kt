@@ -83,7 +83,7 @@ open class JobClassMaster(val jobClassName: String): Listener {
         player.sendActionBar('&', "&cCast Mode canceled")
     }
 
-    protected fun getTool(): List<Material> {
+    fun getTool(): List<Material> {
         return targetTool
     }
     

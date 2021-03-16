@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
@@ -29,14 +30,16 @@ object Mining: BlockBreakJobClass("Mining") {
         Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.MOSSY_COBBLESTONE, Material.BASALT, Material.BLACKSTONE)
     private val mineAssistKey = jobClassName + "_MineAssist"
     private val stoneReplacerKey = jobClassName + "_StoneReplacer"
+    private val groundLevelingAssist = GroundLevelingAssist(this)
 
     init {
+
         Material.values().forEach {
             if (it.name.endsWith("_PICKAXE")) addTool(it)
         }
         stoneSet.forEach {
             addExpMap(it, exp = 1)
-            addGroundLevelingAssist(it)
+            groundLevelingAssist.addAssistBlock(it)
         }
         addExpMap(Material.COAL_ORE, exp = 2)
         addExpMap(Material.IRON_ORE, Material.END_STONE, Material.GLOWSTONE, exp = 3)
@@ -45,7 +48,7 @@ object Mining: BlockBreakJobClass("Mining") {
         addExpMap(Material.LAPIS_ORE, exp = 7)
         addExpMap(Material.DIAMOND_ORE, exp = 8)
         addExpMap(Material.EMERALD_ORE, exp = 10)
-        addGroundLevelingAssist(Material.COBBLESTONE)
+        groundLevelingAssist.addAssistBlock(Material.COBBLESTONE)
 
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
             if (player.toggleTag(stoneReplacerKey)) {
@@ -69,13 +72,7 @@ object Mining: BlockBreakJobClass("Mining") {
             MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRR, 200, fun(player: Player) {
-            if (player.toggleTag(groundLevelingAssistKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aGround Leveling Assist On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cGround Leveling Assist Off")
-            }
+            groundLevelingAssist.toggleSkill(player, player.getJobClassLevel(this))
         })
     }
 

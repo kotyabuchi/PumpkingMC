@@ -1,12 +1,11 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
-import com.github.kotyabuchi.pumpkingmc.Utility.toggleTag
 import org.bukkit.Material
-import org.bukkit.Sound
 import org.bukkit.entity.Player
 
 object Excavation: BlockBreakJobClass("EXCAVATION") {
@@ -14,13 +13,15 @@ object Excavation: BlockBreakJobClass("EXCAVATION") {
     private val dirtSet = setOf(Material.DIRT, Material.SAND, Material.GRASS_BLOCK, Material.GRAVEL, Material.FARMLAND,
         Material.GRASS_PATH, Material.COARSE_DIRT, Material.PODZOL, Material.RED_SAND, Material.SOUL_SAND, Material.SOUL_SOIL)
 
+    private val groundLevelingAssist = GroundLevelingAssist(this)
+
     init {
         Material.values().forEach {
             if (it.name.endsWith("_SHOVEL")) addTool(it)
         }
         dirtSet.forEach {
             addExpMap(it, exp = 1)
-            if (!it.hasGravity()) addGroundLevelingAssist(it)
+            if (!it.hasGravity()) groundLevelingAssist.addAssistBlock(it)
         }
         addExpMap(Material.CLAY, exp = 2)
 
@@ -28,13 +29,7 @@ object Excavation: BlockBreakJobClass("EXCAVATION") {
             MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRR, 200, fun(player: Player) {
-            if (player.toggleTag(groundLevelingAssistKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aGround Leveling Assist On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cGround Leveling Assist Off")
-            }
+            groundLevelingAssist.toggleSkill(player, player.getJobClassLevel(this))
         })
     }
 }
