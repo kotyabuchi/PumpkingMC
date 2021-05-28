@@ -27,6 +27,7 @@ object MineAssist: ToggleSkillMaster {
 
         val block = event.block
         val itemStack = player.inventory.itemInMainHand
+        if (!block.type.isOre()) return
 
         val ores = mutableListOf<Block>()
         searchOres(block, ores, mutableListOf())
