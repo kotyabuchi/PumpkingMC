@@ -2,7 +2,9 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MineAssist
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.StoneReplacer
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
@@ -10,11 +12,9 @@ import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
 import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
 import com.github.kotyabuchi.pumpkingmc.Utility.isOre
-import com.github.kotyabuchi.pumpkingmc.Utility.toggleTag
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.Particle
-import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Player
@@ -51,13 +51,7 @@ object Mining: BlockBreakJobClass("Mining") {
         groundLevelingAssist.addAssistBlock(Material.COBBLESTONE)
 
         addAction(SkillCommand.LLL, 50, fun(player: Player) {
-            if (player.toggleTag(stoneReplacerKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aStone Replacer On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cStone Replacer Off")
-            }
+            StoneReplacer.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
             if (player.toggleTag(mineAssistKey)) {
@@ -123,7 +117,7 @@ object Mining: BlockBreakJobClass("Mining") {
                 instance.server.pluginManager.callEvent(BlockMineEvent(it, player))
             }
             drops.forEach { (t, u) ->
-                val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), ItemStack(t, u))
+                val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), ItemStack(t, u))
                 val dropEvent = BlockDropItemEvent(block, blockState, player, mutableListOf(dropItem))
                 instance.server.pluginManager.callEvent(dropEvent)
                 if (dropEvent.items.isEmpty()) dropItem.remove()
