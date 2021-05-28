@@ -1,8 +1,16 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
+import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
+import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.entity.Item
+import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockDropItemEvent
+import org.bukkit.inventory.ItemStack
 
 val aroundBlockFace = listOf(BlockFace.SELF, BlockFace.EAST, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST, BlockFace.WEST)
 
@@ -93,5 +101,30 @@ fun BlockFace.reverse(): BlockFace {
         BlockFace.SOUTH_SOUTH_WEST -> BlockFace.NORTH_NORTH_EAST
         BlockFace.WEST_NORTH_WEST -> BlockFace.EAST_SOUTH_EAST
         BlockFace.WEST_SOUTH_WEST -> BlockFace.EAST_NORTH_EAST
+    }
+}
+
+fun Block.miningWithEvent(player: Player, itemStack: ItemStack, mainBlock: Block = this) {
+    val mineEvent = BlockMineEvent(this, player, true)
+    instance.server.pluginManager.callEvent(mineEvent)
+    if (!mineEvent.isCancelled) {
+        val dropItems = mutableListOf<Item>()
+        this.getDrops(itemStack, player).forEach { item ->
+            val dropItem = mainBlock.world.dropItem(mainBlock.location.add(0.5, 0.0, 0.5), item)
+            dropItems.add(dropItem)
+        }
+        val state = this.state
+        if (this != mainBlock) {
+            this.world.playSound(this.location.add(.5, .5, .5), this.soundGroup.breakSound, 1f, .75f)
+            this.world.spawnParticle(Particle.BLOCK_CRACK, this.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, .0, this.blockData)
+        }
+        this.type = Material.AIR
+        val dropEvent = BlockDropItemEvent(this, state, player, dropItems)
+        instance.server.pluginManager.callEvent(dropEvent)
+        if (dropEvent.items.isEmpty()) {
+            dropItems.forEach { item ->
+                item.remove()
+            }
+        }
     }
 }
