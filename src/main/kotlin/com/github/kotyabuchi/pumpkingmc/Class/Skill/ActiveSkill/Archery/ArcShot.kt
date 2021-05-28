@@ -24,7 +24,7 @@ import kotlin.math.*
 import kotlin.random.Random
 
 object ArcShot: ToolLinkedSkill {
-    override val skillName: String = "SuperBreaker"
+    override val skillName: String = "ArcShot"
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 200
