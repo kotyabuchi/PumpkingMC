@@ -54,13 +54,7 @@ object Mining: BlockBreakJobClass("Mining") {
             StoneReplacer.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LRL, 50, fun(player: Player) {
-            if (player.toggleTag(mineAssistKey)) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aMine Assist On")
-            } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cMine Assist Off")
-            }
+            MineAssist.toggleSkill(player, player.getJobClassLevel(this))
         })
         addAction(SkillCommand.LLR, 100, fun(player: Player) {
             MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
