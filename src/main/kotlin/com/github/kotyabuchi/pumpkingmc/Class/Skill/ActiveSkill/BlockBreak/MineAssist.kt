@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler
 import java.util.*
 
 object MineAssist: ToggleSkillMaster {
-    override val skillName: String = "StoneReplacer"
+    override val skillName: String = "MineAssist"
     override val cost: Int = 0
     override val needLevel: Int = 50
     override var description: String = ""
