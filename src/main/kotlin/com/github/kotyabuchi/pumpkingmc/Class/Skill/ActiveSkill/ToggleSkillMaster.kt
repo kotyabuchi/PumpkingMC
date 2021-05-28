@@ -21,8 +21,6 @@ interface ToggleSkillMaster: Listener {
 
     fun getSkillNamespacedKey(): NamespacedKey = NamespacedKey(instance, skillName)
 
-    fun calcActiveTime(level: Int): Int
-
     fun isEnabledSkill(player: Player): Boolean = player.hasTag(getSkillNamespacedKey())
 
     fun enableAction(player: Player, level: Int) {

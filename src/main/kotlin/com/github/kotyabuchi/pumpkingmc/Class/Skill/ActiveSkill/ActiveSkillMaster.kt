@@ -16,6 +16,8 @@ interface ActiveSkillMaster: ToggleSkillMaster {
     val activeTimeMap: MutableMap<UUID, BukkitTask>
     val coolTimePlayers: MutableList<UUID>
 
+    fun calcActiveTime(level: Int): Int
+
     override fun enableSkill(player: Player, level: Int) {
         val uuid = player.uniqueId
         if (needLevel > level) {
