@@ -1,7 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak
 
 import com.github.kotyabuchi.pumpkingmc.Class.JobClassMaster
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ActiveSkillMaster
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToggleSkillMaster
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.consume
@@ -16,20 +16,14 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
-class GroundLevelingAssist(private val jobClass: JobClassMaster): ActiveSkillMaster {
+class GroundLevelingAssist(private val jobClass: JobClassMaster): ToggleSkillMaster {
     override val skillName: String = "GroundLevelingAssist"
     override val cost: Int = 0
-    override val coolTime: Long = 0
     override val needLevel: Int = 200
     override var description: String = ""
-    override val hasActiveTime: Boolean = false
     override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
-    override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
-    override val coolTimePlayers: MutableList<UUID> = mutableListOf()
-    override fun calcActiveTime(level: Int): Int = 0
 
     private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
 

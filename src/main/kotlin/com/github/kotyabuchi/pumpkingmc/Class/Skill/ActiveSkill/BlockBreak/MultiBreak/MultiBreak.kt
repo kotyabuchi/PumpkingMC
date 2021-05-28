@@ -1,37 +1,28 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak
 
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ActiveSkillMaster
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToggleSkillMaster
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
-import com.github.kotyabuchi.pumpkingmc.instance
+import com.github.kotyabuchi.pumpkingmc.Utility.miningWithEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.entity.Item
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.scheduler.BukkitTask
 import java.util.*
 import kotlin.math.floor
 
-open class MultiBreak: ActiveSkillMaster {
+open class MultiBreak: ToggleSkillMaster {
     override val skillName: String = "MultiBreak"
     override val cost: Int = 0
-    override val coolTime: Long = 0
     override val needLevel: Int = 100
     override var description: String = "レベルに応じた範囲を一括破壊する"
-    override val hasActiveTime: Boolean = false
     override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
-    override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
-    override val coolTimePlayers: MutableList<UUID> = mutableListOf()
-    override fun calcActiveTime(level: Int): Int = 0
 
     private val targetTool: MutableSet<Material> = mutableSetOf()
     private val transparentBlocks = mutableSetOf<Material>()
@@ -77,28 +68,7 @@ open class MultiBreak: ActiveSkillMaster {
         blockList.remove(block)
 
         blockList.forEach {
-            val mineEvent = BlockMineEvent(it, player, true)
-            instance.server.pluginManager.callEvent(mineEvent)
-            if (!mineEvent.isCancelled) {
-                val dropItems = mutableListOf<Item>()
-                it.getDrops(itemStack, player).forEach { item ->
-                    val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
-                    dropItems.add(dropItem)
-                }
-                val state = it.state
-                if (it != block) {
-                    it.world.playSound(it.location.add(.5, .5, .5), it.soundGroup.breakSound, 1f, .75f)
-                    it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, .0, it.blockData)
-                }
-                it.type = Material.AIR
-                val dropEvent = BlockDropItemEvent(it, state, player, dropItems)
-                instance.server.pluginManager.callEvent(dropEvent)
-                if (dropEvent.items.isEmpty()) {
-                    dropItems.forEach { item ->
-                        item.remove()
-                    }
-                }
-            }
+            it.miningWithEvent(player, itemStack, block)
         }
     }
 

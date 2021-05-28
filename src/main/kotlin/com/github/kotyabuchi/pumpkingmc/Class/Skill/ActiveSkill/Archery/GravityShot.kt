@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery
 
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ActiveSkillMaster
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToolLinkedSkill
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -23,7 +24,7 @@ import kotlin.math.round
 import kotlin.math.sin
 import kotlin.random.Random
 
-object GravityShot: ActiveSkillMaster {
+object GravityShot: ToolLinkedSkill {
     override val skillName: String = "GravityShot"
     override val cost: Int = 0
     override val coolTime: Long = 0
@@ -33,6 +34,7 @@ object GravityShot: ActiveSkillMaster {
     override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val coolTimePlayers: MutableList<UUID> = mutableListOf()
+    override val skillItemBackup: MutableMap<UUID, ItemStack> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 0
 
     private val gravityShotArrowKey: NamespacedKey = NamespacedKey(instance, "Gravity_Arrow")
