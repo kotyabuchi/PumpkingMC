@@ -121,7 +121,7 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
                 event.isCancelled = true
                 if (!mineEvent.isCancelled) {
                     it.getDrops(item, player).forEach { item ->
-                        val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
+                        val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), item)
                         val dropEvent = BlockDropItemEvent(it, it.state, player, mutableListOf(dropItem))
                         instance.server.pluginManager.callEvent(dropEvent)
                         if (dropEvent.items.isEmpty()) dropItem.remove()
@@ -132,7 +132,7 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
                 }
             }
             drops.forEach { (t, u) ->
-                val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), ItemStack(t, u))
+                val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), ItemStack(t, u))
                 val dropEvent = BlockDropItemEvent(block, blockState, player, mutableListOf(dropItem))
                 instance.server.pluginManager.callEvent(dropEvent)
                 if (dropEvent.items.isEmpty()) dropItem.remove()
@@ -202,15 +202,15 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
     private fun dropFromLeave(entity: FallingBlock) {
         val material = entity.blockData.material
         if (Random.nextInt(100) < 5) {
-            val item = entity.world.dropItemNaturally(entity.location, ItemStack(Material.valueOf(material.name.replace("LEAVES", "SAPLING"))))
+            val item = entity.world.dropItem(entity.location, ItemStack(Material.valueOf(material.name.replace("LEAVES", "SAPLING"))))
             instance.server.pluginManager.callEvent(EntityDropItemEvent(entity, item))
         }
         if (Random.nextInt(1000) < 15) {
-            val item = entity.world.dropItemNaturally(entity.location, ItemStack(Material.STICK, Random.nextInt(2) + 1))
+            val item = entity.world.dropItem(entity.location, ItemStack(Material.STICK, Random.nextInt(2) + 1))
             instance.server.pluginManager.callEvent(EntityDropItemEvent(entity, item))
         }
         if (material.name.contains("OAK") && Random.nextInt(1000) < 5) {
-            val item = entity.world.dropItemNaturally(entity.location, ItemStack(Material.APPLE, 1))
+            val item = entity.world.dropItem(entity.location, ItemStack(Material.APPLE, 1))
             instance.server.pluginManager.callEvent(EntityDropItemEvent(entity, item))
         }
     }

@@ -150,7 +150,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
         if (!mineEvent.isCancelled) {
             val dropItems = mutableListOf<Item>()
             block.getDrops(itemStack, player).forEach { item ->
-                val dropItem = block.world.dropItemNaturally(block.location.add(0.5, 0.0, 0.5), item)
+                val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), item)
                 dropItems.add(dropItem)
             }
             val state = block.state
