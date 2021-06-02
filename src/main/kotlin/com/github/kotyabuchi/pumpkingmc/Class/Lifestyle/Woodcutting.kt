@@ -62,16 +62,7 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             }
         })
         addAction(SkillCommand.LLL, 0, fun(player: Player) {
-            val pdc = player.persistentDataContainer
-            if (pdc.has(logFallKey, PersistentDataType.BYTE)) {
-                pdc.remove(logFallKey)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aTree Fall On")
-            } else {
-                pdc.set(logFallKey, PersistentDataType.BYTE, 1)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cTree Fall Off")
-            }
+            TreeFall.toggleSkill(player, player.getJobClassLevel(this))
         })
     }
     
@@ -152,31 +143,31 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
                 if (mineEvent.isCancelled) event.isCancelled = true
             }
 
-            if (!pdc.has(logFallKey, PersistentDataType.BYTE)) {
-                val woodList: MutableList<Block> = mutableListOf()
-                val leaveList: MutableList<Block> = mutableListOf()
-                searchWood(block, block, woodList, leaveList, mutableListOf())
-                woodList.remove(block)
-                woodList.addAll(leaveList)
-                woodList.sortWith { o1, o2 -> o1.y - o2.y }
-                woodList.forEach {
-                    object : BukkitRunnable() {
-                        override fun run() {
-                            if (it.type.isLeave()) {
-                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
-                                it.type = Material.AIR
-                            } else if (!it.getRelative(BlockFace.DOWN).type.isSolid) {
-                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
-                                it.type = Material.AIR
-                            }
-                        }
-                    }.runTaskLater(instance, it.y - y.toLong())
-                }
-                if (getTool().contains(item.type)) addBrokenBlockSet(block)
-            }
+//            if (!pdc.has(logFallKey, PersistentDataType.BYTE)) {
+//                val woodList: MutableList<Block> = mutableListOf()
+//                val leaveList: MutableList<Block> = mutableListOf()
+//                searchWood(block, block, woodList, leaveList, mutableListOf())
+//                woodList.remove(block)
+//                woodList.addAll(leaveList)
+//                woodList.sortWith { o1, o2 -> o1.y - o2.y }
+//                woodList.forEach {
+//                    object : BukkitRunnable() {
+//                        override fun run() {
+//                            if (it.type.isLeave()) {
+//                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
+//                                it.type = Material.AIR
+//                            } else if (!it.getRelative(BlockFace.DOWN).type.isSolid) {
+//                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
+//                                it.type = Material.AIR
+//                            }
+//                        }
+//                    }.runTaskLater(instance, it.y - y.toLong())
+//                }
+//                if (getTool().contains(item.type)) addBrokenBlockSet(block)
+//            }
         }
     }
-    
+
     @EventHandler
     fun onLand(event: EntityChangeBlockEvent) {
         val entity = event.entity as? FallingBlock ?: return
@@ -187,7 +178,7 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             entity.remove()
         }
     }
-    
+
     @EventHandler
     fun onDropItemFromEntity(event: EntityDropItemEvent) {
         val entity = event.entity as? FallingBlock ?: return
@@ -214,8 +205,8 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             instance.server.pluginManager.callEvent(EntityDropItemEvent(entity, item))
         }
     }
-    
-    private fun searchWood(mainBlock: Block, checkBlock: Block, woodList: MutableList<Block>, leaveList: MutableList<Block>, checkedList: MutableList<Block>) {
+
+    fun searchWood(mainBlock: Block, checkBlock: Block, woodList: MutableList<Block>, leaveList: MutableList<Block>, checkedList: MutableList<Block>) {
         if (checkedList.contains(checkBlock)) return
         checkedList.add(checkBlock)
         if (mainBlock.location.y > checkBlock.location.y) return
@@ -240,29 +231,29 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             searchWood(mainBlock, downBlock.getRelative(it), woodList, leaveList, checkedList)
         }
     }
-    
-    private fun searchLeave(beforeBlock: Block, checkBlock: Block, woodType: WoodType, list: MutableList<Block>, _count: Int) {
+
+    fun searchLeave(beforeBlock: Block, checkBlock: Block, woodType: WoodType, leaveList: MutableList<Block>, _count: Int) {
         var count = _count
-        if (list.contains(checkBlock)) return
+        if (leaveList.contains(checkBlock)) return
         val checkMaterial = checkBlock.type
         if (!checkMaterial.isLeave()) return
         val leaves = checkBlock.blockData as Leaves
-        if (checkMaterial.getWoodType() !== woodType) return
+        if (checkMaterial.getWoodType() != woodType) return
         if (leaves.isPersistent) return
         if (beforeBlock.type.isLeave() && (beforeBlock.blockData as Leaves).distance >= leaves.distance) return
-        list.add(checkBlock)
+        leaveList.add(checkBlock)
         count++
         if (count > 496) return
         val upBlock = checkBlock.getRelative(BlockFace.UP)
         val downBlock = checkBlock.getRelative(BlockFace.DOWN)
         aroundBlockFace.forEach {
-            searchLeave(checkBlock, upBlock.getRelative(it), woodType, list, count)
+            searchLeave(checkBlock, upBlock.getRelative(it), woodType, leaveList, count)
         }
         aroundBlockFace.forEach {
-            searchLeave(checkBlock, checkBlock.getRelative(it), woodType, list, count)
+            searchLeave(checkBlock, checkBlock.getRelative(it), woodType, leaveList, count)
         }
         aroundBlockFace.forEach {
-            searchLeave(checkBlock, downBlock.getRelative(it), woodType, list, count)
+            searchLeave(checkBlock, downBlock.getRelative(it), woodType, leaveList, count)
         }
     }
 }
