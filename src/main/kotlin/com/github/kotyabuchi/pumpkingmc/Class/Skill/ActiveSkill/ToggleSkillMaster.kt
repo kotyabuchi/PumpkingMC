@@ -1,6 +1,5 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
 
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.StoneReplacer
 import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
 import com.github.kotyabuchi.pumpkingmc.instance
 import net.kyori.adventure.text.Component
@@ -25,12 +24,12 @@ interface ToggleSkillMaster: Listener {
 
     fun enableAction(player: Player, level: Int) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionBar(Component.text("${StoneReplacer.skillName} On", NamedTextColor.GREEN))
+        player.sendActionBar(Component.text("$skillName On", NamedTextColor.GREEN))
     }
 
     fun disableAction(player: Player) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionBar(Component.text("${StoneReplacer.skillName} Off", NamedTextColor.RED))
+        player.sendActionBar(Component.text("$skillName Off", NamedTextColor.RED))
     }
 
     fun toggleSkill(player: Player, level: Int) {
