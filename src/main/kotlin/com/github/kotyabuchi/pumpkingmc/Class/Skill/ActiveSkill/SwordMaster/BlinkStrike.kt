@@ -31,7 +31,7 @@ object BlinkStrike: ActiveSkillMaster {
     override val hasActiveTime: Boolean = false
     override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
-    override val coolTimePlayers: MutableList<UUID> = mutableListOf()
+    override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 0
 
     private val transparentBlocks = mutableSetOf<Material>()

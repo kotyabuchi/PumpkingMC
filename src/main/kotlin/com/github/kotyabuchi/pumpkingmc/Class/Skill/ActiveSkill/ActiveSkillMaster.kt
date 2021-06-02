@@ -1,5 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill
 
+import com.github.kotyabuchi.pumpkingmc.Utility.floor1Digits
 import com.github.kotyabuchi.pumpkingmc.instance
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -14,7 +15,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
     val coolTime: Long
     val hasActiveTime: Boolean
     val activeTimeMap: MutableMap<UUID, BukkitTask>
-    val coolTimePlayers: MutableList<UUID>
+    val lastUseTime: MutableMap<UUID, Long>
 
     fun calcActiveTime(level: Int): Int
 
@@ -24,6 +25,8 @@ interface ActiveSkillMaster: ToggleSkillMaster {
             player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
             player.sendActionBar(
                 Component.text("$skillName: Not enough levels (Need Lv.$needLevel)").color(NamedTextColor.RED))
+        } else if (isReadySkill(uuid)) {
+            player.sendActionBar(Component.text("$skillName: Not yet (${(getRemainingCoolTime(uuid) / 1000.0).floor1Digits()}s)").color(NamedTextColor.RED))
         } else if (!isEnabledSkill(player)) {
             enableAction(player, level)
             activePlayerLevelMap[uuid] = level
@@ -47,11 +50,25 @@ interface ActiveSkillMaster: ToggleSkillMaster {
         player.persistentDataContainer.remove(getSkillNamespacedKey())
     }
 
-    fun startCoolTime(uuid: UUID) {
-        object : BukkitRunnable() {
+    fun setLastUseTime(uuid: UUID) {
+        lastUseTime[uuid] = System.currentTimeMillis()
+    }
+
+    fun getRemainingCoolTime(uuid: UUID): Long {
+        return lastUseTime[uuid]?.let { coolTime - (System.currentTimeMillis() - it) } ?: 0
+    }
+
+    fun isReadySkill(uuid: UUID): Boolean {
+        return getRemainingCoolTime(uuid) <= 0L
+    }
+
+    fun restartActiveTime(player: Player, level: Int) {
+        val uuid = player.uniqueId
+        activeTimeMap[uuid]?.cancel()
+        activeTimeMap[uuid] = object : BukkitRunnable() {
             override fun run() {
-                coolTimePlayers.remove(uuid)
+                disableSkill(player)
             }
-        }.runTaskLater(instance, coolTime)
+        }.runTaskLater(instance, calcActiveTime(level).toLong())
     }
 }
