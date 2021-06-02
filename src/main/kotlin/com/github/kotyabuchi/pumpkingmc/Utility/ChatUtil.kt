@@ -23,6 +23,10 @@ fun String.beginWithUpperCase(): String {
     }
 }
 
+fun Double.floor1Digits(): Double {
+    return floor(this * 10.0) / 10.0
+}
+
 fun Double.floor2Digits(): Double {
     return floor(this * 100.0) / 100.0
 }
