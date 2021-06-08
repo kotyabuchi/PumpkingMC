@@ -6,6 +6,8 @@ import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.Utility.getHeadLocation
 import com.github.kotyabuchi.pumpkingmc.instance
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -40,9 +42,9 @@ open class JobClassMaster(val jobClassName: String): Listener {
         } else {
             castingModeList.add(player)
             castingCommandMap[player] = ""
-            player.sendActionBar('&', "&aCast Mode On")
+            player.sendActionBar(Component.text("Cast Mode Enabled", NamedTextColor.GREEN))
             player.sendTitle("", "- - -", 0, 20 * 1, 10)
-            player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
+            player.world.playSound(player.getHeadLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
         }
     }
     
@@ -55,11 +57,11 @@ open class JobClassMaster(val jobClassName: String): Listener {
         val action = event.action
         if (!action.name.contains("CLICK")) return
         castingCommandMap[player]?.let {
-            val thisTimeAction = if (event.action.name.startsWith("LEFT_CLICK")) {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 1.3f)
+            val thisTimeAction = if (action.name.startsWith("LEFT_CLICK")) {
+                player.playSound(player.getHeadLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 1.3f)
                 "L"
             } else {
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 0.7f)
+                player.playSound(player.getHeadLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 0.7f)
                 "R"
             }
             val newActionStr = it + thisTimeAction
@@ -83,8 +85,8 @@ open class JobClassMaster(val jobClassName: String): Listener {
         if (!castingModeList.contains(player)) return
         castingModeList.remove(player)
         castingCommandMap.remove(player)
-        player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
-        player.sendActionBar('&', "&cCast Mode canceled")
+        player.playSound(player.getHeadLocation(), Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
+        player.sendActionBar(Component.text("Cast Mode canceled", NamedTextColor.RED))
     }
 
     fun getTool(): List<Material> {
@@ -120,13 +122,8 @@ open class JobClassMaster(val jobClassName: String): Listener {
     }
 
     private fun notRegisterActionNotice(player: Player) {
-        player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
-        player.sendActionBar('&', "&cNot Registered Action")
-    }
-
-    private fun notEnoughLevelNotice(player: Player, level: Int) {
-        player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
-        player.sendActionBar('&', "&cNot enough levels (Need Lv.$level)")
+        player.playSound(player.getHeadLocation(), Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
+        player.sendActionBar(Component.text("Not registered skill", NamedTextColor.RED))
     }
 
     open fun levelUpEvent(player: Player) {}
