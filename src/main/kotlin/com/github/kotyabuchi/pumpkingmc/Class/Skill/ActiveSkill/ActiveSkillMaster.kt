@@ -31,13 +31,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
             enableAction(player, level)
             activePlayerLevelMap[uuid] = level
             player.persistentDataContainer.set(getSkillNamespacedKey(), PersistentDataType.BYTE, 1)
-            if (hasActiveTime) {
-                activeTimeMap[uuid] = object : BukkitRunnable() {
-                    override fun run() {
-                        disableSkill(player)
-                    }
-                }.runTaskLater(instance, calcActiveTime(level).toLong())
-            }
+            if (hasActiveTime) restartActiveTime(player, level)
         }
     }
 
@@ -62,7 +56,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
         return getRemainingCoolTime(uuid) <= 0L
     }
 
-    fun restartActiveTime(player: Player, level: Int) {
+    fun restartActiveTime(player: Player, level: Int = activePlayerLevelMap[player.uniqueId] ?: 1) {
         val uuid = player.uniqueId
         activeTimeMap[uuid]?.cancel()
         activeTimeMap[uuid] = object : BukkitRunnable() {
