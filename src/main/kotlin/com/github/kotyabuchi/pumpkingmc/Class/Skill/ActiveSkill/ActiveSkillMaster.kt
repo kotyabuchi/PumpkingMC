@@ -25,7 +25,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
             player.playSound(player.location, Sound.ENTITY_BLAZE_SHOOT, 0.5f, 2f)
             player.sendActionBar(
                 Component.text("$skillName: Not enough levels (Need Lv.$needLevel)").color(NamedTextColor.RED))
-        } else if (isReadySkill(uuid)) {
+        } else if (!isReadySkill(uuid)) {
             player.sendActionBar(Component.text("$skillName: Not yet (${(getRemainingCoolTime(uuid) / 1000.0).floor1Digits()}s)").color(NamedTextColor.RED))
         } else if (!isEnabledSkill(player)) {
             enableAction(player, level)
