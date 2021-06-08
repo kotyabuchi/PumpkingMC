@@ -13,7 +13,6 @@ import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.entity.Item
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
@@ -64,7 +63,8 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
         val player = event.player
         val playerStatus = player.getStatus()
 
-        if (brokenBlockSet.contains(block)) {
+        if (containsBrokenBlockSet(block)) {
+            brokenBlockSet.remove(block)
             if (placedBlock.containsKey(block)) {
                 placedBlock[block]?.cancel()
                 placedBlock.remove(block)
@@ -88,7 +88,6 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
                 afterDropAction(event)
             }
         }
-        brokenBlockSet.remove(block)
     }
 
     @EventHandler
@@ -110,8 +109,8 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
         val playerStatus = player.getStatus()
         val block = event.block
         val item = player.inventory.itemInMainHand
-
-        if (!getTool().contains(item.type) && (canGetExpWithHand && !item.type.isAir)) return
+        val toolType= item.type
+        if (!isJobTool(toolType) && (canGetExpWithHand && !toolType.isAir)) return
         if (!isTargetBlock(block)) return
         addBrokenBlockSet(block)
 
@@ -135,10 +134,10 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
         val player = event.player
         val block = event.block
         val itemStack = player.inventory.itemInMainHand
+        val toolType = itemStack.type
 
-        val usingTool = getTool().contains(itemStack.type)
-
-        if (!usingTool && (canGetExpWithHand && !itemStack.type.isAir)) return
+        if (!isJobTool(toolType) && (canGetExpWithHand && !toolType.isAir)) return
+        if (!isTargetBlock(block)) return
 
         event.isCancelled = true
 
