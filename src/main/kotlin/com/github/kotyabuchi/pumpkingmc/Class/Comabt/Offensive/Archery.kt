@@ -5,7 +5,6 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
-import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
@@ -31,15 +30,10 @@ object Archery: JobClassMaster("ARCHERY") {
         }
         addTool(Material.BOW)
         addTool(Material.CROSSBOW)
-        addAction(SkillCommand.RRR, 50, fun (player: Player) {
-            StrongShot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
-        })
-        addAction(SkillCommand.LLL, 200, fun (player: Player) {
-            ArcShot.enableSkill(player, player.getStatus().getJobClassStatus(this).getLevel())
-        })
-        addAction(SkillCommand.LRL, 100, fun (player: Player) {
-            GravityShot.enableSkill(player, player.getJobClassLevel(this))
-        })
+
+        registerSkill(SkillCommand.RRR, StrongShot)
+        registerSkill(SkillCommand.LLL, ArcShot)
+        registerSkill(SkillCommand.LRL, GravityShot)
     }
 
     @EventHandler

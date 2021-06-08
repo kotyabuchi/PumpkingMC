@@ -2,11 +2,9 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakExcavation
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
-import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import org.bukkit.Material
-import org.bukkit.entity.Player
 
 object Excavation: BlockBreakJobClass("EXCAVATION") {
 
@@ -25,11 +23,7 @@ object Excavation: BlockBreakJobClass("EXCAVATION") {
         }
         addExpMap(Material.CLAY, exp = 2)
 
-        addAction(SkillCommand.LLR, 100, fun(player: Player) {
-            MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
-        })
-        addAction(SkillCommand.LRR, 200, fun(player: Player) {
-            groundLevelingAssist.toggleSkill(player, player.getJobClassLevel(this))
-        })
+        registerSkill(SkillCommand.LLR, MultiBreakExcavation)
+        registerSkill(SkillCommand.LRR, groundLevelingAssist)
     }
 }

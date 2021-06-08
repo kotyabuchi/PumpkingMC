@@ -4,167 +4,28 @@ import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
-import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
 import com.github.kotyabuchi.pumpkingmc.Utility.getWoodType
 import com.github.kotyabuchi.pumpkingmc.Utility.isLeave
 import com.github.kotyabuchi.pumpkingmc.Utility.isWood
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
-import org.bukkit.Particle
-import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.type.Leaves
 import org.bukkit.entity.FallingBlock
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.event.entity.EntityDropItemEvent
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 import kotlin.random.Random
 
 object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
-    
-    private val treeAssistKey = NamespacedKey(instance, jobClassName + "_TreeAssist")
-    private val treeAssistMap = mutableMapOf<Player, BukkitTask>()
-    
-    private val logFallKey = NamespacedKey(instance, jobClassName + "_LogFall")
 
     init {
         Material.values().forEach {
             if (it.name.endsWith("_AXE")) addTool(it)
             if (it.isWood()) addExpMap(it, exp = 1)
-        }
-        addAction(SkillCommand.LRL, 50, fun(player: Player) {
-            val pdc = player.persistentDataContainer
-            if (pdc.has(treeAssistKey, PersistentDataType.BYTE)) {
-                pdc.remove(treeAssistKey)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&cTree Assist Off")
-            } else {
-                pdc.set(treeAssistKey, PersistentDataType.BYTE, 1)
-                player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                player.sendActionBar('&', "&aTree Assist On")
-                treeAssistMap[player] = object : BukkitRunnable() {
-                    override fun run() {
-                        pdc.remove(treeAssistKey)
-                        player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                        player.sendActionBar('&', "&cTree Assist Off")
-                    }
-                }.runTaskLater(instance, 20 * 6)
-            }
-        })
-        addAction(SkillCommand.LLL, 0, fun(player: Player) {
-            TreeFall.toggleSkill(player, player.getJobClassLevel(this))
-        })
-    }
-    
-    @EventHandler
-    fun onBreak(event: BlockBreakEvent) {
-        if (event is BlockMineEvent) return
-        val block = event.block
-        val material = block.type
-        val blockState = block.state
-        val player = event.player
-        val playerStatus = player.getStatus()
-        val jobClassStatus = playerStatus.getJobClassStatus(this)
-        val item = player.inventory.itemInMainHand
-        val pdc = player.persistentDataContainer
-        if (!material.isWood()) return
-
-        val y = block.y
-        if (getTool().contains(item.type) && pdc.has(treeAssistKey, PersistentDataType.BYTE)) {
-            val woodList: MutableList<Block> = mutableListOf()
-            val leaveList: MutableList<Block> = mutableListOf()
-            searchWood(block, block, woodList, leaveList, mutableListOf())
-            treeAssistMap[player]?.cancel()
-            treeAssistMap[player] = object : BukkitRunnable() {
-                override fun run() {
-                    pdc.remove(treeAssistKey)
-                    player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-                    player.sendActionBar('&', "&cTree Assist Off")
-                }
-            }.runTaskLater(instance, 20 * 6)
-
-            leaveList.sortWith { o1, o2 -> o1.y - o2.y }
-            jobClassStatus.addCombo(woodList.size - 1)
-            val drops = mutableMapOf<Material, Int>()
-            woodList.forEach {
-                for (drop in it.drops) {
-                    if (drop != null && !drop.type.isAir) {
-                        drops[drop.type] = (drops[drop.type] ?: 0) + drop.amount
-                    }
-                }
-                addBrokenBlockSet(it)
-                it.world.playSound(it.location, Sound.BLOCK_WOOD_BREAK, 1f, 1f)
-                it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                it.type = Material.AIR
-
-                val mineEvent = BlockMineEvent(it, player)
-                instance.server.pluginManager.callEvent(mineEvent)
-                event.isCancelled = true
-                if (!mineEvent.isCancelled) {
-                    it.getDrops(item, player).forEach { item ->
-                        val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), item)
-                        val dropEvent = BlockDropItemEvent(it, it.state, player, mutableListOf(dropItem))
-                        instance.server.pluginManager.callEvent(dropEvent)
-                        if (dropEvent.items.isEmpty()) dropItem.remove()
-                    }
-                    it.world.playSound(it.location, Sound.BLOCK_WOOD_BREAK, 1f, 1f)
-                    it.world.spawnParticle(Particle.BLOCK_CRACK, it.location.add(0.5, 0.5, 0.5), 20, .3, .3, .3, 2.0, it.blockData)
-                    it.type = Material.AIR
-                }
-            }
-            drops.forEach { (t, u) ->
-                val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), ItemStack(t, u))
-                val dropEvent = BlockDropItemEvent(block, blockState, player, mutableListOf(dropItem))
-                instance.server.pluginManager.callEvent(dropEvent)
-                if (dropEvent.items.isEmpty()) dropItem.remove()
-            }
-            leaveList.forEach {
-                object : BukkitRunnable() {
-                    override fun run() {
-                        block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
-                        it.type = Material.AIR
-                    }
-                }.runTaskLater(instance, it.y - y.toLong())
-            }
-        } else {
-            if (getTool().contains(item.type)) {
-                val mineEvent = BlockMineEvent(block, player)
-                instance.server.pluginManager.callEvent(mineEvent)
-                if (mineEvent.isCancelled) event.isCancelled = true
-            }
-
-//            if (!pdc.has(logFallKey, PersistentDataType.BYTE)) {
-//                val woodList: MutableList<Block> = mutableListOf()
-//                val leaveList: MutableList<Block> = mutableListOf()
-//                searchWood(block, block, woodList, leaveList, mutableListOf())
-//                woodList.remove(block)
-//                woodList.addAll(leaveList)
-//                woodList.sortWith { o1, o2 -> o1.y - o2.y }
-//                woodList.forEach {
-//                    object : BukkitRunnable() {
-//                        override fun run() {
-//                            if (it.type.isLeave()) {
-//                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
-//                                it.type = Material.AIR
-//                            } else if (!it.getRelative(BlockFace.DOWN).type.isSolid) {
-//                                block.world.spawnFallingBlock(it.location.add(0.5, 0.0, 0.5), it.blockData)
-//                                it.type = Material.AIR
-//                            }
-//                        }
-//                    }.runTaskLater(instance, it.y - y.toLong())
-//                }
-//                if (getTool().contains(item.type)) addBrokenBlockSet(block)
-//            }
         }
     }
 

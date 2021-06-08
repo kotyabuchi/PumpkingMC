@@ -1,8 +1,10 @@
 package com.github.kotyabuchi.pumpkingmc.Class
 
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToggleSkillMaster
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
-import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
+import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
+import com.github.kotyabuchi.pumpkingmc.Utility.getHeadLocation
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -23,8 +25,7 @@ open class JobClassMaster(val jobClassName: String): Listener {
     private val targetTool: MutableList<Material> = mutableListOf()
     private val castingModeList: MutableList<Player> = mutableListOf()
     private val castingCommandMap: MutableMap<Player, String> = mutableMapOf()
-    private val skillMap: MutableMap<SkillCommand, (player: Player) -> Unit> = mutableMapOf()
-    private val needLevelMap: MutableMap<SkillCommand, Int> = mutableMapOf()
+    private val skillMap: MutableMap<SkillCommand, ToggleSkillMaster> = mutableMapOf()
 
     @EventHandler
     fun modeChange(event: PlayerSwapHandItemsEvent) {
@@ -92,23 +93,23 @@ open class JobClassMaster(val jobClassName: String): Listener {
         return this
     }
 
-    protected fun addAction(skillCommand: SkillCommand, needLevel: Int = 0, action: (player: Player) -> Unit) {
-        skillMap[skillCommand] = action
-        needLevelMap[skillCommand] = needLevel
+    fun isJobTool(tool: Material): Boolean {
+        return targetTool.contains(tool)
+    }
+
+    protected fun registerSkill(skillCommand: SkillCommand, skill: ToggleSkillMaster) {
+        skillMap[skillCommand] = skill
     }
 
     private fun activeSkill(player: Player) {
         val castingAction = castingCommandMap[player] ?: return
         try {
             val skillCommand = SkillCommand.valueOf(castingAction)
-            val action = skillMap[skillCommand]
-            val needLevel = needLevelMap[skillCommand]
-            if (action == null || needLevel == null) {
+            val skill = skillMap[skillCommand]
+            if (skill == null) {
                 notRegisterActionNotice(player)
-            } else if (player.getStatus().getJobClassStatus(this).getLevel() < needLevel) {
-                notEnoughLevelNotice(player, needLevel)
             } else {
-                action.invoke(player)
+                skill.toggleSkill(player, player.getJobClassLevel(this))
             }
         } catch (e: IllegalArgumentException) {
             notRegisterActionNotice(player)

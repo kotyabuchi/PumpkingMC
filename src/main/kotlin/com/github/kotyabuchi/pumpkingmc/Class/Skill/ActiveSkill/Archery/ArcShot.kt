@@ -32,7 +32,7 @@ object ArcShot: ToolLinkedSkill {
     override val hasActiveTime: Boolean = true
     override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
-    override val coolTimePlayers: MutableList<UUID> = mutableListOf()
+    override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()
     override val skillItemBackup: MutableMap<UUID, ItemStack> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 40 + level / 25 * 30
 

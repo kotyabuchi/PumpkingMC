@@ -2,12 +2,11 @@ package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MineAssist
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Mining.MineAssist
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Mining.StoneReplacer
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.StoneReplacer
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
-import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
 import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
@@ -17,7 +16,6 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.inventory.ItemStack
@@ -50,18 +48,10 @@ object Mining: BlockBreakJobClass("Mining") {
         addExpMap(Material.EMERALD_ORE, exp = 10)
         groundLevelingAssist.addAssistBlock(Material.COBBLESTONE)
 
-        addAction(SkillCommand.LLL, 50, fun(player: Player) {
-            StoneReplacer.toggleSkill(player, player.getJobClassLevel(this))
-        })
-        addAction(SkillCommand.LRL, 50, fun(player: Player) {
-            MineAssist.toggleSkill(player, player.getJobClassLevel(this))
-        })
-        addAction(SkillCommand.LLR, 100, fun(player: Player) {
-            MultiBreakMining.toggleSkill(player, player.getJobClassLevel(this))
-        })
-        addAction(SkillCommand.LRR, 200, fun(player: Player) {
-            groundLevelingAssist.toggleSkill(player, player.getJobClassLevel(this))
-        })
+        registerSkill(SkillCommand.LLL, StoneReplacer)
+        registerSkill(SkillCommand.LRL, MineAssist)
+        registerSkill(SkillCommand.LLR, MultiBreakMining)
+        registerSkill(SkillCommand.LRR, groundLevelingAssist)
     }
 
     @EventHandler

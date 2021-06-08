@@ -4,7 +4,6 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Super
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
-import com.github.kotyabuchi.pumpkingmc.System.Player.getJobClassLevel
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.damage
 import com.github.kotyabuchi.pumpkingmc.Utility.hasTag
@@ -35,9 +34,7 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
     val multiBreakKey = jobClassName + "_MultiBreak"
 
     init {
-        addAction(SkillCommand.RRR, 25, fun(player: Player) {
-            SuperBreaker.toggleSkill(player, player.getJobClassLevel(this))
-        })
+        registerSkill(SkillCommand.RRR, SuperBreaker)
     }
 
     fun addExpMap(vararg materials: Material, exp: Int) {
