@@ -1,7 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Lifestyle
 
 import com.github.kotyabuchi.pumpkingmc.Class.BlockBreakJobClass
-import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Woodcutting.TreeAssist
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Woodcutting.TreeFall
 import com.github.kotyabuchi.pumpkingmc.Enum.SkillCommand
 import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
 import com.github.kotyabuchi.pumpkingmc.Utility.aroundBlockFace
@@ -27,6 +28,9 @@ object Woodcutting: BlockBreakJobClass("WOOD_CUTTING") {
             if (it.name.endsWith("_AXE")) addTool(it)
             if (it.isWood()) addExpMap(it, exp = 1)
         }
+
+        registerSkill(SkillCommand.LLL, TreeFall)
+        registerSkill(SkillCommand.LRL, TreeAssist)
     }
 
     @EventHandler

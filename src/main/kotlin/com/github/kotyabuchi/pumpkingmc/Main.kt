@@ -10,10 +10,11 @@ import com.github.kotyabuchi.pumpkingmc.Class.Lifestyle.*
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.ArcShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.GravityShot
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.Archery.StrongShot
-import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.GroundLevelingAssist
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakExcavation
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.MultiBreak.MultiBreakMining
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.SuperBreaker
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Woodcutting.TreeAssist
+import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Woodcutting.TreeFall
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.BlinkStrike
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.DoubleAttack
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
@@ -105,6 +106,9 @@ class Main : JavaPlugin() {
                 // SwordMaster
         pm.registerEvents(BlinkStrike, this)
         pm.registerEvents(DoubleAttack, this)
+                // WoodCutting
+        pm.registerEvents(TreeAssist, this)
+        pm.registerEvents(TreeFall, this)
             // ClassSkill
                 // CombatSkill
                     // Defensive
