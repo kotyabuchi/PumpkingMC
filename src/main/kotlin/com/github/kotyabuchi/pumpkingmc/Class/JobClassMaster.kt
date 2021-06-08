@@ -29,6 +29,8 @@ open class JobClassMaster(val jobClassName: String): Listener {
 
     @EventHandler
     fun modeChange(event: PlayerSwapHandItemsEvent) {
+        val player = event.player
+        if (player.isSneaking) return
         if (!targetTool.contains(event.offHandItem?.type)) return
         event.isCancelled = true
         val player = event.player
