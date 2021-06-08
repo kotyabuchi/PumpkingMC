@@ -6,7 +6,7 @@ import com.github.kotyabuchi.pumpkingmc.Menu.SmithingMenu
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
-import com.github.kotyabuchi.pumpkingmc.Utility.beginWithUpperCase
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.Utility.getMiningLevel
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -55,7 +55,7 @@ class MenuButtonSmithing(private val menu: SmithingMenu, private val toolPartTyp
                     item
                 } else {
                     val rarity = ItemExpansion(materialSlotItem).getRarity()
-                    val item = ItemStackGenerator(materialSlotItem.clone()).setDisplayName((materialSlotItem.type.name + "_" + toolPartType.name).beginWithUpperCase()).addFakeEnchantment().generate()
+                    val item = ItemStackGenerator(materialSlotItem.clone()).setDisplayName((materialSlotItem.type.name + "_" + toolPartType.name).upperCamelCase()).addFakeEnchantment().generate()
                     item.amount = craftAmount
                     ItemExpansion(item, null, mutableListOf(), rarity, listOf(ItemType.TOOL_PART), toolPartType, item.type.getMiningLevel()).removeItemType(ItemType.MATERIAL).item
                 }

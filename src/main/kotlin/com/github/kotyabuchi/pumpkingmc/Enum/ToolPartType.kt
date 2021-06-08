@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Enum
 
-import com.github.kotyabuchi.pumpkingmc.Utility.beginWithUpperCase
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import org.bukkit.Material
 
 enum class ToolPartType(val icon: Material, val materialAmount: Int, val isHead: Boolean, val tool: ToolType?) {
@@ -16,6 +16,6 @@ enum class ToolPartType(val icon: Material, val materialAmount: Int, val isHead:
     TOOL_ROD(Material.STICK, 1, false, null);
 
     fun getRegularName(): String {
-        return name.beginWithUpperCase()
+        return name.upperCamelCase()
     }
 }

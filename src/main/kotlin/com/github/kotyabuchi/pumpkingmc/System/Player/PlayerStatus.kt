@@ -69,7 +69,7 @@ data class PlayerStatus(val player: Player) {
         if (jobClassStatus.addExp(point, increaseCombo) == JobClassStatus.AddExpResult.LEVEL_UP) noticeLevelUp(jocClass)
         val addedExp = jobClassStatus.getRecentAddedExp()
         val combo = jobClassStatus.getCombo()
-        val skillName = jocClass.jobClassName.beginWithUpperCase()
+        val skillName = jocClass.jobClassName.upperCamelCase()
 
         if (expBarMap.containsKey(jocClass)) {
             expBarMap[jocClass]!!.cancel()

@@ -6,7 +6,7 @@ import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonBlank
 import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonSmithing
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.addItemOrDrop
-import com.github.kotyabuchi.pumpkingmc.Utility.beginWithUpperCase
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.Utility.canUseToolHead
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.scheduler.BukkitRunnable
 
-class SmithingMenu(private val toolPartType: ToolPartType): MenuBase("Smithing - ${toolPartType.name.beginWithUpperCase()}", 6) {
+class SmithingMenu(private val toolPartType: ToolPartType): MenuBase("Smithing - ${toolPartType.name.upperCamelCase()}", 6) {
 
     private val materialSlot = getSlot(3, 1)
     private val resultLineSlotRange = getSlot(3, 2) .. getSlot(3, 6)

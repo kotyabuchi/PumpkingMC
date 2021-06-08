@@ -9,7 +9,7 @@ fun String.colorS(): String {
     return ChatColor.translateAlternateColorCodes('&', this)
 }
 
-fun String.beginWithUpperCase(): String {
+fun String.upperCamelCase(): String {
     return when (this.length) {
         0 -> ""
         1 -> this.toUpperCase()
@@ -56,7 +56,7 @@ fun String.toDecimal() : Int {
 }
 
 fun Enchantment.toLore(level: Int): String {
-    var result = this.name.beginWithUpperCase()
+    var result = this.name.upperCamelCase()
     if (this.maxLevel > 1) {
         result += " ${level.toRomanNumeral()}"
     }

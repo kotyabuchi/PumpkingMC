@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Enum
 
-import com.github.kotyabuchi.pumpkingmc.Utility.beginWithUpperCase
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 
 enum class ItemType {
     TOOL,
@@ -13,6 +13,6 @@ enum class ItemType {
     MATERIAL;
 
     fun getRegularName(): String {
-        return name.beginWithUpperCase()
+        return name.upperCamelCase()
     }
 }
