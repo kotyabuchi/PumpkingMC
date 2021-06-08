@@ -33,7 +33,6 @@ open class JobClassMaster(val jobClassName: String): Listener {
         if (player.isSneaking) return
         if (!targetTool.contains(event.offHandItem?.type)) return
         event.isCancelled = true
-        val player = event.player
         if (castingModeList.contains(player)) {
             activeSkill(player)
             castingModeList.remove(player)
