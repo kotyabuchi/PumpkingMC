@@ -52,6 +52,8 @@ open class JobClassMaster(val jobClassName: String): Listener {
         if (!castingModeList.contains(player)) return
         event.isCancelled = true
         if (event.hand != EquipmentSlot.HAND) return
+        val action = event.action
+        if (!action.name.contains("CLICK")) return
         castingCommandMap[player]?.let {
             val thisTimeAction = if (event.action.name.startsWith("LEFT_CLICK")) {
                 player.playSound(player.location.add(0.0, 2.0, 0.0), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 1.3f)
