@@ -1,4 +1,4 @@
-package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak
+package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Mining
 
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToggleSkillMaster
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
