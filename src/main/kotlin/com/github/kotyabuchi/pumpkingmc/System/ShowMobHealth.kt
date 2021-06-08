@@ -1,5 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.System
 
+import com.github.kotyabuchi.pumpkingmc.Utility.beginWithUpperCase
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -32,7 +33,7 @@ class ShowMobHealth: Listener {
             } else return
         }
         val mob = event.entity as? LivingEntity ?: return
-        val name = if (mob is Player) mob.name else mob.customName ?: mob.type.name
+        val name = if (mob is Player) mob.name else mob.customName ?: mob.type.name.beginWithUpperCase()
         val health = max(0.0, mob.health - event.finalDamage).floor2Digits()
         val maxHealth = mob.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue ?: return
 
