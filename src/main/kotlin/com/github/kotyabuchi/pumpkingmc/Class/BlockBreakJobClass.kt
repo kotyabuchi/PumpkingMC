@@ -28,7 +28,7 @@ import kotlin.random.Random
 open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName) {
     private val expMap = mutableMapOf<Material, Int>()
     private val brokenBlockSet = mutableSetOf<Block>()
-    private val canGetExpWithHand = true
+    open val canGetExpWithHand = true
     private val placedBlock = mutableMapOf<Block, BukkitTask>()
     val multiBreakKey = jobClassName + "_MultiBreak"
 

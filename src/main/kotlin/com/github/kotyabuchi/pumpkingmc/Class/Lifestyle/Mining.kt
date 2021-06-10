@@ -23,6 +23,7 @@ import kotlin.math.round
 
 object Mining: BlockBreakJobClass("Mining") {
 
+    override val canGetExpWithHand: Boolean = false
     private val stoneSet = setOf(Material.STONE, Material.GRANITE, Material.DIORITE, Material.ANDESITE, Material.NETHERRACK,
         Material.SANDSTONE, Material.SMOOTH_SANDSTONE, Material.CHISELED_SANDSTONE, Material.RED_SANDSTONE,
         Material.CRIMSON_NYLIUM, Material.WARPED_NYLIUM, Material.MOSSY_COBBLESTONE, Material.BASALT, Material.BLACKSTONE)
