@@ -63,7 +63,7 @@ class GroundLevelingAssist(private val jobClass: JobClassMaster): ToggleSkillMas
                 val targetBlock = block.getRelative(lookingFace)
                 if (targetBlock.type.isAir) {
                     for (groundLevelingMaterial in groundLevelingAssisBlockSet) {
-                        if (player.inventory.consume(ItemExpansion(ItemStack(groundLevelingMaterial)).item)) {
+                        if (player.inventory.consume(ItemStack(groundLevelingMaterial))) {
                             targetBlock.type = groundLevelingMaterial
                             break
                         }

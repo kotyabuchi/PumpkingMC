@@ -21,7 +21,7 @@ class ItemExpansionManager: Listener {
     fun onCraft(event: PrepareItemCraftEvent) {
         val inv = event.inventory
         inv.result?.let {
-            if (!it.type.isAir) {
+            if (!it.type.isBlock) {
                 var result = ItemExpansion(it).item
                 val type = it.type
                 if (type.hasDurability()) {
@@ -44,7 +44,7 @@ class ItemExpansionManager: Listener {
                 inv.type == InventoryType.DROPPER ||
                 inv.type == InventoryType.MERCHANT) {
             inv.contents.forEachIndexed { index, itemStack ->
-                if (itemStack != null && !itemStack.type.isAir) {
+                if (itemStack != null && !itemStack.type.isBlock) {
                     val nbti = NBTItem(itemStack)
                     if (!nbti.hasKey("IS_MENU_ITEM")) inv.setItem(index, ItemExpansion(itemStack).item)
                 }
@@ -55,12 +55,14 @@ class ItemExpansionManager: Listener {
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerDrop(event: PlayerDropItemEvent) {
         val item = event.itemDrop
+        if (item.itemStack.type.isBlock) return
         item.itemStack = ItemExpansion(item.itemStack).item
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDrop(event: EntityDropItemEvent) {
         val item = event.itemDrop
+        if (item.itemStack.type.isBlock) return
         item.itemStack = ItemExpansion(item.itemStack).item
     }
 
@@ -68,6 +70,7 @@ class ItemExpansionManager: Listener {
     fun onBlockDrop(event: BlockDropItemEvent) {
         val items = event.items
         for (item in items) {
+            if (item.itemStack.type.isBlock) continue
             item.itemStack = ItemExpansion(item.itemStack).item
         }
     }
@@ -77,6 +80,7 @@ class ItemExpansionManager: Listener {
         val items = event.drops
         val result = mutableListOf<ItemStack>()
         for (item in items) {
+            if (item.type.isBlock) continue
             result.add(ItemExpansion(item).item)
         }
         items.clear()

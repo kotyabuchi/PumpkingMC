@@ -159,7 +159,7 @@ object BlackSmith: JobClassMaster("BLACKSMITH") {
 
     @EventHandler
     fun onSmelt(event: FurnaceSmeltEvent) {
-        event.result = ItemExpansion(event.result).item
+        if (!event.result.type.isBlock) event.result = ItemExpansion(event.result).item
 
         val block = event.block
         val blockState = block.state as? Furnace ?: return

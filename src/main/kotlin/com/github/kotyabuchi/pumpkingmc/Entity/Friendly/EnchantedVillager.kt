@@ -26,10 +26,11 @@ class EnchantedVillager: Listener {
         villager.recipes.forEach { recipe ->
             val newIngredients = mutableListOf<ItemStack>()
             recipe.ingredients.forEach { item ->
-                if (item != null && !item.type.isAir) newIngredients.add(ItemExpansion(item).item)
+                if (item != null && !item.type.isBlock) newIngredients.add(ItemExpansion(item).item)
             }
             recipe.ingredients = newIngredients
-            val newRecipe = MerchantRecipe(ItemExpansion(recipe.result).item, recipe.uses, recipe.maxUses, recipe.hasExperienceReward(), recipe.villagerExperience, recipe.priceMultiplier)
+            val newResult = if (recipe.result.type.isBlock) recipe.result else ItemExpansion(recipe.result).item
+            val newRecipe = MerchantRecipe(newResult, recipe.uses, recipe.maxUses, recipe.hasExperienceReward(), recipe.villagerExperience, recipe.priceMultiplier)
             newRecipe.ingredients = newIngredients
             newRecipes.add(newRecipe)
         }
