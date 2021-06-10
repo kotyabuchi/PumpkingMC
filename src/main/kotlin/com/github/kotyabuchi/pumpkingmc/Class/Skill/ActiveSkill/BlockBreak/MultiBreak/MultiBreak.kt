@@ -68,7 +68,7 @@ open class MultiBreak: ToggleSkillMaster {
         blockList.remove(block)
 
         blockList.forEach {
-            it.miningWithEvent(player, itemStack, block)
+            it.miningWithEvent(player, itemStack, block, true)
         }
     }
 

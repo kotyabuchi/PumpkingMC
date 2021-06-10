@@ -33,7 +33,11 @@ object MineAssist: ToggleSkillMaster {
         searchOres(block, ores, mutableListOf())
 
         ores.forEach {
-            it.miningWithEvent(player, itemStack, block)
+            if (block == it) {
+                it.miningWithEvent(player, itemStack, block, event.isMultiBreak)
+            } else {
+                it.miningWithEvent(player, itemStack, block)
+            }
         }
     }
 
