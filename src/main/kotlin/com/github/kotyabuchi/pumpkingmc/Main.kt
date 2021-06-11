@@ -40,6 +40,7 @@ import com.github.kotyabuchi.pumpkingmc.Utility.initDB
 import com.github.kotyabuchi.pumpkingmc.Utility.savePlayerStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.startAutoSave
 import org.bukkit.NamespacedKey
+import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -84,7 +85,7 @@ class Main : JavaPlugin() {
         pm.registerEvents(CustomEntity(), this)
 
         // CustomEvent
-        pm.registerEvents(CustomEventCaller(), this)
+        pm.registerEvents(CustomEventCaller, this)
 
         // CustomItem
         pm.registerEvents(TransportAmulet(), this)
@@ -195,5 +196,9 @@ class Main : JavaPlugin() {
 
     fun registerEvent(listener: Listener) {
         server.pluginManager.registerEvents(listener, this)
+    }
+
+    fun callEvent(event: Event) {
+        server.pluginManager.callEvent(event)
     }
 }

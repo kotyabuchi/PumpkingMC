@@ -127,37 +127,4 @@ open class BlockBreakJobClass(jobClassName: String): JobClassMaster(jobClassName
             }
         }
     }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    fun onBlockBreak(event: BlockBreakEvent) {
-        if (event is BlockMineEvent) return
-        val player = event.player
-        val block = event.block
-        val itemStack = player.inventory.itemInMainHand
-        val toolType = itemStack.type
-
-        if (!isJobTool(toolType) && (canGetExpWithHand && !toolType.isAir)) return
-        if (!isTargetBlock(block)) return
-
-        event.isCancelled = true
-
-        val mineEvent = BlockMineEvent(block, player, player.hasTag(multiBreakKey))
-        instance.server.pluginManager.callEvent(mineEvent)
-        if (!mineEvent.isCancelled) {
-            val dropItems = mutableListOf<Item>()
-            block.getDrops(itemStack, player).forEach { item ->
-                val dropItem = block.world.dropItem(block.location.add(0.5, 0.0, 0.5), item)
-                dropItems.add(dropItem)
-            }
-            val state = block.state
-            block.type = Material.AIR
-            val dropEvent = BlockDropItemEvent(block, state, player, dropItems)
-            instance.server.pluginManager.callEvent(dropEvent)
-            if (dropEvent.items.isEmpty()) {
-                dropItems.forEach { item ->
-                    item.remove()
-                }
-            }
-        }
-    }
 }

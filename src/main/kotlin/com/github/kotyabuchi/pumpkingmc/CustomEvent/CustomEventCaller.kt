@@ -1,37 +1,23 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEvent
 
-import com.github.kotyabuchi.pumpkingmc.instance
+import com.github.kotyabuchi.pumpkingmc.Utility.miningWithEvent
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
 
-class CustomEventCaller: Listener {
+object CustomEventCaller: Listener {
 
-    private val pm = instance.server.pluginManager
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onBlockBreak(event: BlockBreakEvent) {
+        if (event is BlockMineEvent) return
+        if (event.isCancelled) return
+        val player = event.player
+        val block = event.block
+        val itemStack = player.inventory.itemInMainHand
 
-//    @EventHandler
-//    fun onPickupItem(event: PlayerAttemptPickupItemEvent) {
-//        val player = event.player
-//        val inv = player.inventory
-//        val itemEntity = event.item
-//        val item = itemEntity.itemStack
-//        val getItemEvent = PlayerGetItemEvent(player, item)
-//        val pickUppedAmount = item.amount
-//        pm.callEvent(getItemEvent)
-//        val eventItem = getItemEvent.item
-//
-//        if (eventItem == null) {
-//            object : BukkitRunnable() {
-//                override fun run() {
-//                    inv.removeItem(item)
-//                }
-//            }.runTaskLater(instance, 0)
-//        } else {
-//            object : BukkitRunnable() {
-//                val minusAmount = item.amount
-//                override fun run() {
-//                    item.amount = pickUppedAmount - minusAmount
-//                    inv.removeItem(item)
-//                }
-//            }.runTaskLater(instance, 0)
-//        }
-//    }
+        event.isCancelled = true
+
+        block.miningWithEvent(player, itemStack)
+    }
 }
