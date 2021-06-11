@@ -1,21 +1,23 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ExpBoost
-import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ProjectileReflection
+import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.ProjectileReflection
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Telekinesis
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.instance
+import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.scheduler.BukkitRunnable
-import java.util.*
 
 object CustomEnchantment {
 
     private val enchantments = mutableListOf<CustomEnchantmentMaster>()
 
-    val TELEKINESIS = Telekinesis()
-    val PROJECTILE_REFLECTION = ProjectileReflection()
-    val EXP_BOOST = ExpBoost()
+    val TELEKINESIS = Telekinesis
+    val PROJECTILE_REFLECTION = ProjectileReflection
+    val EXP_BOOST = ExpBoost
+
+    val EnchantmentKey = NamespacedKey(instance, "Enchantments")
 
     init {
         enchantments.add(TELEKINESIS)

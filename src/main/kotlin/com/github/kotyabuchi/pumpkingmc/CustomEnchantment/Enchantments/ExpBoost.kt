@@ -20,42 +20,23 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.round
 
-class ExpBoost: CustomEnchantmentMaster("Exp Boost") {
+object ExpBoost: CustomEnchantmentMaster("Exp Boost") {
 
-    private val maxLevel = 3
-    private val startLevel = 1
+    private const val maxLevel = 3
     private val itemTarget = EnchantmentTarget.TOOL
-    private val isTreasure = false
-    private val isCursed = false
 
     private val entities = mutableMapOf<Entity, Byte>()
 
     override fun getProbability(expCost: Int): Int {
-        return round(expCost * 1.5).toInt()
+        return round(expCost.toDouble() / rarity.weight).toInt()
     }
 
     override fun getMaxLevel(): Int {
         return maxLevel
     }
 
-    override fun getStartLevel(): Int {
-        return startLevel
-    }
-
     override fun getItemTarget(): EnchantmentTarget {
         return itemTarget
-    }
-
-    override fun isTreasure(): Boolean {
-        return isTreasure
-    }
-
-    override fun isCursed(): Boolean {
-        return isCursed
-    }
-
-    override fun conflictsWith(other: Enchantment): Boolean {
-        return false
     }
 
     override fun canEnchantItem(item: ItemStack): Boolean {
@@ -88,7 +69,7 @@ class ExpBoost: CustomEnchantmentMaster("Exp Boost") {
         val level = meta.getEnchantLevel(this)
         object : BukkitRunnable() {
             override fun run() {
-                entity.persistentDataContainer.set(enchantKey, PersistentDataType.BYTE, level.toByte())
+                entity.persistentDataContainer.set(key, PersistentDataType.BYTE, level.toByte())
             }
         }.runTaskLater(instance, 1)
     }
@@ -107,11 +88,11 @@ class ExpBoost: CustomEnchantmentMaster("Exp Boost") {
             }
             level = meta.getEnchantLevel(this).toByte()
         } else if (damager is Projectile) {
-            if (!damager.persistentDataContainer.has(enchantKey, PersistentDataType.BYTE)) {
+            if (!damager.persistentDataContainer.has(key, PersistentDataType.BYTE)) {
                 entities.remove(entity)
                 return
             }
-            level = damager.persistentDataContainer.get(enchantKey, PersistentDataType.BYTE) ?: return
+            level = damager.persistentDataContainer.get(key, PersistentDataType.BYTE) ?: return
         } else {
             return
         }

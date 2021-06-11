@@ -6,7 +6,6 @@ import com.github.kotyabuchi.pumpkingmc.Utility.addItemOrDrop
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.GameMode
 import org.bukkit.block.Block
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -23,43 +22,27 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.round
 
-class Telekinesis: CustomEnchantmentMaster("Telekinesis") {
+object Telekinesis: CustomEnchantmentMaster("Telekinesis") {
 
-    private val maxLevel = 1
-    private val startLevel = 1
     private val itemTarget = EnchantmentTarget.TOOL
-    private val isTreasure = false
-    private val isCursed = false
 
     private val blocks = mutableMapOf<Block, Player>()
     private val entities = mutableMapOf<Entity, Player>()
 
+    init {
+        instance.server.pluginManager.registerEvents(this, instance)
+    }
+
     override fun getProbability(expCost: Int): Int {
-        return round(expCost * 1.5).toInt()
+        return round(expCost.toDouble() / rarity.weight).toInt()
     }
 
     override fun getMaxLevel(): Int {
-        return maxLevel
-    }
-
-    override fun getStartLevel(): Int {
-        return startLevel
+        return 1
     }
 
     override fun getItemTarget(): EnchantmentTarget {
         return itemTarget
-    }
-
-    override fun isTreasure(): Boolean {
-        return isTreasure
-    }
-
-    override fun isCursed(): Boolean {
-        return isCursed
-    }
-
-    override fun conflictsWith(other: Enchantment): Boolean {
-        return false
     }
 
     override fun canEnchantItem(item: ItemStack): Boolean {
@@ -106,7 +89,7 @@ class Telekinesis: CustomEnchantmentMaster("Telekinesis") {
         if (!meta.hasEnchant(this)) return
         object : BukkitRunnable() {
             override fun run() {
-                entity.persistentDataContainer.set(enchantKey, PersistentDataType.BYTE, 1)
+                entity.persistentDataContainer.set(key, PersistentDataType.BYTE, 1)
             }
         }.runTaskLater(instance, 1)
     }
@@ -120,7 +103,7 @@ class Telekinesis: CustomEnchantmentMaster("Telekinesis") {
             val meta = item.itemMeta ?: return
             if (!meta.hasEnchant(this)) return
         } else if (damager is Projectile) {
-            if (!damager.persistentDataContainer.has(enchantKey, PersistentDataType.BYTE)) return
+            if (!damager.persistentDataContainer.has(key, PersistentDataType.BYTE)) return
             damager = damager.shooter as? Player ?: return
         } else {
             return
