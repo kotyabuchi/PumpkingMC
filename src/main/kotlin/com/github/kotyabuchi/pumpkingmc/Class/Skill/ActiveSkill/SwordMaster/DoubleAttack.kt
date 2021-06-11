@@ -1,7 +1,9 @@
 package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster
 
+import com.github.kotyabuchi.pumpkingmc.Class.Comabt.Offensive.SwordMaster
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ActiveSkillMaster
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
+import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Sound
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -32,15 +34,17 @@ object DoubleAttack: ActiveSkillMaster {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
+        if (event.isCancelled) return
         val player = event.damager as? Player ?: return
         val entity = event.entity as? LivingEntity ?: return
-        val item = player.inventory.itemInMainHand
-        if (!item.type.name.endsWith("_SWORD")) return
+        if (!SwordMaster.isJobTool(player.inventory.itemInMainHand.type)) return
+        if (!isEnabledSkill(player)) return
 
-        if (isEnabledSkill(player)) {
-            disableSkill(player)
-            entity.damage(event.damage, player)
-            entity.noDamageTicks = 0
-        }
+        disableSkill(player)
+        val damageEvent = EntityDamageByEntityEvent(event.damager, event.entity, event.cause, event.damage)
+        instance.callEvent(damageEvent)
+        if (damageEvent.isCancelled) return
+        entity.damage(event.damage, player)
+        entity.noDamageTicks = 0
     }
 }
