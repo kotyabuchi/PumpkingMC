@@ -11,6 +11,7 @@ import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.ProjectileHitEvent
@@ -72,13 +73,14 @@ object ArcShot: ToolLinkedSkill {
         arcShotMap.remove(player.uniqueId)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun onShot(event: EntityShootBowEvent) {
         val player = event.entity as? Player ?: return
+        val arrow = event.projectile as? Arrow ?: return
         if (!isEnabledSkill(player)) return
         activePlayerLevelMap[player.uniqueId]?.let {
+            shootArcShot(player, arrow, it)
             event.projectile.remove()
-            shootArcShot(player, it)
         }
     }
 
@@ -107,7 +109,7 @@ object ArcShot: ToolLinkedSkill {
         }
     }
 
-    private fun shootArcShot(player: Player, level: Int) {
+    private fun shootArcShot(player: Player, arrow: Arrow, level: Int) {
         disableSkill(player)
 
         player.world.playSound(player.eyeLocation, Sound.ENTITY_ARROW_SHOOT, 1f, .7f)
@@ -122,6 +124,11 @@ object ArcShot: ToolLinkedSkill {
         val damage = level / 200.0
         val arrowAmount = level * 1.5
         val arrowPerOneTime = round(level / 100.0 * 2).toInt()
+
+        val basePotionData = arrow.basePotionData
+        val customEffects = arrow.customEffects
+        val color = arrow.color
+        val enchantments = arrow.persistentDataContainer.get(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING) ?: ""
 
         object : BukkitRunnable() {
             var count = 0
@@ -143,8 +150,14 @@ object ArcShot: ToolLinkedSkill {
                         skillArrow.shooter = player
                         skillArrow.damage = damage
                         skillArrow.pierceLevel = 127
+                        skillArrow.basePotionData = basePotionData
+                        customEffects.forEach { effect ->
+                            skillArrow.addCustomEffect(effect, true)
+                        }
+                        skillArrow.color = color
                         skillArrow.persistentDataContainer.set(arcShotArrowKey, PersistentDataType.INTEGER, level)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Disable_LongShotBonus"), PersistentDataType.BYTE, 1)
+                        skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING, enchantments)
                         count++
                     }
                 }
