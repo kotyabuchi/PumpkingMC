@@ -29,8 +29,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
             player.sendActionBar(Component.text("$skillName: Not yet (${(getRemainingCoolTime(uuid) / 1000.0).floor1Digits()}s)").color(NamedTextColor.RED))
         } else if (!isEnabledSkill(player)) {
             enableAction(player, level)
-            activePlayerLevelMap[uuid] = level
-            player.persistentDataContainer.set(getSkillNamespacedKey(), PersistentDataType.BYTE, 1)
+            setSkillLevel(player, level)
             if (hasActiveTime) restartActiveTime(player, level)
         }
     }
@@ -40,8 +39,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
         disableAction(player)
         activeTimeMap[uuid]?.cancel()
         activeTimeMap.remove(uuid)
-        activePlayerLevelMap.remove(uuid)
-        player.persistentDataContainer.remove(getSkillNamespacedKey())
+        removeSkillLevel(player)
     }
 
     fun setLastUseTime(uuid: UUID) {
@@ -56,7 +54,7 @@ interface ActiveSkillMaster: ToggleSkillMaster {
         return getRemainingCoolTime(uuid) <= 0L
     }
 
-    fun restartActiveTime(player: Player, level: Int = activePlayerLevelMap[player.uniqueId] ?: 1) {
+    fun restartActiveTime(player: Player, level: Int = getSkillLevel(player) ?: 1) {
         val uuid = player.uniqueId
         activeTimeMap[uuid]?.cancel()
         activeTimeMap[uuid] = object : BukkitRunnable() {

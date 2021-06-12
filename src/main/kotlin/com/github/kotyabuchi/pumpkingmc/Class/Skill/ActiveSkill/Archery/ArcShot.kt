@@ -32,7 +32,6 @@ object ArcShot: ToolLinkedSkill {
     override val needLevel: Int = 200
     override val description: String = ""
     override val hasActiveTime: Boolean = true
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()
     override val skillItemBackup: MutableMap<UUID, ItemStack> = mutableMapOf()
@@ -79,7 +78,7 @@ object ArcShot: ToolLinkedSkill {
         val player = event.entity as? Player ?: return
         val arrow = event.projectile as? Arrow ?: return
         if (!isEnabledSkill(player)) return
-        activePlayerLevelMap[player.uniqueId]?.let {
+        getSkillLevel(player)?.let {
             shootArcShot(player, arrow, it, event)
             event.projectile.remove()
         }

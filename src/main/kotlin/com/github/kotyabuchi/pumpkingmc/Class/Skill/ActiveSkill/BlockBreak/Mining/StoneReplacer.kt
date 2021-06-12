@@ -13,7 +13,6 @@ object StoneReplacer: ToggleSkillMaster {
     override val cost: Int = 0
     override val needLevel: Int = 50
     override var description: String = ""
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
 
     private fun canReplace(player: Player): Boolean {
         if (!isEnabledSkill(player)) return false

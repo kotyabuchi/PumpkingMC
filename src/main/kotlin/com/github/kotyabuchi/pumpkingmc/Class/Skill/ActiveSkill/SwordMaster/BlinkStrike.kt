@@ -29,7 +29,6 @@ object BlinkStrike: ActiveSkillMaster {
     override val needLevel: Int = 100
     override var description: String = "一定距離をブリンクし、範囲内の敵を攻撃する"
     override val hasActiveTime: Boolean = false
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 0

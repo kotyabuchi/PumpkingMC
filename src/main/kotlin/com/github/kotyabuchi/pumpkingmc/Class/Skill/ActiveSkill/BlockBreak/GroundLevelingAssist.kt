@@ -23,7 +23,6 @@ class GroundLevelingAssist(private val jobClass: JobClassMaster): ToggleSkillMas
     override val cost: Int = 0
     override val needLevel: Int = 200
     override var description: String = ""
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
 
     private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
 

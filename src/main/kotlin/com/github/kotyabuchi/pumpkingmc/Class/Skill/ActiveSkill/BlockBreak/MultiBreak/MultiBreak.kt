@@ -22,7 +22,6 @@ open class MultiBreak: ToggleSkillMaster {
     override val cost: Int = 0
     override val needLevel: Int = 100
     override var description: String = "レベルに応じた範囲を一括破壊する"
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
 
     private val targetTool: MutableSet<Material> = mutableSetOf()
     private val transparentBlocks = mutableSetOf<Material>()
@@ -53,11 +52,10 @@ open class MultiBreak: ToggleSkillMaster {
         if (event.isCancelled) return
 
         val player = event.player
-        val uuid = player.uniqueId
 
         if (!isEnabledSkill(player)) return
 
-        val level = activePlayerLevelMap[uuid] ?: return
+        val level = getSkillLevel(player) ?: return
         val block = event.block
         val itemStack = player.inventory.itemInMainHand
 
@@ -65,7 +63,6 @@ open class MultiBreak: ToggleSkillMaster {
 
         event.isCancelled = true
         val blockList = getBlocks(block, player, itemStack, level)
-        blockList.remove(block)
 
         blockList.forEach {
             it.miningWithEvent(player, itemStack, block, true)

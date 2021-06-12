@@ -20,7 +20,6 @@ object TreeFall: ToggleSkillMaster {
     override val cost: Int = 0
     override val needLevel: Int = 0
     override var description: String = ""
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onBreakBlock(event: BlockBreakEvent) {

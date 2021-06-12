@@ -15,7 +15,6 @@ object MineAssist: ToggleSkillMaster {
     override val cost: Int = 0
     override val needLevel: Int = 50
     override var description: String = ""
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
 
     @EventHandler
     fun onBlockMine(event: BlockMineEvent) {

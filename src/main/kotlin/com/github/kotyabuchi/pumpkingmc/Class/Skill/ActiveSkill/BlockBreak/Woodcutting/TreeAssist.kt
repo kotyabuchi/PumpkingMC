@@ -22,7 +22,6 @@ object TreeAssist: ActiveSkillMaster {
     override val needLevel: Int = 50
     override val description: String = ""
     override val hasActiveTime: Boolean = true
-    override val activePlayerLevelMap: MutableMap<UUID, Int> = mutableMapOf()
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()
     override fun calcActiveTime(level: Int): Int = 20 * 6
