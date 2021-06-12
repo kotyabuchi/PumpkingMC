@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.round
 
-object ExpBoost: CustomEnchantmentMaster("Exp Boost") {
+object ExpBoost: CustomEnchantmentMaster("EXP_BOOST") {
 
     private const val maxLevel = 3
     private val itemTarget = EnchantmentTarget.TOOL

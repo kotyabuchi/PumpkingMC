@@ -22,7 +22,7 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.round
 
-object Telekinesis: CustomEnchantmentMaster("Telekinesis") {
+object Telekinesis: CustomEnchantmentMaster("TELEKINESIS") {
 
     private val itemTarget = EnchantmentTarget.TOOL
 

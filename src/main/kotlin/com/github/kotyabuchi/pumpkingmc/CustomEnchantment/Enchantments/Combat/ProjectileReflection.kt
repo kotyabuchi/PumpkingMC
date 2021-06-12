@@ -11,7 +11,7 @@ import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
-object ProjectileReflection: CustomEnchantmentMaster("Projectile Reflection") {
+object ProjectileReflection: CustomEnchantmentMaster("PROJECTILE_REFLECTION") {
 
     private const val maxLevel = 5
     private val itemTarget = EnchantmentTarget.ARMOR
@@ -34,7 +34,7 @@ object ProjectileReflection: CustomEnchantmentMaster("Projectile Reflection") {
         val entity = event.collidedWith as? LivingEntity ?: return
         var level = 0
         entity.equipment?.armorContents?.forEach { item ->
-            item?.itemMeta?.let { meta ->
+            item.itemMeta?.let { meta ->
                 if (meta.hasEnchant(this)) {
                     level += meta.getEnchantLevel(this)
                 }
