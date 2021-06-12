@@ -80,7 +80,7 @@ object ArcShot: ToolLinkedSkill {
         val arrow = event.projectile as? Arrow ?: return
         if (!isEnabledSkill(player)) return
         activePlayerLevelMap[player.uniqueId]?.let {
-            shootArcShot(player, arrow, it)
+            shootArcShot(player, arrow, it, event)
             event.projectile.remove()
         }
     }
@@ -110,7 +110,7 @@ object ArcShot: ToolLinkedSkill {
         }
     }
 
-    private fun shootArcShot(player: Player, arrow: Arrow, level: Int) {
+    private fun shootArcShot(player: Player, arrow: Arrow, level: Int, event: EntityShootBowEvent) {
         disableSkill(player)
 
         player.world.playSound(player.eyeLocation, Sound.ENTITY_ARROW_SHOOT, 1f, .7f)
@@ -151,6 +151,7 @@ object ArcShot: ToolLinkedSkill {
                         skillArrow.persistentDataContainer.set(arcShotArrowKey, PersistentDataType.INTEGER, level)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Disable_LongShotBonus"), PersistentDataType.BYTE, 1)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING, enchantments)
+                        instance.callEvent(EntityShootBowEvent(player, event.bow, null, skillArrow, event.hand, event.force, false))
                         count++
                     }
                 }
