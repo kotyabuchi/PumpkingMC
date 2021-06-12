@@ -126,6 +126,7 @@ object ArcShot: ToolLinkedSkill {
         val arrowAmount = level * 1.5
         val arrowPerOneTime = round(level / 100.0 * 2).toInt()
 
+        val pierceLevel = arrow.pierceLevel
         val enchantments = arrow.persistentDataContainer.get(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING) ?: ""
 
         object : BukkitRunnable() {
@@ -147,7 +148,7 @@ object ArcShot: ToolLinkedSkill {
                         skillArrow.pickupStatus = AbstractArrow.PickupStatus.CREATIVE_ONLY
                         skillArrow.shooter = player
                         skillArrow.damage = damage
-                        skillArrow.pierceLevel = 127
+                        skillArrow.pierceLevel = pierceLevel
                         skillArrow.persistentDataContainer.set(arcShotArrowKey, PersistentDataType.INTEGER, level)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Disable_LongShotBonus"), PersistentDataType.BYTE, 1)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING, enchantments)
