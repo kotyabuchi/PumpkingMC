@@ -34,7 +34,7 @@ object ProjectileReflection: CustomEnchantmentMaster("Projectile Reflection") {
         val entity = event.collidedWith as? LivingEntity ?: return
         var level = 0
         entity.equipment?.armorContents?.forEach { item ->
-            item.itemMeta?.let { meta ->
+            item?.itemMeta?.let { meta ->
                 if (meta.hasEnchant(this)) {
                     level += meta.getEnchantLevel(this)
                 }
