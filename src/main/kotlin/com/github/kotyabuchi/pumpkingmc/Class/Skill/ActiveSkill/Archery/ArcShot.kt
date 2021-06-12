@@ -5,6 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.Utility.drawCircle
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
+import net.kyori.adventure.text.Component
 import org.bukkit.*
 import org.bukkit.entity.AbstractArrow
 import org.bukkit.entity.Arrow
@@ -125,9 +126,6 @@ object ArcShot: ToolLinkedSkill {
         val arrowAmount = level * 1.5
         val arrowPerOneTime = round(level / 100.0 * 2).toInt()
 
-        val basePotionData = arrow.basePotionData
-        val customEffects = arrow.customEffects
-        val color = arrow.color
         val enchantments = arrow.persistentDataContainer.get(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING) ?: ""
 
         object : BukkitRunnable() {
@@ -150,11 +148,6 @@ object ArcShot: ToolLinkedSkill {
                         skillArrow.shooter = player
                         skillArrow.damage = damage
                         skillArrow.pierceLevel = 127
-                        skillArrow.basePotionData = basePotionData
-                        customEffects.forEach { effect ->
-                            skillArrow.addCustomEffect(effect, true)
-                        }
-                        skillArrow.color = color
                         skillArrow.persistentDataContainer.set(arcShotArrowKey, PersistentDataType.INTEGER, level)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Disable_LongShotBonus"), PersistentDataType.BYTE, 1)
                         skillArrow.persistentDataContainer.set(NamespacedKey(instance, "Enchantments"), PersistentDataType.STRING, enchantments)
