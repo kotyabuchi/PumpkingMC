@@ -221,12 +221,15 @@ class ItemExpansion {
     }
 
     fun addEnchant(enchant: Enchantment, level: Int): ItemExpansion {
-        if (!item.containsEnchantment(enchant)) item.addUnsafeEnchantment(enchant, level)
+        if (item.containsEnchantment(enchant)) return this
+        item.addUnsafeEnchantment(enchant, level)
+        generateLore()
         return this
     }
 
     fun removeEnchant(enchant: Enchantment): ItemExpansion {
         item.removeEnchantment(enchant)
+        generateLore()
         return this
     }
 
