@@ -46,7 +46,7 @@ class ItemExpansion {
         if (itemTypes.isEmpty()) {
             if (type.isArmors()) this.itemTypes.add(ItemType.ARMOR)
             if (type.isTools()) this.itemTypes.add(ItemType.TOOL)
-            if (type.isWeapon()) this.itemTypes.add(ItemType.WEAPON)
+            if (type.isWeapons()) this.itemTypes.add(ItemType.WEAPON)
             if (type.isMaterial()) this.itemTypes.add(ItemType.MATERIAL)
         } else {
             this.itemTypes.addAll(itemTypes)
@@ -88,7 +88,7 @@ class ItemExpansion {
         if ((itemTypesStr == null || itemTypesStr.isEmpty()) && itemTypes.isEmpty()) {
             if (type.isArmors()) this.itemTypes.add(ItemType.ARMOR)
             if (type.isTools()) this.itemTypes.add(ItemType.TOOL)
-            if (type.isWeapon()) this.itemTypes.add(ItemType.WEAPON)
+            if (type.isWeapons()) this.itemTypes.add(ItemType.WEAPON)
             if (type.isMaterial()) this.itemTypes.add(ItemType.MATERIAL)
         } else {
             itemTypesStr.forEach { itemTypeStr ->

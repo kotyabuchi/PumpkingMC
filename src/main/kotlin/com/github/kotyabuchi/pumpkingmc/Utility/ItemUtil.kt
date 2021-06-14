@@ -1,6 +1,9 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
+import com.github.kotyabuchi.pumpkingmc.Enum.ArmorType
+import com.github.kotyabuchi.pumpkingmc.Enum.EquipmentType
 import com.github.kotyabuchi.pumpkingmc.Enum.MaterialMiningLevel
+import com.github.kotyabuchi.pumpkingmc.Enum.ToolType
 import com.github.kotyabuchi.pumpkingmc.instance
 import de.tr7zw.changeme.nbtapi.NBTItem
 import org.bukkit.Material
@@ -12,52 +15,31 @@ import org.bukkit.inventory.meta.Damageable
 import kotlin.random.Random
 
 fun Material.hasDurability(): Boolean {
-    return this.isTools() || this.isWeapon() || this.isArmors()
+    return this.isTools() || this.isWeapons() || this.isArmors() || this.isShield()
 }
 
 fun Material.isSword(): Boolean {
-    return this == Material.WOODEN_SWORD ||
-            this == Material.STONE_SWORD ||
-            this == Material.IRON_SWORD ||
-            this == Material.GOLDEN_SWORD ||
-            this == Material.DIAMOND_SWORD ||
-            this == Material.NETHERITE_SWORD
+    return ToolType.SWORD.includes(this)
 }
 
 fun Material.isPickAxe(): Boolean {
-    return this == Material.WOODEN_PICKAXE ||
-            this == Material.STONE_PICKAXE ||
-            this == Material.IRON_PICKAXE ||
-            this == Material.GOLDEN_PICKAXE ||
-            this == Material.DIAMOND_PICKAXE ||
-            this == Material.NETHERITE_PICKAXE
+    return ToolType.PICKAXE.includes(this)
 }
 
 fun Material.isAxe(): Boolean {
-    return this == Material.WOODEN_AXE ||
-            this == Material.STONE_AXE ||
-            this == Material.IRON_AXE ||
-            this == Material.GOLDEN_AXE ||
-            this == Material.DIAMOND_AXE ||
-            this == Material.NETHERITE_AXE
+    return ToolType.AXE.includes(this)
 }
 
 fun Material.isShovel(): Boolean {
-    return this == Material.WOODEN_SHOVEL ||
-            this == Material.STONE_SHOVEL ||
-            this == Material.IRON_SHOVEL ||
-            this == Material.GOLDEN_SHOVEL ||
-            this == Material.DIAMOND_SHOVEL ||
-            this == Material.NETHERITE_SHOVEL
+    return ToolType.SHOVEL.includes(this)
 }
 
 fun Material.isHoe(): Boolean {
-    return this == Material.WOODEN_HOE ||
-            this == Material.STONE_HOE ||
-            this == Material.IRON_HOE ||
-            this == Material.GOLDEN_HOE ||
-            this == Material.DIAMOND_HOE ||
-            this == Material.NETHERITE_HOE
+    return ToolType.HOE.includes(this)
+}
+
+fun Material.isShield(): Boolean {
+    return ToolType.SHIELD.includes(this)
 }
 
 fun Material.isTools(): Boolean {
@@ -70,36 +52,44 @@ fun Material.isTools(): Boolean {
             this == Material.FLINT_AND_STEEL
 }
 
-fun Material.isWeapon(): Boolean {
+fun Material.isWeapons(): Boolean {
     return this == Material.BOW ||
             this == Material.CROSSBOW ||
             this.isSword() ||
             this.isAxe()
 }
 
+fun Material.isHelmet(): Boolean {
+    return ArmorType.HELMET.includes(this)
+}
+
+fun Material.isChestplate(): Boolean {
+    return ArmorType.CHESTPLATE.includes(this)
+}
+
+fun Material.isLeggings(): Boolean {
+    return ArmorType.LEGGINGS.includes(this)
+}
+
+fun Material.isBoots(): Boolean {
+    return ArmorType.BOOTS.includes(this)
+}
+
 fun Material.isArmors(): Boolean {
-    return this == Material.LEATHER_HELMET ||
-            this == Material.LEATHER_CHESTPLATE ||
-            this == Material.LEATHER_LEGGINGS ||
-            this == Material.LEATHER_BOOTS ||
-            this == Material.IRON_HELMET ||
-            this == Material.IRON_CHESTPLATE ||
-            this == Material.IRON_LEGGINGS ||
-            this == Material.IRON_BOOTS ||
-            this == Material.GOLDEN_HELMET ||
-            this == Material.GOLDEN_CHESTPLATE ||
-            this == Material.GOLDEN_LEGGINGS ||
-            this == Material.GOLDEN_BOOTS ||
-            this == Material.DIAMOND_HELMET ||
-            this == Material.DIAMOND_CHESTPLATE ||
-            this == Material.DIAMOND_LEGGINGS ||
-            this == Material.DIAMOND_BOOTS ||
-            this == Material.NETHERITE_HELMET ||
-            this == Material.NETHERITE_CHESTPLATE ||
-            this == Material.NETHERITE_LEGGINGS ||
-            this == Material.NETHERITE_BOOTS ||
-            this == Material.TURTLE_HELMET ||
-            this == Material.SHIELD
+    return this.isHelmet() ||
+            this.isChestplate() ||
+            this.isLeggings() ||
+            this.isBoots()
+}
+
+fun Material.getEquipmentType(): EquipmentType? {
+    ToolType.values().forEach {
+        if (it.includes(this)) return it
+    }
+    ArmorType.values().forEach {
+        if (it.includes(this)) return it
+    }
+    return null
 }
 
 fun Material.isMaterial(): Boolean {
