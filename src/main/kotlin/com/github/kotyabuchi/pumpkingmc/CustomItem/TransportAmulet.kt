@@ -8,6 +8,8 @@ import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.instance
 import com.google.gson.JsonObject
 import de.tr7zw.changeme.nbtapi.NBTItem
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -21,16 +23,18 @@ import org.bukkit.inventory.ShapedRecipe
 
 class TransportAmulet: CustomItemMaster(Material.COMPASS, "TRANSPORT_AMULET") {
 
+    private val itemName = Component.text("Transport Amulet", NamedTextColor.LIGHT_PURPLE)
     private val targetChestLocationKey = "TARGET_CHEST"
     private val activeStatusKey = "ACTIVE"
 
     init {
-        val lore = mutableListOf<String>()
-        lore.add("&7アイテムを拾った際、事前に登録したチェストに転送する。".colorS())
-        lore.add("")
-        lore.add("&f転送先チェスト: &c未登録&r".colorS())
+        val lore = mutableListOf<Component>()
+        lore.add(Component.text("アイテムを拾った際、事前に登録したチェストに転送する。", NamedTextColor.GRAY))
+        lore.add(Component.empty())
+        lore.add(Component.text("転送先チェスト: ", NamedTextColor.WHITE)
+            .append(Component.text("未登録", NamedTextColor.RED)))
 
-        val item = ItemExpansion(baseMaterial, "&dTransport Amulet".colorS(), lore, Rarity.RARE, listOf(ItemType.AMULET)).item
+        val item = ItemExpansion(baseMaterial, itemName, lore, Rarity.RARE, listOf(ItemType.AMULET)).item
         val nbti = NBTItem(item)
         nbti.setBoolean(itemKey, true)
         val recipe = ShapedRecipe(NamespacedKey(instance, itemKey), nbti.item)

@@ -1,6 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.Enum.Symbol
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.ChatColor
 import org.bukkit.enchantments.Enchantment
 import kotlin.math.floor
@@ -59,6 +61,18 @@ fun Enchantment.toLore(level: Int): String {
     var result = this.name.upperCamelCase()
     if (this.maxLevel > 1) {
         result += " ${level.toRomanNumeral()}"
+    }
+    return result
+}
+
+fun Component.normal(vararg decoration: TextDecoration): Component {
+    var result = this
+    if (decoration.isEmpty()) {
+        result = this.decoration(TextDecoration.ITALIC, false)
+    } else {
+        decoration.forEach {
+            result = this.decoration(it, false)
+        }
     }
     return result
 }

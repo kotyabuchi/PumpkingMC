@@ -6,7 +6,13 @@ import com.github.kotyabuchi.pumpkingmc.Enum.MaterialMiningLevel
 import com.github.kotyabuchi.pumpkingmc.Enum.Rarity
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolPartType
 import com.github.kotyabuchi.pumpkingmc.Utility.*
+import com.github.kotyabuchi.pumpkingmc.instance
 import de.tr7zw.changeme.nbtapi.NBTItem
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -20,8 +26,7 @@ import kotlin.math.round
 class ItemExpansion {
 
     var item: ItemStack
-    var displayName: String?
-    val itemLore: MutableList<String>
+    var displayName: Component?
 
     private val rarityKey = "ITEM_RARITY"
     private var rarity: Rarity
@@ -39,10 +44,14 @@ class ItemExpansion {
     private var durability = 0
     private var maxDurability = 0
 
-    constructor(type: Material, displayName: String?, lore: MutableList<String> = mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), amount: Int = 1, toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
+    constructor(type: Material, displayName: Component?, lore: MutableList<Component> = mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), amount: Int = 1, toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
+        item = ItemStack(type, amount)
+        val meta = item.itemMeta
+        meta.displayName(displayName)
+        item.itemMeta = meta
         this.rarity = rarity
         this.displayName = displayName
-        this.itemLore = lore
+        if (lore.isNotEmpty()) setLore(lore)
         if (itemTypes.isEmpty()) {
             if (type.isArmors()) this.itemTypes.add(ItemType.ARMOR)
             if (type.isTools()) this.itemTypes.add(ItemType.TOOL)
@@ -53,35 +62,20 @@ class ItemExpansion {
         }
         this.toolPartType = toolPartType
         this.materialMiningLevel = materialMiningLevel
-        item = ItemStack(type, amount)
-        val meta = item.itemMeta
-        meta.setDisplayName(displayName)
-        item.itemMeta = meta
         create()
     }
 
-    constructor(item: ItemStack, displayName: String? = item.itemMeta.displayName, lore: MutableList<String> = item.itemMeta.lore ?: mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
+    constructor(item: ItemStack, displayName: Component? = item.itemMeta.displayName(), lore: MutableList<Component> = mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
         this.item = item
         val nbti = NBTItem(item)
         val type = item.type
-        val meta = item.itemMeta
 
         this.displayName = displayName
 
         val rarityStr = nbti.getString(rarityKey)
         this.rarity = if (rarityStr == null || rarityStr == "") rarity else Rarity.valueOf(rarityStr)
 
-        if (lore.isNotEmpty()) {
-            if (lore.contains("&a&lRarity&r &2> ${this.rarity.text}".colorS())) {
-                if (lore.contains("&7---------------".colorS())) {
-                    val index = lore.indexOf("&7---------------".colorS())
-                    lore.removeAll(lore.subList(0, index + 1))
-                } else {
-                    lore.clear()
-                }
-            }
-        }
-        this.itemLore = lore
+        if (lore.isNotEmpty()) setLore(lore)
 
         val itemTypesStr = nbti.getStringList(itemTypeKey)
         this.itemTypes.addAll(itemTypes)
@@ -106,9 +100,9 @@ class ItemExpansion {
             this.materialMiningLevel = materialMiningLevel
         }
 
-        meta?.let {
+        this.item.itemMeta?.let { meta ->
             if (type.hasDurability()) {
-                it as Damageable
+                meta as Damageable
                 if (nbti.hasKey(maxDurabilityKey)) {
                     val maxDurabilityInt = nbti.getInteger(maxDurabilityKey)
                     setMaxDurability(maxDurabilityInt)
@@ -119,7 +113,7 @@ class ItemExpansion {
                 } else {
                     val maxDurability = round(type.maxDurability.toInt() * rarity.durabilityMultiple).toInt()
                     setMaxDurability(maxDurability)
-                    setDurability(maxDurability - it.damage)
+                    setDurability(maxDurability - meta.damage)
                 }
             }
         }
@@ -213,9 +207,9 @@ class ItemExpansion {
         return (durability < maxDurability)
     }
 
-    fun setDisplayName(displayName: String): ItemExpansion {
+    fun setDisplayName(displayName: Component): ItemExpansion {
         val meta = item.itemMeta ?: return this
-        meta.setDisplayName(displayName.colorS())
+        meta.displayName(displayName)
         item.itemMeta = meta
         return this
     }
@@ -240,6 +234,72 @@ class ItemExpansion {
         return this
     }
 
+    fun getLore(): List<Component> {
+        val result = mutableListOf<Component>()
+        val nbti = NBTItem(item)
+        val serializedLore = nbti.getStringList("lore")
+        serializedLore.forEach {
+            result.add(LegacyComponentSerializer.legacyAmpersand().deserialize(it))
+        }
+        return result
+    }
+
+    fun getLore(num: Int): Component? {
+        val nbti = NBTItem(item)
+        val lore = nbti.getStringList("lore")
+        return if (lore.size > num) {
+            LegacyComponentSerializer.legacyAmpersand().deserialize(lore[num])
+        } else {
+            null
+        }
+    }
+
+    fun setLore(newLore: MutableList<Component>): ItemExpansion {
+        val serializedLore = mutableListOf<String>()
+        newLore.forEach {
+            serializedLore.add(LegacyComponentSerializer.legacyAmpersand().serialize(it))
+        }
+        val nbti = NBTItem(item)
+        nbti.setObject("lore", serializedLore)
+        item = nbti.item
+        return this
+    }
+
+    fun setLore(newLore: Component, num: Int): ItemExpansion {
+        val lore = getLore().toMutableList()
+        if (lore.size > num) {
+            lore.removeAt(num)
+        } else {
+            repeat(num - lore.size + 1) {
+                lore.add(Component.empty())
+            }
+        }
+        lore[num] = newLore
+        return this
+    }
+
+    fun addLore(vararg newLore: Component): ItemExpansion {
+        val nbti = NBTItem(item)
+        val serializedLore = nbti.getStringList("lore")
+        newLore.forEach {
+            serializedLore.add(LegacyComponentSerializer.legacyAmpersand().serialize(it))
+        }
+        nbti.setObject("lore", serializedLore)
+        item = nbti.item
+        return this
+    }
+
+    fun removeLore(vararg lore: Component): ItemExpansion {
+        val nbti = NBTItem(item)
+        val serializedLore = nbti.getStringList("lore")
+        lore.forEach {
+            serializedLore.remove(LegacyComponentSerializer.legacyAmpersand().serialize(it))
+        }
+        nbti.setObject("lore", serializedLore)
+        item = nbti.item
+        return this
+    }
+
     fun setDummyEnchant(): ItemExpansion {
         return addEnchant(Enchantment.DURABILITY, 1).setFlag(ItemFlag.HIDE_ENCHANTS)
     }
@@ -248,49 +308,60 @@ class ItemExpansion {
         return removeEnchant(Enchantment.DURABILITY)
     }
 
-    fun generateLore(): List<String> {
+    fun generateLore(): List<Component> {
         val meta = item.itemMeta
-        val lore = mutableListOf<String>()
+        val lore = mutableListOf<Component>()
 
-        meta.setDisplayName(this.displayName)
+        meta.displayName(this.displayName)
 
-        meta?.enchants?.forEach { enchant, level ->
+        meta?.enchants?.forEach { (enchant, level) ->
             if (enchant is CustomEnchantmentMaster) {
-                lore.add("&7${enchant.toLore(level)}".colorS())
+                lore.add(Component.text(enchant.toLore(level), NamedTextColor.GRAY).normal())
             }
         }
 
-        lore.add("&a&lRarity&r &2> ${rarity.text}".colorS())
+        lore.add(Component.text("Rarity ", NamedTextColor.GREEN, TextDecoration.BOLD).normal()
+            .append(Component.text("> ", NamedTextColor.DARK_GREEN, TextDecoration.BOLD))
+            .append(Component.text(rarity.name, rarity.color).normal(TextDecoration.BOLD)))
         if (materialMiningLevel != null) {
-            lore.add("&3&lMiningLevel&r &1> &f${materialMiningLevel.getRegularName()}".colorS())
+            lore.add(Component.text("MiningLevel ", NamedTextColor.DARK_AQUA, TextDecoration.BOLD).normal()
+                .append(Component.text("> ", NamedTextColor.DARK_BLUE))
+                .append(Component.text(materialMiningLevel.getRegularName(), NamedTextColor.WHITE).normal(TextDecoration.BOLD)))
         }
 
         if (hasDurability) {
-            lore.add("")
-            lore.add("&b&lDurability&r &9> &f${durability} / &l${maxDurability}".colorS())
+            lore.add(Component.empty())
+            lore.add(Component.text("Durability ", NamedTextColor.AQUA, TextDecoration.BOLD).normal()
+                .append(Component.text("> ", NamedTextColor.BLUE))
+                .append(Component.text("$durability / ", NamedTextColor.WHITE).normal(TextDecoration.BOLD))
+                .append(Component.text(maxDurability, NamedTextColor.WHITE, TextDecoration.BOLD)))
         }
 
         if (itemTypes.isNotEmpty()) {
-            var itemTypeLore = "&d&lItemType&r &5> "
+            var itemTypeLore = Component.empty()
             itemTypes.forEachIndexed { index, itemType ->
-                if (index > 0) itemTypeLore += ", "
-                itemTypeLore += "&f${itemType.getRegularName()}"
+                if (index > 0) itemTypeLore = itemTypeLore.append(Component.text(", ", NamedTextColor.WHITE).normal())
+                itemTypeLore = itemTypeLore.append(Component.text(itemType.getRegularName(), NamedTextColor.WHITE).normal(TextDecoration.BOLD))
             }
-            lore.add("")
-            lore.add(itemTypeLore.colorS())
+            lore.add(Component.empty())
+            lore.add(Component.text("ItemType ", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD).normal()
+                .append(Component.text("> ", NamedTextColor.DARK_PURPLE))
+                .append(itemTypeLore))
         }
 
         if (toolPartType != null) {
-            lore.add("&e&lToolPartType&r &6> &f${toolPartType.getRegularName()}".colorS())
+            lore.add(Component.text("ToolPartType ", NamedTextColor.YELLOW, TextDecoration.BOLD).normal()
+                .append(Component.text("> ", NamedTextColor.GOLD).normal())
+                .append(Component.text(toolPartType.getRegularName(), NamedTextColor.WHITE).normal(TextDecoration.BOLD)))
         }
 
+        val itemLore = getLore()
         if (itemLore.isNotEmpty()) {
-            lore.add("&7---------------".colorS())
-            lore.add("")
+            lore.add(Component.text("---------------", NamedTextColor.GRAY).normal(TextDecoration.BOLD))
             lore.addAll(itemLore)
         }
 
-        meta?.lore = lore
+        meta?.lore(lore)
         item.itemMeta = meta
         return lore
     }
