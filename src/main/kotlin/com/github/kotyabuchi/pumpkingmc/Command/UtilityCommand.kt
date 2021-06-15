@@ -2,6 +2,7 @@ package com.github.kotyabuchi.pumpkingmc.Command
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantment
 import com.github.kotyabuchi.pumpkingmc.Menu.SoundMenu
+import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.instance
 import de.tr7zw.changeme.nbtapi.NBTItem
@@ -14,10 +15,22 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.text.ParseException
 
 object UtilityCommand: CommandExecutor, TabCompleter {
     
     override fun onTabComplete(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): MutableList<String> {
+        if (cmd.name == "customencha") {
+            val result = mutableListOf<String>()
+            when (args.size) {
+                1 -> {
+                    CustomEnchantment.values().forEach { encha ->
+                        if (encha.name.contains(args[0].toUpperCase())) result.add(encha.name)
+                    }
+                }
+            }
+            return result
+        }
         return instance.onTabComplete(sender, cmd, label, args) ?: mutableListOf()
     }
     
@@ -73,7 +86,17 @@ object UtilityCommand: CommandExecutor, TabCompleter {
             "customencha" -> {
                 val item = sender.inventory.itemInMainHand
                 if (!item.type.isAir) {
-                    item.addUnsafeEnchantment(CustomEnchantment.TELEKINESIS, 1)
+                    val enchant = when (args[0].toUpperCase()) {
+                        "HOMING" -> CustomEnchantment.HOMING
+                        "PROJECTILE_REFLECTION" -> CustomEnchantment.PROJECTILE_REFLECTION
+                        "EXP_BOOST" -> CustomEnchantment.EXP_BOOST
+                        "TELEKINESIS" -> CustomEnchantment.TELEKINESIS
+                        else -> return true
+                    }
+                    try {
+                        val level = if (args.size == 1) 1 else Integer.parseInt(args[1])
+                        sender.inventory.setItemInMainHand(ItemExpansion(item).addEnchant(enchant, level).item)
+                    } catch (e: ParseException) {}
                 }
             }
         }
