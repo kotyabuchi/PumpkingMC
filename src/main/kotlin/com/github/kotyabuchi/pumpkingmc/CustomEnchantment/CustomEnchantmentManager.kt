@@ -3,6 +3,7 @@ package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
+import com.github.kotyabuchi.pumpkingmc.Utility.getEquipmentType
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
 import com.github.kotyabuchi.pumpkingmc.Utility.toLore
 import org.bukkit.Material
@@ -13,12 +14,13 @@ import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
+import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
-class CustomEnchantmentManager: Listener {
+object CustomEnchantmentManager: Listener {
 
     @EventHandler
     fun onEnchant(event: EnchantItemEvent) {
@@ -68,9 +70,6 @@ class CustomEnchantmentManager: Listener {
         val meta0 = item0.itemMeta ?: return
         val meta1 = item1?.itemMeta
 
-        val increasedDurability = ((meta0 as? Damageable)?.damage ?: 0) - ((event.result?.itemMeta as? Damageable)?.damage ?: 0)
-        result.increaseDurability(increasedDurability)
-
         val customEnchants = mutableMapOf<CustomEnchantmentMaster, Int>()
         meta0.enchants.forEach { (enchant, level) ->
             if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
@@ -81,8 +80,25 @@ class CustomEnchantmentManager: Listener {
         customEnchants.forEach { (enchant, level) ->
             result.addEnchant(enchant, level)
         }
-        if (item1 != null && item0.type.hasDurability() && item0.type == item1.type) {
-            result = result.increaseDurability(ItemExpansion(item1).getDurability())
+        if (item1 != null && item0.type.hasDurability()) {
+            if (item0.type == item1.type) {
+                result = result.increaseDurability(ItemExpansion(item1).getDurability())
+            } else if (item0.type == result.item.type) {
+                val durability0 = meta0 as? Damageable
+                val resultDurability = event.result?.itemMeta as? Damageable
+                if (durability0 != null && resultDurability != null) {
+                    if (resultDurability.damage == 0) {
+                        result.setDurability(result.getMaxDurability())
+                    } else {
+                        val equipmentType = item0.type.getEquipmentType()
+                        val cost = equipmentType?.materialCost
+                        if (equipmentType != null && cost != null) {
+                            val increaseAmount = ceil(result.getMaxDurability() / cost.toDouble()).toInt() * item1.amount
+                            result.increaseDurability(increaseAmount)
+                        }
+                    }
+                }
+            }
         }
 
         event.result = result.item

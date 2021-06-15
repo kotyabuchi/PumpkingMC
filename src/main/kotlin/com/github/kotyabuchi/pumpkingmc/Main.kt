@@ -64,7 +64,7 @@ class Main : JavaPlugin() {
         pm.registerEvents(DebugStuff(), this)
 
         // CustomEnchantment
-        pm.registerEvents(CustomEnchantmentManager(), this)
+        pm.registerEvents(CustomEnchantmentManager, this)
 
         // Entity
             // Friendly
