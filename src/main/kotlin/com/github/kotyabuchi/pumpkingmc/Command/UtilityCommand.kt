@@ -88,6 +88,7 @@ object UtilityCommand: CommandExecutor, TabCompleter {
                 if (!item.type.isAir) {
                     val enchant = when (args[0].toUpperCase()) {
                         "HOMING" -> CustomEnchantment.HOMING
+                        "LIFE_STEAL" -> CustomEnchantment.LIFE_STEAL
                         "PROJECTILE_REFLECTION" -> CustomEnchantment.PROJECTILE_REFLECTION
                         "EXP_BOOST" -> CustomEnchantment.EXP_BOOST
                         "TELEKINESIS" -> CustomEnchantment.TELEKINESIS

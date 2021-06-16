@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.Homing
+import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.LifeSteal
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ExpBoost
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.ProjectileReflection
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Telekinesis
@@ -16,6 +17,7 @@ object CustomEnchantment {
 
     // Combat
     val HOMING = Homing
+    val LIFE_STEAL = LifeSteal
 
     val TELEKINESIS = Telekinesis
     val PROJECTILE_REFLECTION = ProjectileReflection
@@ -25,6 +27,7 @@ object CustomEnchantment {
 
     init {
         enchantments.add(HOMING)
+        enchantments.add(LIFE_STEAL)
         enchantments.add(TELEKINESIS)
         enchantments.add(PROJECTILE_REFLECTION)
         enchantments.add(EXP_BOOST)
