@@ -15,8 +15,8 @@ object CursedEye {
             eye.customName = "Cursed Eye"
             eye.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false))
             eye.addPotionEffect(PotionEffect(PotionEffectType.SLOW, Int.MAX_VALUE, 1, false, false))
-            eye.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue = 2.0
-            eye.health = 2.0
+            eye.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue = 1.0
+            eye.health = 1.0
 
             eye.equipment?.helmetDropChance = 0f
             eye.equipment?.helmet = createHead("Cursed Eye", "Eye of Ender", "36122cdc-6c97-4b97-990a-ef4df57db922",
