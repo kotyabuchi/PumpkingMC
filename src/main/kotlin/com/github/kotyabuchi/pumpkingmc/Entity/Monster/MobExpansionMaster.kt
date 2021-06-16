@@ -20,6 +20,7 @@ open class MobExpansionMaster(private vararg val types: EntityType): Listener {
     private val spawnAction = mutableListOf<Pair<IntRange, (entity: Mob) -> Unit>>()
     private val startFightAction = mutableListOf<Pair<IntRange, (entity: Mob, target: LivingEntity) -> Unit>>()
     private val inFightAction = mutableListOf<Pair<IntRange, (entity: Mob, target: LivingEntity) -> Unit>>()
+    private val getDamageAction = mutableListOf<Pair<IntRange, (entity: Mob, target: LivingEntity) -> Unit>>()
     private val endFightAction = mutableListOf<(entity: Mob, target: LivingEntity?) -> Unit>()
 
     @EventHandler
@@ -52,8 +53,12 @@ open class MobExpansionMaster(private vararg val types: EntityType): Listener {
         val damager = event.damager as? LivingEntity ?: return
         if (types.contains(damager.type)) {
             lastAttackTime[damager] = System.currentTimeMillis()
-        } else if (types.contains(entity.type) && inFightAction.isNotEmpty()) {
-            startRunnable(entity as Mob)
+        } else if (types.contains(entity.type)) {
+            entity as Mob
+            if (inFightAction.isNotEmpty()) startRunnable(entity)
+            getDamageAction.forEach {
+                if (it.first.contains(Random.nextInt(100))) it.second.invoke(entity, damager)
+            }
         }
     }
 
@@ -67,6 +72,10 @@ open class MobExpansionMaster(private vararg val types: EntityType): Listener {
 
     fun addInFightAction(probability: IntRange = (0 until 100), action: (entity: Mob, target: LivingEntity) -> Unit) {
         inFightAction.add(probability to action)
+    }
+
+    fun addGetDamageAction(probability: IntRange = (0 until 100), action: (entity: Mob, target: LivingEntity) -> Unit) {
+        getDamageAction.add(probability to action)
     }
 
     fun addEndFightAction(action: (entity: Mob, target: LivingEntity?) -> Unit) {
