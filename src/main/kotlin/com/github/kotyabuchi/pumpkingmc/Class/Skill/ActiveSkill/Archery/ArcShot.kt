@@ -30,7 +30,7 @@ object ArcShot: ToolLinkedSkill {
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 200
-    override val description: String = ""
+    override val description: String = "指定した範囲に大量の矢を降らせる"
     override val hasActiveTime: Boolean = true
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()

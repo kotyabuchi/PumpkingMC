@@ -22,7 +22,7 @@ class GroundLevelingAssist(private val jobClass: JobClassMaster): ToggleSkillMas
     override val skillName: String = "GroundLevelingAssist"
     override val cost: Int = 0
     override val needLevel: Int = 200
-    override var description: String = ""
+    override var description: String = "破壊したBlockの裏にBlockがなかった場合、手持ちのBlockを設置する"
 
     private val groundLevelingAssisBlockSet = mutableSetOf<Material>()
 

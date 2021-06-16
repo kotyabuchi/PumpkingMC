@@ -22,7 +22,7 @@ object SuperBreaker: ToolLinkedSkill {
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 25
-    override val description: String = ""
+    override val description: String = "一定時間ツールの採掘速度が5上昇する"
     override val hasActiveTime: Boolean = true
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()

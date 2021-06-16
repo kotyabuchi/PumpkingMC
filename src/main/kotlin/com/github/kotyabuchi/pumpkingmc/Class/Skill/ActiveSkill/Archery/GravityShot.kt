@@ -29,7 +29,7 @@ object GravityShot: ToolLinkedSkill {
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 100
-    override var description: String = ""
+    override var description: String = "着弾地点から一定範囲内のEntityを引き寄せる"
     override val hasActiveTime: Boolean = false
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()

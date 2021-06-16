@@ -16,7 +16,7 @@ object StrongShot: ActiveSkillMaster {
     override val cost: Int = 0
     override val coolTime: Long = 0
     override val needLevel: Int = 50
-    override var description: String = "次の矢の速度が上昇する"
+    override var description: String = "次に射る矢の速度が上昇する"
     override val hasActiveTime: Boolean = false
     override val activeTimeMap: MutableMap<UUID, BukkitTask> = mutableMapOf()
     override val lastUseTime: MutableMap<UUID, Long> = mutableMapOf()

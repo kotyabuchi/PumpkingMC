@@ -12,7 +12,7 @@ object StoneReplacer: ToggleSkillMaster {
     override val skillName: String = "StoneReplacer"
     override val cost: Int = 0
     override val needLevel: Int = 50
-    override var description: String = ""
+    override var description: String = "HotbarのPickaxeの右に石系Blockを入れておくと、鉱石を採掘した際に置き換わる"
 
     private fun canReplace(player: Player): Boolean {
         if (!isEnabledSkill(player)) return false

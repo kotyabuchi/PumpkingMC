@@ -14,7 +14,7 @@ object MineAssist: ToggleSkillMaster {
     override val skillName: String = "MineAssist"
     override val cost: Int = 0
     override val needLevel: Int = 50
-    override var description: String = ""
+    override var description: String = "周囲の鉱石もまとめて採掘する"
 
     @EventHandler
     fun onBlockMine(event: BlockMineEvent) {
