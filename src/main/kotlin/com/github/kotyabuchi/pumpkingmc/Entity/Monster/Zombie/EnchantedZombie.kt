@@ -69,21 +69,18 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
             }
         }
 
-        addStartFightAction { zombie ->
-            val target = zombie.target
-            if (target != null) {
-                zombie.getNearbyEntities(32.0, 8.0, 32.0).forEach {
-                    if (zombieTypes.contains(it.type)) {
-                        it as Zombie
-                        if (it.target == null) {
-                            it.target = target
-                            instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
-                        }
+        addStartFightAction { zombie, target ->
+            zombie.getNearbyEntities(32.0, 8.0, 32.0).forEach {
+                if (zombieTypes.contains(it.type)) {
+                    it as Zombie
+                    if (it.target == null) {
+                        it.target = target
+                        instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
                     }
                 }
             }
         }
-        addStartFightAction { zombie ->
+        addStartFightAction { zombie, _ ->
             object: BukkitRunnable() {
                 override fun run() {
                     val target = zombie.target

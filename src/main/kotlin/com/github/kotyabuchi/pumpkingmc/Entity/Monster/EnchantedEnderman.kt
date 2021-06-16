@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Entity.Monster
 
 import com.github.kotyabuchi.pumpkingmc.Entity.Monster.CustomEntity.CursedEye
+import com.github.kotyabuchi.pumpkingmc.Utility.addSome
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.GameMode
 import org.bukkit.Sound
@@ -32,7 +33,7 @@ class EnchantedEnderman: MobExpansionMaster(EntityType.ENDERMAN) {
             }
         }.runTaskTimer(instance, 0, 40)
 
-        addStartFightAction { enderman ->
+        addStartFightAction { enderman, _ ->
             if (Random.nextBoolean()) {
                 CursedEye.spawn(enderman as Enderman)
             }
@@ -48,13 +49,12 @@ class EnchantedEnderman: MobExpansionMaster(EntityType.ENDERMAN) {
             }.runTaskLater(instance, 10)
         }
 
-        addInFightAction(0 until 5) { enderman ->
-            enderman.target?.let { target ->
-                val loc = target.location.subtract(target.location.direction.setY(0).multiply(2))
-                loc.y = target.location.y
-                enderman.teleport(loc)
-                enderman.world.playSound(enderman.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f)
-            }
+        addInFightAction(0 until 5) { enderman, target ->
+            val targetLoc = target.location
+            val loc = targetLoc.clone().subtract(targetLoc.direction.setY(0).multiply(2))
+            loc.y = targetLoc.y
+            enderman.teleport(loc)
+            enderman.world.playSound(enderman.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f)
         }
     }
 

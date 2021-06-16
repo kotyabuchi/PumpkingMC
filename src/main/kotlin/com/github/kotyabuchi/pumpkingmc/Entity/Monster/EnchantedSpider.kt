@@ -15,16 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable
 class EnchantedSpider: MobExpansionMaster(EntityType.SPIDER, EntityType.CAVE_SPIDER) {
 
     init {
-        addInFightAction(0 until 10) { spider ->
-            val target = spider.target ?: return@addInFightAction
+        addInFightAction(0 until 10) { spider, target ->
             val spiderLoc = spider.location.toVector()
             val targetLoc = target.location.add(0.0, 0.5, 0.0).toVector()
             val webLocation = targetLoc.clone().subtract(spiderLoc).normalize().multiply(0.3)
             val web = spider.world.spawnFallingBlock(spider.location.add(webLocation), Material.COBWEB.createBlockData())
             web.velocity = targetLoc.clone().subtract(spiderLoc).multiply(0.2)
         }
-        addInFightAction(0 until 20) { spider ->
-            val target = spider.target ?: return@addInFightAction
+        addInFightAction(0 until 20) { spider, target ->
             spider.jump(target.location)
         }
     }

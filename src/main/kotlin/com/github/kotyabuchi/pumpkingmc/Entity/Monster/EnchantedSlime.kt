@@ -33,7 +33,7 @@ class EnchantedSlime: MobExpansionMaster(EntityType.SLIME) {
 //                }
 //            }.runTaskTimer(instance, 20, 20)
 //        }
-        addInFightAction((0 until 2), fun(slime: Mob) {
+        addInFightAction(0 until 2) { slime, _ ->
             if (slime is Slime) {
                 if (slime.passengers.isEmpty() && slime.size <= 5) {
                     slime.size++
@@ -42,7 +42,7 @@ class EnchantedSlime: MobExpansionMaster(EntityType.SLIME) {
                     slime.world.playSound(slime.location, Sound.BLOCK_HONEY_BLOCK_STEP, .3f, .5f)
                 }
             }
-        })
+        }
 //        addInFightAction((0 until 10), fun(slime: Mob) {
 //            slime.target?.let { target->
 //                val baseLoc = slime.location.clone()

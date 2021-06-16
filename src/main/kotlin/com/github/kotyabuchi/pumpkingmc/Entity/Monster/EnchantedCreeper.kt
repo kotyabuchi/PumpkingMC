@@ -34,22 +34,20 @@ class EnchantedCreeper: MobExpansionMaster(EntityType.CREEPER) {
             creeper.isPowered = true
         }
 
-        addStartFightAction { creeper ->
-            creeper.target?.let { target ->
-                creeper.getNearbyEntities(15.0, 5.0, 15.0).forEach {
-                    if (it is Silverfish && it.target == null) {
-                        it.target = target
-                        instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
-                    }
-                    if (it is Creeper && it.target == null) {
-                        it.target = target
-                        instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
-                    }
+        addStartFightAction { creeper, target ->
+            creeper.getNearbyEntities(15.0, 5.0, 15.0).forEach {
+                if (it is Silverfish && it.target == null) {
+                    it.target = target
+                    instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
+                }
+                if (it is Creeper && it.target == null) {
+                    it.target = target
+                    instance.server.pluginManager.callEvent(EntityTargetLivingEntityEvent(it, target, EntityTargetEvent.TargetReason.CLOSEST_PLAYER))
                 }
             }
         }
 
-        addStartFightAction { creeper ->
+        addStartFightAction { creeper, _ ->
             object : BukkitRunnable() {
                 override fun run() {
                     val target = creeper.target
@@ -121,9 +119,11 @@ class EnchantedCreeper: MobExpansionMaster(EntityType.CREEPER) {
             }.runTaskTimer(instance, 0, 2)
         }
 
-        addInFightAction(0 until 10) { creeper ->
+        addInFightAction(0 until 10) { creeper, target ->
             creeper as Creeper
 
+            var radius = creeper.explosionRadius * 2
+            if (target.location.distance(creeper.location) > radius) return@addInFightAction
             if (creeper.isIgnited) return@addInFightAction
             creeper.ignite()
             creeper.world.playSound(creeper.location, Sound.ENTITY_GHAST_SHOOT, .5f, .5f)
@@ -131,7 +131,6 @@ class EnchantedCreeper: MobExpansionMaster(EntityType.CREEPER) {
                 override fun run() {
                     if (creeper.isDead) return
                     creeper.isIgnited = false
-                    var radius = creeper.explosionRadius * 2
                     if (creeper.isPowered) radius = round(radius * 1.5).toInt()
                     val centerBlock = creeper.location.block.getRelative(BlockFace.DOWN)
                     val centerLoc = centerBlock.location.add(.5, .0, .5)

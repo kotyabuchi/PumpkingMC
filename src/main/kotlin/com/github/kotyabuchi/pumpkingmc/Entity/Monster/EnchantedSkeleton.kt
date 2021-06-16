@@ -43,16 +43,14 @@ class EnchantedSkeleton: MobExpansionMaster(EntityType.SKELETON) {
                 }
             }
         }
-        addInFightAction { skeleton ->
-            skeleton.target?.let { target->
-                if (skeleton.location.distance(target.location) <= 4.5 && !skeleton.location.block.type.isLiquid()) {
-                    meleeAction(skeleton)
-                } else if (skeleton.location.block.type.isLiquid() || weaponMap.containsKey(skeleton) && skeleton.location.distance(target.location) >= 5) {
-                    rangedAction(skeleton)
-                }
+        addInFightAction { skeleton, target ->
+            if (skeleton.location.distance(target.location) <= 4.5 && !skeleton.location.block.type.isLiquid()) {
+                meleeAction(skeleton)
+            } else if (skeleton.location.block.type.isLiquid() || weaponMap.containsKey(skeleton) && skeleton.location.distance(target.location) >= 5) {
+                rangedAction(skeleton)
             }
         }
-        addEndFightAction { skeleton ->
+        addEndFightAction { skeleton, _ ->
             weaponMap[skeleton]?.let {
                 skeleton.equipment?.setItemInMainHand(it)
             }
