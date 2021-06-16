@@ -19,7 +19,7 @@ object CursedEye {
             eye.health = 2.0
 
             eye.equipment?.helmetDropChance = 0f
-            eye.equipment?.helmet = createHead("Cursed Eye", listOf(), "Eye of Ender", "36122cdc-6c97-4b97-990a-ef4df57db922",
+            eye.equipment?.helmet = createHead("Cursed Eye", "Eye of Ender", "36122cdc-6c97-4b97-990a-ef4df57db922",
                 "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGFhOGZjOGRlNjQxN2I0OGQ0OGM4MGI0NDNjZjUzMjZlM2Q5ZGE0ZGJlOWIyNWZjZDQ5NTQ5ZDk2MTY4ZmMwIn19fQ==")
             eye.equipment?.setItemInMainHand(null)
         }

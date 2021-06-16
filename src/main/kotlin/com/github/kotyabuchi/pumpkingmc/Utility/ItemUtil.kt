@@ -164,15 +164,12 @@ fun ItemStack.damage(player: Player, _amount: Int) {
     }
 }
 
-fun createHead(name: String, lore: List<String>, ownerName: String, uuid: String, textureData: String): ItemStack {
+fun createHead(name: String, ownerName: String, uuid: String, textureData: String): ItemStack {
     val head = ItemStack(Material.PLAYER_HEAD)
     val nbti = NBTItem(head)
 
     val disp = nbti.addCompound("display")
     disp.setString("Name", name)
-
-    val list = disp.getStringList("Lore")
-    list.addAll(lore)
 
     val skull = nbti.addCompound("SkullOwner")
     skull.setString("Name", ownerName)
