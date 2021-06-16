@@ -106,6 +106,10 @@ open class JobClassMaster(val jobClassName: String): Listener {
         skillMap[skillCommand] = skill
     }
 
+    fun getSkills(): Map<SkillCommand, ToggleSkillMaster> {
+        return skillMap
+    }
+
     private fun activeSkill(player: Player) {
         val castingAction = castingCommandMap[player] ?: return
         try {

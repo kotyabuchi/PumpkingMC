@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Menu.MenuItem
 
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
+import com.github.kotyabuchi.pumpkingmc.Menu.SkillInfoMenu
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
 import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
@@ -9,7 +10,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemFlag
 
-class MenuButtonSkill(jobClassType: JobClassType, player: Player): MenuButtonBase() {
+class MenuButtonSkill(private val jobClassType: JobClassType, player: Player): MenuButtonBase() {
+
+    private val jobClass = jobClassType.jobClass
 
     init {
         val jobClassStatus = player.getStatus().getJobClassStatus(jobClassType.jobClass)
@@ -22,6 +25,6 @@ class MenuButtonSkill(jobClassType: JobClassType, player: Player): MenuButtonBas
     }
 
     override fun clickEvent(event: InventoryClickEvent) {
-
+        if (jobClass.getSkills().isNotEmpty()) (event.whoClicked as? Player)?.getStatus()?.openMenu(SkillInfoMenu(jobClassType.jobClass))
     }
 }
