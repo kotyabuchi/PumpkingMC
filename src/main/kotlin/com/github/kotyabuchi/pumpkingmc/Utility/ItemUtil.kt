@@ -5,7 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.Enum.EquipmentType
 import com.github.kotyabuchi.pumpkingmc.Enum.MaterialMiningLevel
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolType
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player

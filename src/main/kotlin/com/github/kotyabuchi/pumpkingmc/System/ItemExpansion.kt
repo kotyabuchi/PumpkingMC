@@ -7,7 +7,7 @@ import com.github.kotyabuchi.pumpkingmc.Enum.Rarity
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolPartType
 import com.github.kotyabuchi.pumpkingmc.Utility.*
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor

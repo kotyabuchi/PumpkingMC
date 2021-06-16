@@ -5,7 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.Menu.SoundMenu
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.command.Command

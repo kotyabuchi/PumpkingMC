@@ -1,7 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.System
 
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

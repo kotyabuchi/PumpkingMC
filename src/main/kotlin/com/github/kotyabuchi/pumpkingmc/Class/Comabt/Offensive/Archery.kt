@@ -9,7 +9,7 @@ import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
 import com.github.kotyabuchi.pumpkingmc.Utility.sendActionMessage
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTEntity
+import de.tr7zw.nbtapi.NBTEntity
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

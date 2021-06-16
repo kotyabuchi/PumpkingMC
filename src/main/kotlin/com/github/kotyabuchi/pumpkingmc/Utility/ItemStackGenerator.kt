@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag

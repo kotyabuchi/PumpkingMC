@@ -1,7 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomItem
 
 import com.github.kotyabuchi.pumpkingmc.instance
-import de.tr7zw.changeme.nbtapi.NBTItem
+import de.tr7zw.nbtapi.NBTItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
