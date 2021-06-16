@@ -35,7 +35,9 @@ class EnchantedEnderman: MobExpansionMaster(EntityType.ENDERMAN) {
 
         addStartFightAction { enderman, _ ->
             if (Random.nextBoolean()) {
-                CursedEye.spawn(enderman as Enderman)
+                repeat(Random.nextInt(4) + 1) {
+                    CursedEye.spawn(enderman as Enderman)
+                }
             }
             object : BukkitRunnable() {
                 override fun run() {
