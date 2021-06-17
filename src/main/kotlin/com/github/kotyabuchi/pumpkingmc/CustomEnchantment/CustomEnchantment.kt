@@ -2,8 +2,9 @@ package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.Homing
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.LifeSteal
-import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ExpBoost
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.ProjectileReflection
+import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ExpBoost
+import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Shearing
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Telekinesis
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -19,18 +20,20 @@ object CustomEnchantment {
     val HOMING = Homing
     val LIFE_STEAL = LifeSteal
 
-    val TELEKINESIS = Telekinesis
     val PROJECTILE_REFLECTION = ProjectileReflection
     val EXP_BOOST = ExpBoost
+    val SHEARING = Shearing
+    val TELEKINESIS = Telekinesis
 
     val EnchantmentKey = NamespacedKey(instance, "Enchantments")
 
     init {
         enchantments.add(HOMING)
         enchantments.add(LIFE_STEAL)
-        enchantments.add(TELEKINESIS)
         enchantments.add(PROJECTILE_REFLECTION)
         enchantments.add(EXP_BOOST)
+        enchantments.add(SHEARING)
+        enchantments.add(TELEKINESIS)
     }
 
     fun registerEnchantment() {
