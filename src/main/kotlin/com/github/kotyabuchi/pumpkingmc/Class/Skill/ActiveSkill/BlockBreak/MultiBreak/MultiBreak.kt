@@ -3,9 +3,11 @@ package com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.BlockBreak.Mult
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.ToggleSkillMaster
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.BlockMineEvent
 import com.github.kotyabuchi.pumpkingmc.Utility.miningWithEvent
+import com.github.kotyabuchi.pumpkingmc.instance
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -14,15 +16,14 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.inventory.ItemStack
-import java.util.*
 import kotlin.math.floor
 
-open class MultiBreak: ToggleSkillMaster {
+abstract class MultiBreak: ToggleSkillMaster {
     override val skillName: String = "MultiBreak"
     override val cost: Int = 0
     override val needLevel: Int = 100
     override var description: String = "レベルに応じた範囲を一括破壊する"
-
+    abstract val type: String
     private val targetTool: MutableSet<Material> = mutableSetOf()
     private val transparentBlocks = mutableSetOf<Material>()
 
@@ -32,18 +33,20 @@ open class MultiBreak: ToggleSkillMaster {
         }
     }
 
+    override fun getSkillNamespacedKey(): NamespacedKey = NamespacedKey(instance, "${skillName}_$type")
+
     fun addTool(vararg materials: Material) {
         targetTool.addAll(materials)
     }
 
     override fun enableAction(player: Player, level: Int) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionBar(Component.text("$skillName On", NamedTextColor.GREEN))
+        player.sendActionBar(Component.text("$skillName $type On", NamedTextColor.GREEN))
     }
 
     override fun disableAction(player: Player) {
         player.playSound(player.eyeLocation, Sound.ENTITY_PLAYER_LEVELUP, 0.2f, 2.0f)
-        player.sendActionBar(Component.text("$skillName Off", NamedTextColor.RED))
+        player.sendActionBar(Component.text("$skillName $type Off", NamedTextColor.RED))
     }
 
     @EventHandler(priority = EventPriority.HIGH)
