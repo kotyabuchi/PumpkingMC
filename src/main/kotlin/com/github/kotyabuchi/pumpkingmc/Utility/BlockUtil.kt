@@ -5,6 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.Enum.WoodType
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Item
@@ -127,4 +128,11 @@ fun Block.miningWithEvent(player: Player, itemStack: ItemStack, mainBlock: Block
             }
         }
     }
+}
+
+fun Block.destroyWithEffect(playSound: Boolean = true) {
+    val effectMaterial = this.type
+    if (playSound) this.world.playSound(this.location, Sound.BLOCK_STONE_BREAK, .8f, .75f)
+    this.world.spawnParticle(Particle.BLOCK_CRACK, this.location.add(.5, .5, .5), 20, .3, .3, .3, 2.0, effectMaterial.createBlockData())
+    this.type = Material.AIR
 }
