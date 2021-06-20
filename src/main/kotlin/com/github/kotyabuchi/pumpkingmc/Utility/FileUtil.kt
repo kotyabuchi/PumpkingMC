@@ -4,9 +4,11 @@ import java.io.*
 import java.util.*
 
 fun saveFile(path: String, vararg objs: Any) {
-    try {
-        val file = File(path)
+    saveFile(File(path), objs)
+}
 
+fun saveFile(file: File, vararg objs: Any) {
+    try {
         if (!file.exists()) file.createNewFile()
         val fw = FileWriter(file)
         val pw = PrintWriter(BufferedWriter(fw))
