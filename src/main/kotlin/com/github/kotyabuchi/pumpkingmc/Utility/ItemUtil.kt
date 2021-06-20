@@ -12,6 +12,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
+import java.util.*
 import kotlin.random.Random
 
 fun Material.hasDurability(): Boolean {
@@ -161,6 +162,16 @@ fun ItemStack.damage(player: Player, _amount: Int) {
             }
         }
         if (amount > 0) instance.server.pluginManager.callEvent(PlayerItemDamageEvent(player, this, amount))
+    }
+}
+
+fun ItemStack.toSerializedString(): String {
+    return Base64.getEncoder().encodeToString(this.serializeAsBytes())
+}
+
+object ItemUtil {
+    fun deserializeItem(serializeString: String): ItemStack {
+        return ItemStack.deserializeBytes(Base64.getDecoder().decode(serializeString))
     }
 }
 
