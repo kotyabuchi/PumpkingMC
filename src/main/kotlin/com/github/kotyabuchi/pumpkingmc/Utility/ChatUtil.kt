@@ -2,10 +2,26 @@ package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.Enum.Symbol
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.ChatColor
 import org.bukkit.enchantments.Enchantment
 import kotlin.math.floor
+
+object ChatUtil {
+    fun separator(title: String = "", color: NamedTextColor = NamedTextColor.WHITE, footer: Boolean = false): Component {
+        var result = "========="
+        if (footer) {
+            repeat(title.length + 2) {
+                result += "="
+            }
+            result += "========="
+        } else {
+            result += " $title ========="
+        }
+        return Component.text(result, color, TextDecoration.BOLD).normal()
+    }
+}
 
 fun String.colorS(): String {
     return ChatColor.translateAlternateColorCodes('&', this)
