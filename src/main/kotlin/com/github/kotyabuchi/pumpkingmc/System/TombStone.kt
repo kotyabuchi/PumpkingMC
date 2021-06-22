@@ -52,7 +52,7 @@ object TombStone: Listener {
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.entity
         val inv = player.inventory
-        val dropItems = event.drops
+        val keepItems = event.itemsToKeep
 
         val json = JsonObject()
         val equipments = JsonObject()
@@ -61,11 +61,11 @@ object TombStone: Listener {
         EquipmentSlot.values().forEach {
             if (it != EquipmentSlot.HAND) {
                 val itemStack = inv.getItem(it)
-                if (itemStack != null && !itemStack.type.isAir && dropItems.contains(itemStack)) equipments.set(it.name, itemStack.toSerializedString())
+                if (itemStack != null && !itemStack.type.isAir && !keepItems.contains(itemStack)) equipments.set(it.name, itemStack.toSerializedString())
             }
         }
         inv.storageContents.forEachIndexed { index, itemStack ->
-            if (itemStack != null && !itemStack.type.isAir && dropItems.contains(itemStack)) storage.set(index.toString(), itemStack.toSerializedString())
+            if (itemStack != null && !itemStack.type.isAir && !keepItems.contains(itemStack)) storage.set(index.toString(), itemStack.toSerializedString())
         }
 
         if (equipments.isEmpty && storage.isEmpty) return

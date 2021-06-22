@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantmentMaster
+import net.kyori.adventure.text.Component
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -30,14 +31,11 @@ object SoulBind: CustomEnchantmentMaster("SOUL_BIND") {
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
         val dropItem = event.drops
-        val removeList = mutableListOf<ItemStack>()
 
         dropItem.forEach { item ->
             item.itemMeta?.let { itemMeta ->
-                if (itemMeta.hasEnchant(this)) removeList.add(item)
+                if (itemMeta.hasEnchant(this)) event.itemsToKeep.add(item)
             }
         }
-
-        dropItem.removeAll(removeList)
     }
 }
