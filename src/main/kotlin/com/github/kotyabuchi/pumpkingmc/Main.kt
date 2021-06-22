@@ -139,6 +139,7 @@ class Main : JavaPlugin() {
         pm.registerEvents(LeadExpansion(), this)
         pm.registerEvents(OtherSystem(), this)
         pm.registerEvents(ShowMobHealth(), this)
+        pm.registerEvents(TombStone, this)
         pm.registerEvents(WorldGuard(), this)
     }
     
@@ -187,6 +188,7 @@ class Main : JavaPlugin() {
     override fun onDisable() {
         // Plugin shutdown logic
         println("PumpkingFantasy Disabled")
+        TombStone.saveTombStoneFile()
         savePlayerStatus()
         CustomEnchantment.unloadEnchantments()
         clearBossBar()
