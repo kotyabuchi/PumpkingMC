@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Menu
 
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonHome
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.HomeButton
 import com.github.kotyabuchi.pumpkingmc.System.Player.Home
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
@@ -17,19 +17,19 @@ class HomeMenu(player: Player, private val remove: Boolean = false): MenuBase(if
         var page = 0
         player.bedSpawnLocation?.let { loc ->
             loc.world?.let { world ->
-                setMenuButton(MenuButtonHome(Home(null, "Bed", world, loc.x, loc.y, loc.z, 0f, Material.RED_BED)), page)
+                setMenuButton(HomeButton(Home(null, "Bed", world, loc.x, loc.y, loc.z, 0f, Material.RED_BED)), page)
             }
         }
         player.getStatus().homes.forEach {
             if (getLastBlankSlot(page) == null) page++
-            setMenuButton(MenuButtonHome(it), page)
+            setMenuButton(HomeButton(it), page)
         }
     }
 
     override fun doButtonClickEvent(slot: Int, event: InventoryClickEvent, page: Int) {
         createPageIfNeed(page)
         val button = getButton(slot, page)
-        if (button is MenuButtonHome) {
+        if (button is HomeButton) {
             val player = event.whoClicked as? Player ?: return
             playClickedButtonSound(button, player)
             val status = player.getStatus()

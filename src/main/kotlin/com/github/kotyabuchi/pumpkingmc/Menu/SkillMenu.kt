@@ -1,8 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.Menu
 
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonBlank
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonSkill
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.BlankButton
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.JobClassButton
 import org.bukkit.entity.Player
 import kotlin.math.ceil
 
@@ -11,10 +11,10 @@ class SkillMenu(player: Player): MenuBase("Skill", ceil(JobClassType.values().si
     init {
         setFrame()
         JobClassType.values().forEach {
-            setMenuButton(MenuButtonSkill(it, player))
+            setMenuButton(JobClassButton(it, player))
         }
         while (getLastBlankSlot() != null) {
-            setMenuButton(MenuButtonBlank())
+            setMenuButton(BlankButton())
         }
     }
 }

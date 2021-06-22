@@ -6,7 +6,7 @@ import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
-class MenuButtonPlaySound(val sound: Sound): MenuButtonBase() {
+class PlaySoundButton(val sound: Sound): MenuButtonBase() {
 
     init {
         clickSound = null

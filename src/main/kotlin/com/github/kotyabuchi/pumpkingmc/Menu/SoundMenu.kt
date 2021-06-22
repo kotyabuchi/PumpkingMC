@@ -1,6 +1,6 @@
 package com.github.kotyabuchi.pumpkingmc.Menu
 
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonPlaySound
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.PlaySoundButton
 import org.bukkit.Sound
 import kotlin.math.floor
 
@@ -10,7 +10,7 @@ class SoundMenu: MenuBase("Sound Sample", 4) {
         setFrame()
         Sound.values().forEachIndexed { index, sound ->
             val page =  floor(index.toDouble() / getSlotAmount()).toInt()
-            setMenuButton(MenuButtonPlaySound(sound), page = page)
+            setMenuButton(PlaySoundButton(sound), page = page)
         }
     }
 }

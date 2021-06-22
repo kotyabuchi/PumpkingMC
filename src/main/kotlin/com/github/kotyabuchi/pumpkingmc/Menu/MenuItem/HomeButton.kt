@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import kotlin.random.Random
 
-class MenuButtonHome(val home: Home): MenuButtonBase() {
+class HomeButton(val home: Home): MenuButtonBase() {
 
     private val location = Location(home.world, home.x, home.y, home.z, home.yaw, 0f)
 

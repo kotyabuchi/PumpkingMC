@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemFlag
 
-class MenuButtonToolPartPattern(private val type: ToolPartType): MenuButtonBase() {
+class ToolPartPatternButton(private val type: ToolPartType): MenuButtonBase() {
 
     init {
         menuItem = ItemStackGenerator(type.icon).setDisplayName(type.name.upperCamelCase()).setFlag(ItemFlag.HIDE_ATTRIBUTES).setMenuItemTag().generate()

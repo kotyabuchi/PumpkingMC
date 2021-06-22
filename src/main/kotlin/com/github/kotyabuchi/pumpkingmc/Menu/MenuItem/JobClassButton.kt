@@ -5,14 +5,14 @@ import com.github.kotyabuchi.pumpkingmc.Menu.SkillInfoMenu
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
 import com.github.kotyabuchi.pumpkingmc.Utility.floor1Digits
-import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.Utility.floor2Digits
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemFlag
 import kotlin.math.round
 
-class MenuButtonSkill(private val jobClassType: JobClassType, player: Player): MenuButtonBase() {
+class JobClassButton(private val jobClassType: JobClassType, player: Player): MenuButtonBase() {
 
     private val jobClass = jobClassType.jobClass
 

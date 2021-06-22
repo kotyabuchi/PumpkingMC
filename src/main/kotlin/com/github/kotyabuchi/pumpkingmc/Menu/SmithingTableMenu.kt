@@ -2,12 +2,12 @@ package com.github.kotyabuchi.pumpkingmc.Menu
 
 import com.github.kotyabuchi.pumpkingmc.Enum.ItemType
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolPartType
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonBlank
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonSmithing
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.BlankButton
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.SmithingButton
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.addItemOrDrop
-import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.Utility.canUseToolHead
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -22,13 +22,13 @@ class SmithingMenu(private val toolPartType: ToolPartType): MenuBase("Smithing -
     var canCraft = false
 
     init {
-        setMenuButton(MenuButtonBlank(Material.IRON_BARS), 0, 0 .. 8)
-        setMenuButton(MenuButtonBlank(Material.IRON_BARS), 0, getSlot(5, 0) .. getSlot(5, 8))
-        setMenuButton(MenuButtonSmithing(this, toolPartType), 0, getSlot(2, 4))
-        setMenuButton(MenuButtonBlank(Material.RED_STAINED_GLASS_PANE), 0, resultLineSlotRange)
-        setMenuButton(MenuButtonBlank(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
+        setMenuButton(BlankButton(Material.IRON_BARS), 0, 0 .. 8)
+        setMenuButton(BlankButton(Material.IRON_BARS), 0, getSlot(5, 0) .. getSlot(5, 8))
+        setMenuButton(SmithingButton(this, toolPartType), 0, getSlot(2, 4))
+        setMenuButton(BlankButton(Material.RED_STAINED_GLASS_PANE), 0, resultLineSlotRange)
+        setMenuButton(BlankButton(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
         while (getLastBlankSlot(0, listOf(materialSlot)) != null) {
-            setMenuButton(MenuButtonBlank(), 0, getLastBlankSlot(0, listOf(materialSlot)))
+            setMenuButton(BlankButton(), 0, getLastBlankSlot(0, listOf(materialSlot)))
         }
     }
 
@@ -49,16 +49,16 @@ class SmithingMenu(private val toolPartType: ToolPartType): MenuBase("Smithing -
                 val materialSlotItem = getItem(materialSlot)
                 val resultSlotItem = getItem(resultItemSlot)
 
-                if (resultSlotItem == null) setMenuButton(MenuButtonBlank(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
+                if (resultSlotItem == null) setMenuButton(BlankButton(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
                 if (materialSlotItem != null &&
                         ItemExpansion(materialSlotItem).getItemTypes().contains(ItemType.MATERIAL) &&
                         !(toolPartType.isHead && !materialSlotItem.type.canUseToolHead()) &&
                         materialSlotItem.amount >= toolPartType.materialAmount &&
                         (hasButton(resultItemSlot) || materialSlotItem.type == resultSlotItem?.type)) {
-                    setMenuButton(MenuButtonBlank(Material.LIME_STAINED_GLASS_PANE), 0, resultLineSlotRange)
+                    setMenuButton(BlankButton(Material.LIME_STAINED_GLASS_PANE), 0, resultLineSlotRange)
                     canCraft = true
                 } else {
-                    setMenuButton(MenuButtonBlank(Material.RED_STAINED_GLASS_PANE), 0, resultLineSlotRange)
+                    setMenuButton(BlankButton(Material.RED_STAINED_GLASS_PANE), 0, resultLineSlotRange)
                     canCraft = false
                 }
             }

@@ -4,7 +4,7 @@ import com.github.kotyabuchi.pumpkingmc.Menu.ToolStationMenu
 import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
 import org.bukkit.Material
 
-class MenuButtonCombineTool(private val menu: ToolStationMenu): MenuButtonBase() {
+class CombineToolButton(private val menu: ToolStationMenu): MenuButtonBase() {
 
     init {
         clickSound = null

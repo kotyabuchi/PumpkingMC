@@ -26,7 +26,7 @@ open class MenuBase(val title: String, _row: Int) {
     fun setPrevMenu(menu: MenuBase): MenuBase {
         prevMenu = menu
         for (i in 0 until pages.size) {
-            setMenuButton(MenuButtonBackPrev(menu), i, menuSize - 8)
+            setMenuButton(BackPrevButton(menu), i, menuSize - 8)
         }
         hasFrame = true
         return this
@@ -35,7 +35,7 @@ open class MenuBase(val title: String, _row: Int) {
     fun setFrame(page: Int = 0): MenuBase {
         for (i in 0 until menuSize) {
             if (i < 9 || i > menuSize - 9 || i % 9 == 8 || i % 9 == 0) {
-                setMenuButton(MenuButtonBlank(), page, i)
+                setMenuButton(BlankButton(), page, i)
             }
         }
         slotAmount = menuSize - 9 - 9 - (2 * row)
@@ -56,8 +56,8 @@ open class MenuBase(val title: String, _row: Int) {
         buttonItems[page][slot] = menuButton
         pages[page].setItem(slot, menuButton.menuItem)
         if (checkNextPage && page > 0) {
-            setMenuButton(MenuButtonBackPage(page, pages.size), page, menuSize - 7, false)
-            setMenuButton(MenuButtonNextPage(page, pages.size), page - 1, menuSize - 3)
+            setMenuButton(BackPageButton(page, pages.size), page, menuSize - 7, false)
+            setMenuButton(NextPageButton(page, pages.size), page - 1, menuSize - 3)
         }
         return this
     }

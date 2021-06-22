@@ -6,14 +6,14 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
-class MenuButtonNextPage(page: Int, allPage: Int): MenuButtonBase() {
+class BackPageButton(page: Int, allPage: Int): MenuButtonBase() {
 
     init {
-        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Next page $page / $allPage").setMenuItemTag().generate()
+        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Back page $page / $allPage").setMenuItemTag().generate()
     }
 
     override fun clickEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
-        player.getStatus().nextPage()
+        player.getStatus().backPage()
     }
 }

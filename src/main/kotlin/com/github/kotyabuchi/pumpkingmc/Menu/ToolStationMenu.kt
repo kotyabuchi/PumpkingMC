@@ -1,8 +1,8 @@
 package com.github.kotyabuchi.pumpkingmc.Menu
 
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolPartType
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonBlank
-import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.MenuButtonCombineTool
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.BlankButton
+import com.github.kotyabuchi.pumpkingmc.Menu.MenuItem.CombineToolButton
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.addItemOrDrop
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -28,16 +28,16 @@ class ToolStationMenu: MenuBase("Tool Station", 6) {
         setFrame()
         materialLines.forEach { line->
             line.forEach {
-                setMenuButton(MenuButtonBlank(Material.RED_STAINED_GLASS_PANE), 0, it)
+                setMenuButton(BlankButton(Material.RED_STAINED_GLASS_PANE), 0, it)
             }
         }
-        setMenuButton(MenuButtonBlank(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
-        setMenuButton(MenuButtonCombineTool(this), 0, getSlot(2, 7))
+        setMenuButton(BlankButton(Material.LIGHT_GRAY_STAINED_GLASS_PANE), 0, resultItemSlot)
+        setMenuButton(CombineToolButton(this), 0, getSlot(2, 7))
 
         val passSlot = mutableListOf(materialSlot1, materialSlot2, materialSlot3)
 
         while (getLastBlankSlot(0, passSlot) != null) {
-            setMenuButton(MenuButtonBlank(), 0, getLastBlankSlot(0, passSlot))
+            setMenuButton(BlankButton(), 0, getLastBlankSlot(0, passSlot))
         }
     }
 
@@ -209,11 +209,11 @@ class ToolStationMenu: MenuBase("Tool Station", 6) {
         canCrafts[slot] = canCraft
         if (canCraft) {
             materialLines[slot].forEach {
-                setMenuButton(MenuButtonBlank(Material.LIME_STAINED_GLASS_PANE), 0, it)
+                setMenuButton(BlankButton(Material.LIME_STAINED_GLASS_PANE), 0, it)
             }
         } else {
             materialLines[slot].forEach {
-                setMenuButton(MenuButtonBlank(Material.RED_STAINED_GLASS_PANE), 0, it)
+                setMenuButton(BlankButton(Material.RED_STAINED_GLASS_PANE), 0, it)
             }
         }
     }

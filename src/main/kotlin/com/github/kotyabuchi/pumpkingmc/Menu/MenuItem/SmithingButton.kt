@@ -6,15 +6,15 @@ import com.github.kotyabuchi.pumpkingmc.Menu.SmithingMenu
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.System.Player.getStatus
 import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
-import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import com.github.kotyabuchi.pumpkingmc.Utility.getMiningLevel
+import com.github.kotyabuchi.pumpkingmc.Utility.upperCamelCase
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 import kotlin.math.floor
 
-class MenuButtonSmithing(private val menu: SmithingMenu, private val toolPartType: ToolPartType): MenuButtonBase() {
+class SmithingButton(private val menu: SmithingMenu, private val toolPartType: ToolPartType): MenuButtonBase() {
 
     private val materialSlot = menu.getSlot(3, 1)
     private val resultItemSlot = menu.getSlot(3, 7)
