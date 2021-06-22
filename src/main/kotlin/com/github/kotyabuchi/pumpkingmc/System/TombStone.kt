@@ -14,6 +14,7 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
@@ -47,10 +48,11 @@ object TombStone: Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.entity
         val inv = player.inventory
+        val dropItems = event.drops
 
         val json = JsonObject()
         val equipments = JsonObject()
@@ -59,11 +61,11 @@ object TombStone: Listener {
         EquipmentSlot.values().forEach {
             if (it != EquipmentSlot.HAND) {
                 val itemStack = inv.getItem(it)
-                if (itemStack != null && !itemStack.type.isAir) equipments.set(it.name, itemStack.toSerializedString())
+                if (itemStack != null && !itemStack.type.isAir && dropItems.contains(itemStack)) equipments.set(it.name, itemStack.toSerializedString())
             }
         }
         inv.storageContents.forEachIndexed { index, itemStack ->
-            if (itemStack != null) storage.set(index.toString(), itemStack.toSerializedString())
+            if (itemStack != null && !itemStack.type.isAir && dropItems.contains(itemStack)) storage.set(index.toString(), itemStack.toSerializedString())
         }
 
         if (equipments.isEmpty && storage.isEmpty) return
