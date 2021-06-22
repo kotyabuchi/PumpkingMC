@@ -1,7 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.Utility
 
 import java.io.*
-import java.util.*
+import java.nio.file.Files
 
 fun saveFile(path: String, vararg objs: Any) {
     saveFile(File(path), objs)
@@ -22,13 +22,5 @@ fun saveFile(file: File, vararg objs: Any) {
 }
 
 fun readFile(file: File): String {
-    var result = ""
-    if (file.exists()) {
-        val scan = Scanner(file)
-        var i = scan.nextLine()
-        if (i != null) {
-            result = i
-        }
-    }
-    return result
+    return Files.readString(file.toPath())
 }
