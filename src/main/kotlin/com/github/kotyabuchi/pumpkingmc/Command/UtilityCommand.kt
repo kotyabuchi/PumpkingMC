@@ -92,6 +92,7 @@ object UtilityCommand: CommandExecutor, TabCompleter {
                         "PROJECTILE_REFLECTION" -> CustomEnchantment.PROJECTILE_REFLECTION
                         "EXP_BOOST" -> CustomEnchantment.EXP_BOOST
                         "SHEARING" -> CustomEnchantment.SHEARING
+                        "SOUL_BIND" -> CustomEnchantment.SOUL_BIND
                         "TELEKINESIS" -> CustomEnchantment.TELEKINESIS
                         else -> return true
                     }

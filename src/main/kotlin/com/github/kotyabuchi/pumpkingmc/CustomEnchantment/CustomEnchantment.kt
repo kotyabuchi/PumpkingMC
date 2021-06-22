@@ -5,6 +5,7 @@ import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.Li
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Combat.ProjectileReflection
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.ExpBoost
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Shearing
+import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.SoulBind
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments.Telekinesis
 import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.instance
@@ -23,6 +24,7 @@ object CustomEnchantment {
     val PROJECTILE_REFLECTION = ProjectileReflection
     val EXP_BOOST = ExpBoost
     val SHEARING = Shearing
+    val SOUL_BIND = SoulBind
     val TELEKINESIS = Telekinesis
 
     val EnchantmentKey = NamespacedKey(instance, "Enchantments")
@@ -33,6 +35,7 @@ object CustomEnchantment {
         enchantments.add(PROJECTILE_REFLECTION)
         enchantments.add(EXP_BOOST)
         enchantments.add(SHEARING)
+        enchantments.add(SOUL_BIND)
         enchantments.add(TELEKINESIS)
     }
 
