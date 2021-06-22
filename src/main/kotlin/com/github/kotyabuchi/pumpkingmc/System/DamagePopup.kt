@@ -22,6 +22,7 @@ class DamagePopup: Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onDamage(event: EntityDamageEvent) {
         if (event.isCancelled) return
+        if (event.damage <= 0.0) return
         val entity = event.entity as? LivingEntity ?: return
         if (entity !is Player) {
             var needPopup = false
