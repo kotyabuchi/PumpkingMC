@@ -11,6 +11,7 @@ object Unarmed: JobClassMaster("UNARMED") {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
+        if (event.isCancelled) return
         val player = event.damager as? Player ?: return
         val playerStatus = player.getStatus()
         if (event.entity !is LivingEntity) return

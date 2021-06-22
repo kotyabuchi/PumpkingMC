@@ -38,6 +38,7 @@ object Archery: JobClassMaster("ARCHERY") {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
+        if (event.isCancelled) return
         val arrow = event.damager as? Arrow ?: return
         val player = arrow.shooter as? Player ?: return
         val entity = event.entity

@@ -24,6 +24,7 @@ object SwordMaster: JobClassMaster("SWORDMASTER") {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
+        if (event.isCancelled) return
         val player = event.damager as? Player ?: return
         if (event.entity !is LivingEntity) return
         val item = player.inventory.itemInMainHand

@@ -19,6 +19,7 @@ object BattleAxe: JobClassMaster("BATTLEAXE") {
 
     @EventHandler
     fun onDamage(event: EntityDamageByEntityEvent) {
+        if (event.isCancelled) return
         val player = event.damager as? Player ?: return
         val entity = event.entity as? LivingEntity ?: return
         val item = player.inventory.itemInMainHand
