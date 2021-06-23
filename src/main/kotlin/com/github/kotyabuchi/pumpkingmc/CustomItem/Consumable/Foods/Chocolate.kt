@@ -25,7 +25,7 @@ object Chocolate: Food() {
 
     init {
         val recipe = ShapedRecipe(NamespacedKey(instance, itemType), itemStack)
-            .shape("AAA", " B ")
+            .shape("A", "B")
             .setIngredient('A', Material.COCOA_BEANS)
             .setIngredient('B', Material.GLASS_BOTTLE)
         addRecipe(recipe)
