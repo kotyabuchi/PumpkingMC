@@ -53,6 +53,8 @@ class Main : JavaPlugin() {
 
     private lateinit var homeCommand: HomeCommand
     private val damagePopup = DamagePopup()
+
+    private lateinit var zombieClasses: List<EnchantedZombie>
     
     private fun registerEvents() {
         val pm = server.pluginManager
@@ -73,16 +75,15 @@ class Main : JavaPlugin() {
         pm.registerEvents(EnchantedVillager(), this)
 
             // Monster
-        pm.registerEvents(EnchantedDrowned(), this)
+        zombieClasses.forEach {
+            pm.registerEvents(it, this)
+        }
         pm.registerEvents(EnchantedCreeper(), this)
         pm.registerEvents(EnchantedEnderman(), this)
-        pm.registerEvents(EnchantedHusk(), this)
 //        pm.registerEvents(EnchantedMagmaCube(), this)
-        pm.registerEvents(EnchantedPiglin(), this)
         pm.registerEvents(EnchantedSkeleton(), this)
         pm.registerEvents(EnchantedSlime(), this)
         pm.registerEvents(EnchantedSpider(), this)
-        pm.registerEvents(EnchantedZombie(), this)
         pm.registerEvents(CustomEntity(), this)
 
         // CustomEvent
@@ -175,6 +176,7 @@ class Main : JavaPlugin() {
         if (!dataFolder.exists()) dataFolder.mkdirs()
         initDB()
         homeCommand = HomeCommand()
+        zombieClasses = listOf(EnchantedDrowned(), EnchantedHusk(), EnchantedPiglin(), EnchantedZombie())
         registerEvents()
         registerCommands()
         CustomEnchantment.registerEnchantment()
@@ -193,6 +195,9 @@ class Main : JavaPlugin() {
         TombStone.saveTombStoneFile()
         savePlayerStatus()
         CustomEnchantment.unloadEnchantments()
+        zombieClasses.forEach {
+            it.clearStones()
+        }
         clearBossBar()
         damagePopup.clearPopup()
         removeLag.stop()

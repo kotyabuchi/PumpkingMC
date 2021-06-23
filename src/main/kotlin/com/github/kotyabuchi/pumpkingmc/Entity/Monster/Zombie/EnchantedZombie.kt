@@ -26,6 +26,8 @@ import kotlin.random.Random
 
 open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER), private val scaffoldBlock: Material = Material.MOSSY_COBBLESTONE): MobExpansionMaster(*zombieTypes) {
 
+    private val placedStoneList = mutableListOf<Block>()
+
     init {
         object : BukkitRunnable() {
             override fun run() {
@@ -100,6 +102,7 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
                                     if (type.isAir || type.isLiquid() || type.isGrass()) {
                                         targetBlock.type = scaffoldBlock
                                         zombie.world.playSound(targetBlock.location, Sound.BLOCK_STONE_PLACE, .8f, .75f)
+                                        placedStoneList.add(targetBlock)
                                         val teleportLoc = zombie.location
                                         teleportLoc.y = targetBlock.location.y + 1
                                         zombie.teleport(teleportLoc)
@@ -109,6 +112,7 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
                                                     targetBlock.type = Material.AIR
                                                     targetBlock.world.playSound(targetBlock.location, Sound.BLOCK_STONE_BREAK, .8f, .75f)
                                                     targetBlock.world.spawnParticle(Particle.BLOCK_CRACK, targetBlock.location.add(.5, .5, .5), 20, .3, .3, .3, 2.0, scaffoldBlock.createBlockData())
+                                                    placedStoneList.remove(targetBlock)
                                                 }
                                             }
                                         }.runTaskLater(instance, 20 * 5)
@@ -198,12 +202,14 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
                                     if (needPlace) {
                                         targetBlock.type = scaffoldBlock
                                         zombie.world.playSound(targetBlock.location, Sound.BLOCK_STONE_PLACE, .8f, .75f)
+                                        placedStoneList.add(targetBlock)
                                         object: BukkitRunnable() {
                                             override fun run() {
                                                 if (targetBlock.type == scaffoldBlock) {
                                                     targetBlock.type = Material.AIR
                                                     targetBlock.world.playSound(targetBlock.location, Sound.BLOCK_STONE_BREAK, .8f, .75f)
                                                     targetBlock.world.spawnParticle(Particle.BLOCK_CRACK, targetBlock.location.add(.5, .5, .5), 20, .3, .3, .3, 2.0, Material.MOSSY_COBBLESTONE.createBlockData())
+                                                    placedStoneList.remove(targetBlock)
                                                 }
                                             }
                                         }.runTaskLater(instance, 20 * 4)
@@ -223,5 +229,11 @@ open class EnchantedZombie(private vararg val zombieTypes: EntityType = arrayOf(
         if (!zombieTypes.contains(entity.type)) return
         entity.addPotionEffect(PotionEffect(PotionEffectType.HUNGER, 20 * 3, 1))
         if (Random.nextInt(10) < 1) entity.addPotionEffect(PotionEffect(PotionEffectType.CONFUSION, 20 * 6, 1))
+    }
+
+    fun clearStones() {
+        placedStoneList.forEach {
+            it.type = Material.AIR
+        }
     }
 }
