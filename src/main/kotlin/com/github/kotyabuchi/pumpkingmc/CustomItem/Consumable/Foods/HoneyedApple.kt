@@ -9,6 +9,7 @@ import net.kyori.adventure.text.TextComponent
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.inventory.ShapelessRecipe
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -30,8 +31,8 @@ object HoneyedApple: Food(), Craftable {
         addRecipe(recipe)
     }
 
-    override fun consume(player: Player) {
-        super.consume(player)
+    override fun consume(player: Player, event: PlayerItemConsumeEvent?) {
+        super.consume(player, event)
         player.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, 20 * 5, 1))
     }
 }

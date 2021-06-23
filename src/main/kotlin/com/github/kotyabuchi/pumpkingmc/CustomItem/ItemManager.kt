@@ -41,6 +41,6 @@ object ItemManager: Listener {
         val player = event.player
         val itemStack = event.item
         val item = getItem(itemStack) as? ConsumableItem ?: return
-        item.consume(player)
+        item.consume(player, event)
     }
 }
