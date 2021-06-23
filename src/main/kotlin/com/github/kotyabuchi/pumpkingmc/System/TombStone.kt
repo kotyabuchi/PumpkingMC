@@ -7,6 +7,7 @@ import com.github.kotyabuchi.pumpkingmc.instance
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.title.Title
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.Sound
@@ -114,7 +115,10 @@ object TombStone: Listener {
         val uuid = pdc.get(tombStoneKey, PersistentDataType.STRING) ?: return
         event.isCancelled = true
         if (uuid.isEmpty()) return
-        if (player.uniqueId != UUID.fromString(uuid)) return
+        if (player.uniqueId != UUID.fromString(uuid)) {
+            player.showTitle(Title.title(Component.empty(), Component.text("他人の墓荒らしは良くないよ", NamedTextColor.RED, TextDecoration.BOLD).normal()))
+            return
+        }
         loadTombStoneItems(player, tombStone)
     }
 
@@ -135,7 +139,10 @@ object TombStone: Listener {
         val uuid = pdc.get(tombStoneKey, PersistentDataType.STRING) ?: return
         event.isCancelled = true
         if (uuid.isEmpty()) return
-        if (player.uniqueId != UUID.fromString(uuid)) return
+        if (player.uniqueId != UUID.fromString(uuid))  {
+            player.showTitle(Title.title(Component.empty(), Component.text("他人の墓荒らしは良くないよ", NamedTextColor.RED, TextDecoration.BOLD).normal()))
+            return
+        }
         loadTombStoneItems(player, tombStone)
     }
 
