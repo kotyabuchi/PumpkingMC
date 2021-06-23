@@ -2,6 +2,7 @@ package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.Enum.Symbol
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.ChatColor
@@ -81,7 +82,7 @@ fun Enchantment.toLore(level: Int): String {
     return result
 }
 
-fun Component.normal(vararg decoration: TextDecoration): Component {
+fun TextComponent.normal(vararg decoration: TextDecoration): TextComponent {
     var result = this
     if (decoration.isEmpty()) {
         result = this.decoration(TextDecoration.ITALIC, false)
