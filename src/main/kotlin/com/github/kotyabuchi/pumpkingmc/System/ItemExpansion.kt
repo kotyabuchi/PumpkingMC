@@ -44,7 +44,7 @@ class ItemExpansion {
     private var durability = 0
     private var maxDurability = 0
 
-    constructor(type: Material, displayName: Component?, lore: MutableList<Component> = mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), amount: Int = 1, toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
+    constructor(type: Material, displayName: Component? = null, lore: MutableList<Component> = mutableListOf(), rarity: Rarity = Rarity.COMMON, itemTypes: List<ItemType> = listOf(), amount: Int = 1, toolPartType: ToolPartType? = null, materialMiningLevel: MaterialMiningLevel? = null) {
         item = ItemStack(type, amount)
         val meta = item.itemMeta
         meta.displayName(displayName)
