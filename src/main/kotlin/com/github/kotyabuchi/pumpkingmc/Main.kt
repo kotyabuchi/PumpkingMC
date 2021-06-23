@@ -23,6 +23,7 @@ import com.github.kotyabuchi.pumpkingmc.Command.UtilityCommand
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantment
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantmentManager
 import com.github.kotyabuchi.pumpkingmc.CustomEvent.CustomEventCaller
+import com.github.kotyabuchi.pumpkingmc.CustomItem.ItemManager
 import com.github.kotyabuchi.pumpkingmc.CustomItem.TransportAmulet
 import com.github.kotyabuchi.pumpkingmc.Entity.CustomEntity
 import com.github.kotyabuchi.pumpkingmc.Entity.DebugStuff
@@ -88,6 +89,7 @@ class Main : JavaPlugin() {
         pm.registerEvents(CustomEventCaller, this)
 
         // CustomItem
+        pm.registerEvents(ItemManager, this)
         pm.registerEvents(TransportAmulet(), this)
 
         // Menu
