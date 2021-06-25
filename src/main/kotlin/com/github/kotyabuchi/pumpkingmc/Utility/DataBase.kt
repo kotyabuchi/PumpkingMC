@@ -103,7 +103,7 @@ fun loadPlayerStatus(vararg players: Player): List<PlayerStatus> {
 
 @Synchronized
 fun savePlayerStatus(vararg statusList: PlayerStatus = getAllPlayerStatus().toTypedArray()) {
-    println("&a[System]プレイヤーステータスをデータベースに保存開始...".colorS())
+    println("&a[System]PlayerStatusをデータベースに保存開始...".colorS())
     var success = true
 //    initDB()
     val dbFile = File(instance.dataFolder, "PumpkingFantasy.db")
@@ -149,9 +149,9 @@ fun savePlayerStatus(vararg statusList: PlayerStatus = getAllPlayerStatus().toTy
         }
     }
     if (success) {
-        println("&a[System]プレイヤーステータスをデータベースに保存完了".colorS())
+        println("&a[System]PlayerStatusをデータベースに保存しました".colorS())
     } else {
-        println("&4[System]プレイヤーステータスをデータベースに保存失敗".colorS())
+        println("&4[System]PlayerStatusの保存に失敗しました".colorS())
     }
 }
 
