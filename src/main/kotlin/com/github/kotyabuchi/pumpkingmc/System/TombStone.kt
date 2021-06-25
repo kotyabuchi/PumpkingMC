@@ -156,47 +156,51 @@ object TombStone: Listener {
         val equipmentItems = tombItems.get("Equipment").asObject()
         val storageItems = tombItems.get("Storage").asObject()
 
-        val inventory = player.inventory
-
-        val inventoryBackup = mutableListOf<ItemStack>()
-
-        equipmentItems.forEach {
-            val serializedStr = equipmentItems.getString(it.name, null)
-            if (serializedStr != null) {
-                val equipmentItem = inventory.getItem(EquipmentSlot.valueOf(it.name))
-                if (equipmentItem != null && !equipmentItem.type.isAir) inventoryBackup.add(equipmentItem)
-                inventory.setItem(EquipmentSlot.valueOf(it.name), ItemUtil.deserializeItem(serializedStr))
-            }
-        }
-        storageItems.forEach {
-            val serializedStr = storageItems.getString(it.name, null)
-            if (serializedStr != null) {
-                val slot = it.name.toInt()
-                val storageItem = inventory.getItem(slot)
-                if (storageItem != null && !storageItem.type.isAir) inventoryBackup.add(storageItem)
-                inventory.setItem(slot,ItemUtil.deserializeItem(serializedStr))
-            }
-        }
-
-        inventoryBackup.forEach { backupItem ->
-            inventory.addItemOrDrop(player, backupItem)
-        }
-        pdc.set(tombStoneKey, PersistentDataType.STRING, "")
-        playersTombStones.remove(tombStoneUUID)
-        tombStones.set(uuid, playersTombStones)
-
         object : BukkitRunnable() {
             val loc = tombStone.location
             var count = 0
             override fun run() {
-                if (count >= 2) {
-                    tombStone.passengers.forEach {
-                        it.remove()
-                    }
-                    tombStone.remove()
+                if (player.isDead) {
                     cancel()
+                } else {
+                    if (count >= 2) {
+                        val inventory = player.inventory
+
+                        val inventoryBackup = mutableListOf<ItemStack>()
+
+                        equipmentItems.forEach {
+                            val serializedStr = equipmentItems.getString(it.name, null)
+                            if (serializedStr != null) {
+                                val equipmentItem = inventory.getItem(EquipmentSlot.valueOf(it.name))
+                                if (equipmentItem != null && !equipmentItem.type.isAir) inventoryBackup.add(equipmentItem)
+                                inventory.setItem(EquipmentSlot.valueOf(it.name), ItemUtil.deserializeItem(serializedStr))
+                            }
+                        }
+                        storageItems.forEach {
+                            val serializedStr = storageItems.getString(it.name, null)
+                            if (serializedStr != null) {
+                                val slot = it.name.toInt()
+                                val storageItem = inventory.getItem(slot)
+                                if (storageItem != null && !storageItem.type.isAir) inventoryBackup.add(storageItem)
+                                inventory.setItem(slot,ItemUtil.deserializeItem(serializedStr))
+                            }
+                        }
+
+                        inventoryBackup.forEach { backupItem ->
+                            inventory.addItemOrDrop(player, backupItem)
+                        }
+                        pdc.set(tombStoneKey, PersistentDataType.STRING, "")
+                        playersTombStones.remove(tombStoneUUID)
+                        tombStones.set(uuid, playersTombStones)
+
+                        tombStone.passengers.forEach {
+                            it.remove()
+                        }
+                        tombStone.remove()
+                        cancel()
+                    }
+                    player.world.playSound(loc, Sound.BLOCK_GRAVEL_BREAK, 1.5f, .5f)
                 }
-                player.world.playSound(loc, Sound.BLOCK_GRAVEL_BREAK, 1.5f, .5f)
                 count++
             }
         }.runTaskTimer(instance, 0, 10)
