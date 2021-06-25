@@ -2,6 +2,7 @@ package com.github.kotyabuchi.pumpkingmc.Utility
 
 import com.github.kotyabuchi.pumpkingmc.Enum.JobClassType
 import com.github.kotyabuchi.pumpkingmc.System.Player.*
+import com.github.kotyabuchi.pumpkingmc.System.TombStone
 import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Location
 import org.bukkit.Material
@@ -243,6 +244,7 @@ fun startAutoSave() {
     object : BukkitRunnable() {
         override fun run() {
             savePlayerStatus()
+            TombStone.saveTombStoneFile()
         }
     }.runTaskTimer(instance, time, time)
 }
