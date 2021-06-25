@@ -208,5 +208,6 @@ object TombStone: Listener {
 
     fun saveTombStoneFile() {
         saveFile(tombStoneFile, tombStones)
+        println("&a[System]TombStoneを保存しました".colorS())
     }
 }
