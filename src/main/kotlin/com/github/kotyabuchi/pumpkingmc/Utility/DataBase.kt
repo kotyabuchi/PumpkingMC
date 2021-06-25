@@ -239,9 +239,10 @@ fun changeHomeIcon(player: Player, home: Home, icon: Material) {
 }
 
 fun startAutoSave() {
+    val time: Long = 20 * 60 * 30
     object : BukkitRunnable() {
         override fun run() {
             savePlayerStatus()
         }
-    }.runTaskTimer(instance, 20 * 60 * 5, 20 * 60 * 5)
+    }.runTaskTimer(instance, time, time)
 }
