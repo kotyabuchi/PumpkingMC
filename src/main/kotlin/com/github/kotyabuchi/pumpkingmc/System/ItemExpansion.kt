@@ -227,6 +227,13 @@ class ItemExpansion {
         return this
     }
 
+    fun setEnchantmentLevel(enchant: Enchantment, level: Int): ItemExpansion {
+        if (item.containsEnchantment(enchant)) item.removeEnchantment(enchant)
+        item.addUnsafeEnchantment(enchant, level)
+        generateLore()
+        return this
+    }
+
     fun setFlag(flag: ItemFlag): ItemExpansion {
         val meta = item.itemMeta ?: return this
         if (!meta.hasItemFlag(flag)) meta.addItemFlags(flag)
