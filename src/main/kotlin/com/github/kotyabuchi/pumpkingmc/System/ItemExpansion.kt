@@ -216,6 +216,7 @@ class ItemExpansion {
 
     fun addEnchant(enchant: Enchantment, level: Int): ItemExpansion {
         if (item.containsEnchantment(enchant)) return this
+        if (item.itemMeta.hasConflictingEnchant(enchant)) return this
         item.addUnsafeEnchantment(enchant, level)
         generateLore()
         return this
@@ -229,8 +230,7 @@ class ItemExpansion {
 
     fun setEnchantmentLevel(enchant: Enchantment, level: Int): ItemExpansion {
         if (item.containsEnchantment(enchant)) item.removeEnchantment(enchant)
-        item.addUnsafeEnchantment(enchant, level)
-        generateLore()
+        addEnchant(enchant, level)
         return this
     }
 
