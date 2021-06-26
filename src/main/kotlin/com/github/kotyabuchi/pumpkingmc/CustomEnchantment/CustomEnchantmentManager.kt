@@ -7,6 +7,7 @@ import com.github.kotyabuchi.pumpkingmc.Utility.getEquipmentType
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
 import com.github.kotyabuchi.pumpkingmc.Utility.toLore
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
@@ -70,15 +71,25 @@ object CustomEnchantmentManager: Listener {
         val meta0 = item0.itemMeta ?: return
         val meta1 = item1?.itemMeta
 
+        val enchants0 = meta0.enchants
+        val enchants1 = meta1?.enchants
         val customEnchants = mutableMapOf<CustomEnchantmentMaster, Int>()
-        meta0.enchants.forEach { (enchant, level) ->
-            if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
+        val increaseEnchants = mutableMapOf<Enchantment, Int>()
+
+        enchants0.forEach { (enchant0, level0) ->
+            if (enchant0 is CustomEnchantmentMaster) customEnchants[enchant0] = level0
+            enchants1?.forEach { (enchant1, level1) ->
+                if (enchant0.maxLevel > 1 && enchant0 == enchant1 && level0 == level1) increaseEnchants[enchant0] = level0 + 1
+            }
         }
         meta1?.enchants?.forEach { (enchant, level) ->
             if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
         }
         customEnchants.forEach { (enchant, level) ->
             result.addEnchant(enchant, level)
+        }
+        increaseEnchants.forEach { (enchant, level) ->
+            result.setEnchantmentLevel(enchant, level)
         }
         if (item1 != null && item0.type.hasDurability()) {
             if (item0.type == item1.type) {
