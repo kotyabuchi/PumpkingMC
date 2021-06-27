@@ -215,6 +215,7 @@ class ItemExpansion {
 
     fun addEnchant(enchant: Enchantment, level: Int): ItemExpansion {
         if (item.containsEnchantment(enchant)) return this
+        if (!enchant.canEnchantItem(item)) return this
         if (item.itemMeta.hasConflictingEnchant(enchant)) return this
         if (item.type == Material.ENCHANTED_BOOK && enchant !is CustomEnchantmentMaster) {
             item.editMeta {
