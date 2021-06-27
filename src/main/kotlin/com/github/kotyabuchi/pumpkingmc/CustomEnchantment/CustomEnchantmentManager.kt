@@ -26,18 +26,24 @@ object CustomEnchantmentManager: Listener {
     @EventHandler
     fun onEnchant(event: EnchantItemEvent) {
         val item = event.item
+        val toAdd = event.enchantsToAdd
         CustomEnchantment.values().forEach { enchant ->
             if (item.type == Material.BOOK || enchant.canEnchantItem(item) && Random.nextInt(100) <= enchant.getProbability(event.expLevelCost)) {
                 var conflict = false
-                event.enchantsToAdd.keys.forEach {
+                toAdd.keys.forEach {
                     if (enchant.conflictsWith(it)) conflict = true
                 }
                 if (!conflict) {
                     val level = min(enchant.maxLevel, Random.nextInt(enchant.startLevel, enchant.maxLevel + 1 + round(event.expLevelCost / 5.0).toInt()))
-                    item.addCustomEnchant(enchant, level)
+                    toAdd[enchant] = level
                 }
             }
         }
+        val result = ItemExpansion(item)
+        toAdd.forEach { (enchant, level) ->
+            result.addEnchant(enchant, level)
+        }
+        event.inventory.setItem(0, result.item)
     }
 
     @EventHandler
@@ -113,21 +119,6 @@ object CustomEnchantmentManager: Listener {
         }
 
         event.result = result.item
-    }
-
-    private fun ItemStack.addCustomEnchant(enchant: CustomEnchantmentMaster, _level: Int) {
-        val meta = this.itemMeta ?: return
-        var level = _level
-        if (meta.hasEnchant(enchant)) {
-            level = max(meta.getEnchantLevel(enchant), level)
-            this.removeEnchantment(enchant)
-        }
-        val lore = meta.lore ?: mutableListOf()
-
-        lore.add(0, "&7${enchant.toLore(level)}".colorS())
-        meta.lore = lore
-        this.itemMeta = meta
-        this.addUnsafeEnchantment(enchant, level)
     }
 
     private fun ItemStack.removeCustomEnchant(enchant: CustomEnchantmentMaster): ItemStack {
