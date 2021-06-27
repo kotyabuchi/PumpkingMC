@@ -27,10 +27,6 @@ object ExpBoost: CustomEnchantmentMaster("EXP_BOOST") {
 
     private val entities = mutableMapOf<Entity, Byte>()
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return maxLevel
     }

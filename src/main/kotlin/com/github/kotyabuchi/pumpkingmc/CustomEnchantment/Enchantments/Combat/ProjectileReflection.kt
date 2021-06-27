@@ -16,10 +16,6 @@ object ProjectileReflection: CustomEnchantmentMaster("PROJECTILE_REFLECTION") {
     private const val maxLevel = 5
     private val itemTarget = EnchantmentTarget.ARMOR
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return maxLevel
     }

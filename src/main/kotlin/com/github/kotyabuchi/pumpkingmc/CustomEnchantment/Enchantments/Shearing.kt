@@ -23,10 +23,6 @@ object Shearing: CustomEnchantmentMaster("SHEARING") {
     private const val maxLevel = 3
     private val itemTarget = EnchantmentTarget.WEAPON
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return maxLevel
     }

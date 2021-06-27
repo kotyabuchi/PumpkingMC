@@ -20,7 +20,9 @@ abstract class CustomEnchantmentMaster(
         instance.server.pluginManager.registerEvents(this, instance)
     }
 
-    abstract fun getProbability(expCost: Int): Int
+    open fun getProbability(expCost: Int): Int {
+        return expCost * rarity.weight * 2 / 10
+    }
 
     final override fun getName(): String {
         return name

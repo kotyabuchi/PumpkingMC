@@ -29,10 +29,6 @@ object Homing: CustomEnchantmentMaster("HOMING") {
     private val levelMap = mutableMapOf<Projectile, Int>()
     private val projectileMap = mutableMapOf<Projectile, BukkitTask>()
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return maxLevel
     }

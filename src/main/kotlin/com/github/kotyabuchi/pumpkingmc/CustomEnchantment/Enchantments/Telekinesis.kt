@@ -33,10 +33,6 @@ object Telekinesis: CustomEnchantmentMaster("TELEKINESIS") {
         instance.server.pluginManager.registerEvents(this, instance)
     }
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return 1
     }

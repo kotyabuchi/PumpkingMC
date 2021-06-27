@@ -12,10 +12,6 @@ object SoulBind: CustomEnchantmentMaster("SOUL_BIND") {
 
     private val itemTarget = EnchantmentTarget.VANISHABLE
 
-    override fun getProbability(expCost: Int): Int {
-        return round(expCost.toDouble() / rarity.weight).toInt()
-    }
-
     override fun getMaxLevel(): Int {
         return 1
     }
