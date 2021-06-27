@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
 import com.github.kotyabuchi.pumpkingmc.Utility.getEquipmentType
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
+import com.github.kotyabuchi.pumpkingmc.instance
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
@@ -12,6 +13,8 @@ import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.GrindstoneInventory
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.EnchantmentStorageMeta
+import org.bukkit.scheduler.BukkitRunnable
 import kotlin.math.ceil
 import kotlin.math.min
 import kotlin.math.round
@@ -24,7 +27,8 @@ object CustomEnchantmentManager: Listener {
         val item = event.item
         val toAdd = event.enchantsToAdd
         CustomEnchantment.values().forEach { enchant ->
-            if (item.type == Material.BOOK || enchant.canEnchantItem(item) && Random.nextInt(100) <= enchant.getProbability(event.expLevelCost)) {
+            val random = Random.nextInt(100)
+            if ((item.type == Material.BOOK || enchant.canEnchantItem(item)) && random <= enchant.getProbability(event.expLevelCost)) {
                 var conflict = false
                 toAdd.keys.forEach {
                     if (enchant.conflictsWith(it)) conflict = true
@@ -35,11 +39,20 @@ object CustomEnchantmentManager: Listener {
                 }
             }
         }
-        val result = ItemExpansion(item)
-        toAdd.forEach { (enchant, level) ->
-            result.addEnchant(enchant, level)
-        }
-        event.inventory.setItem(0, result.item)
+        object : BukkitRunnable() {
+            override fun run() {
+                val result: ItemExpansion =
+                    if (item.type == Material.BOOK) {
+                        ItemExpansion(Material.ENCHANTED_BOOK)
+                    } else {
+                        ItemExpansion(item)
+                    }
+                toAdd.forEach { (enchant, level) ->
+                    result.addEnchant(enchant, level)
+                }
+                event.inventory.setItem(0, result.item)
+            }
+        }.runTaskLater(instance, 0)
     }
 
     @EventHandler
@@ -75,26 +88,56 @@ object CustomEnchantmentManager: Listener {
         val meta0 = item0.itemMeta ?: return
         val meta1 = item1?.itemMeta
 
-        val enchants0 = meta0.enchants
-        val enchants1 = meta1?.enchants
+        val enchants0 = mutableMapOf<Enchantment, Int>()
+        val enchants1 = mutableMapOf<Enchantment, Int>()
+        enchants0.putAll(meta0.enchants)
+        meta1?.enchants?.let {
+            enchants1.putAll(it)
+        }
+        if (item0.type == Material.ENCHANTED_BOOK) {
+            enchants0.putAll((meta0 as EnchantmentStorageMeta).storedEnchants)
+        }
+        if (item1?.type == Material.ENCHANTED_BOOK) {
+            enchants1.putAll((meta1 as EnchantmentStorageMeta).storedEnchants)
+        }
+
         val customEnchants = mutableMapOf<CustomEnchantmentMaster, Int>()
         val increaseEnchants = mutableMapOf<Enchantment, Int>()
 
         enchants0.forEach { (enchant0, level0) ->
             if (enchant0 is CustomEnchantmentMaster) customEnchants[enchant0] = level0
-            enchants1?.forEach { (enchant1, level1) ->
+            enchants1.forEach { (enchant1, level1) ->
                 if (enchant0.maxLevel > 1 && enchant0 == enchant1 && level0 == level1) increaseEnchants[enchant0] = level0 + 1
             }
         }
-        meta1?.enchants?.forEach { (enchant, level) ->
-            if (enchant is CustomEnchantmentMaster) customEnchants[enchant] = level
+        enchants1.forEach { (enchant, level) ->
+            if (enchant is CustomEnchantmentMaster) {
+                if (customEnchants.containsKey(enchant)) {
+                    if (customEnchants[enchant]!! < level) customEnchants[enchant] = level
+                } else {
+                    customEnchants[enchant] = level
+                }
+            }
         }
-        customEnchants.forEach { (enchant, level) ->
-            result.addEnchant(enchant, level)
+
+        if (result.item.type == Material.ENCHANTED_BOOK) {
+            result.item.editMeta { meta ->
+                (meta as? EnchantmentStorageMeta)?.let {
+                    customEnchants.forEach { (enchant, level) ->
+                        if (!meta.hasConflictingStoredEnchant(enchant)) meta.addStoredEnchant(enchant, level, true)
+                    }
+                }
+            }
+        } else {
+            customEnchants.forEach { (enchant, level) ->
+                result.addEnchant(enchant, level)
+            }
+            increaseEnchants.forEach { (enchant, level) ->
+                result.setEnchantmentLevel(enchant, level)
+            }
         }
-        increaseEnchants.forEach { (enchant, level) ->
-            result.setEnchantmentLevel(enchant, level)
-        }
+
+        // mending durability
         if (item1 != null && item0.type.hasDurability()) {
             if (item0.type == item1.type) {
                 result = result.increaseDurability(ItemExpansion(item1).getDurability())
