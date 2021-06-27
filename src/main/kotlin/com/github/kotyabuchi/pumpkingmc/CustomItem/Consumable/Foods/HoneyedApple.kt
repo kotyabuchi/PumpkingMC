@@ -23,8 +23,10 @@ object HoneyedApple: Food(), Craftable {
     override val exhaustion: Float = 0f
 
     init {
-        val recipe = ShapelessRecipe(NamespacedKey(instance, "Honeyed_Apple"), itemStack)
-        repeat(8) {
+        val result = itemStack.clone()
+        result.amount = 4
+        val recipe = ShapelessRecipe(NamespacedKey(instance, "Honeyed_Apple"), result)
+        repeat(4) {
             recipe.addIngredient(Material.APPLE)
         }
         recipe.addIngredient(Material.HONEY_BOTTLE)
