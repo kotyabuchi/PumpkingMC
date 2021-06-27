@@ -2,10 +2,8 @@ package com.github.kotyabuchi.pumpkingmc.CustomEnchantment
 
 import com.destroystokyo.paper.event.inventory.PrepareResultEvent
 import com.github.kotyabuchi.pumpkingmc.System.ItemExpansion
-import com.github.kotyabuchi.pumpkingmc.Utility.colorS
 import com.github.kotyabuchi.pumpkingmc.Utility.getEquipmentType
 import com.github.kotyabuchi.pumpkingmc.Utility.hasDurability
-import com.github.kotyabuchi.pumpkingmc.Utility.toLore
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
@@ -13,10 +11,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.EnchantItemEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.GrindstoneInventory
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
@@ -49,6 +45,7 @@ object CustomEnchantmentManager: Listener {
     @EventHandler
     fun onRemoveEnchant(event: PrepareResultEvent) {
         val inv = event.inventory as? GrindstoneInventory ?: return
+        val result = event.result?.let { ItemExpansion(it) } ?: return
 
         val item0 = inv.getItem(0)
         val item1 = inv.getItem(1)
@@ -64,8 +61,9 @@ object CustomEnchantmentManager: Listener {
             if (it is CustomEnchantmentMaster) customEnchants.add(it)
         }
         customEnchants.forEach {
-            event.result = event.result?.removeCustomEnchant(it)
+            result.removeEnchant(it)
         }
+        event.result = result.item
     }
 
     @EventHandler
@@ -119,16 +117,5 @@ object CustomEnchantmentManager: Listener {
         }
 
         event.result = result.item
-    }
-
-    private fun ItemStack.removeCustomEnchant(enchant: CustomEnchantmentMaster): ItemStack {
-        val meta = this.itemMeta ?: return this
-        val level = meta.getEnchantLevel(enchant)
-        meta.removeEnchant(enchant)
-        val lore = meta.lore ?: return this
-        lore.remove("&7${enchant.toLore(level)}".colorS())
-        meta.lore = lore
-        this.itemMeta = meta
-        return this
     }
 }
