@@ -1,6 +1,7 @@
 package com.github.kotyabuchi.pumpkingmc.CustomEnchantment.Enchantments
 
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantmentMaster
+import io.papermc.paper.enchantments.EnchantmentRarity
 import net.kyori.adventure.text.Component
 import org.bukkit.enchantments.EnchantmentTarget
 import org.bukkit.event.EventHandler
@@ -22,6 +23,10 @@ object SoulBind: CustomEnchantmentMaster("SOUL_BIND") {
 
     override fun canEnchantItem(item: ItemStack): Boolean {
         return true
+    }
+
+    override fun getRarity(): EnchantmentRarity {
+        return EnchantmentRarity.RARE
     }
 
     @EventHandler
