@@ -6,10 +6,8 @@ import com.github.kotyabuchi.pumpkingmc.Enum.MaterialMiningLevel
 import com.github.kotyabuchi.pumpkingmc.Enum.Rarity
 import com.github.kotyabuchi.pumpkingmc.Enum.ToolPartType
 import com.github.kotyabuchi.pumpkingmc.Utility.*
-import com.github.kotyabuchi.pumpkingmc.instance
 import de.tr7zw.nbtapi.NBTItem
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -18,6 +16,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
+import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import kotlin.math.max
 import kotlin.math.min
@@ -217,19 +216,31 @@ class ItemExpansion {
     fun addEnchant(enchant: Enchantment, level: Int): ItemExpansion {
         if (item.containsEnchantment(enchant)) return this
         if (item.itemMeta.hasConflictingEnchant(enchant)) return this
-        item.addUnsafeEnchantment(enchant, level)
+        if (item.type == Material.ENCHANTED_BOOK && enchant !is CustomEnchantmentMaster) {
+            item.editMeta {
+                (it as? EnchantmentStorageMeta)?.addStoredEnchant(enchant, level, true)
+            }
+        } else {
+            item.addUnsafeEnchantment(enchant, level)
+        }
         generateLore()
         return this
     }
 
     fun removeEnchant(enchant: Enchantment): ItemExpansion {
-        item.removeEnchantment(enchant)
+        if (item.type == Material.ENCHANTED_BOOK && enchant !is CustomEnchantmentMaster) {
+            item.editMeta {
+                (it as? EnchantmentStorageMeta)?.removeStoredEnchant(enchant)
+            }
+        } else {
+            item.removeEnchantment(enchant)
+        }
         generateLore()
         return this
     }
 
     fun setEnchantmentLevel(enchant: Enchantment, level: Int): ItemExpansion {
-        if (item.containsEnchantment(enchant)) item.removeEnchantment(enchant)
+        removeEnchant(enchant)
         addEnchant(enchant, level)
         return this
     }
