@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 class BackPrevButton(private val prevMenu: MenuBase): MenuButtonBase() {
 
     init {
-        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Back to ${prevMenu.title}").setMenuItemTag().generate()
+        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Back to ${prevMenu.title}").setModelData(102).setMenuItemTag().generate()
     }
 
     override fun clickEvent(event: InventoryClickEvent) {
