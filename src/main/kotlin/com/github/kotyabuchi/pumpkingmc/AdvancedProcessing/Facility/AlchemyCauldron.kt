@@ -2,12 +2,14 @@ package com.github.kotyabuchi.pumpkingmc.AdvancedProcessing.Facility
 
 import com.github.kotyabuchi.pumpkingmc.AdvancedProcessing.Menu.AlchemyCauldronMenu
 import com.github.kotyabuchi.pumpkingmc.Menu.MenuBase
+import com.github.kotyabuchi.pumpkingmc.Utility.ItemStackGenerator
 import org.bukkit.Material
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 
 object AlchemyCauldron: ProcessingFacility {
 
-    override val facilityModelItemMap: Map<EquipmentSlot, ItemStack> = mapOf(EquipmentSlot.HEAD to ItemStack(Material.GOLDEN_HOE))
+    private val modelItem = ItemStackGenerator(Material.GOLDEN_HOE).setModelData(100).generate()
+    override val facilityModelItemMap: Map<EquipmentSlot, ItemStack> = mapOf(EquipmentSlot.HEAD to modelItem)
     override val facilityMenu: MenuBase = AlchemyCauldronMenu()
 }
