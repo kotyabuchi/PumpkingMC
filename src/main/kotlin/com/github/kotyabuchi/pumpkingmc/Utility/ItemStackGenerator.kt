@@ -55,6 +55,13 @@ class ItemStackGenerator {
         return this
     }
 
+    fun setModelData(modelData: Int): ItemStackGenerator {
+        result.editMeta {
+            it.setCustomModelData(modelData)
+        }
+        return this
+    }
+
     fun addEnchantment(enchant: Enchantment, level: Int): ItemStackGenerator {
         val meta = result.itemMeta ?: return this
         meta.addEnchant(enchant, level, true)

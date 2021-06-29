@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 class BackPageButton(page: Int, allPage: Int): MenuButtonBase() {
 
     init {
-        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Back page $page / $allPage").setMenuItemTag().generate()
+        menuItem = ItemStackGenerator(Material.ARROW).setDisplayName("Back page $page / $allPage").setModelData(100).setMenuItemTag().generate()
     }
 
     override fun clickEvent(event: InventoryClickEvent) {
