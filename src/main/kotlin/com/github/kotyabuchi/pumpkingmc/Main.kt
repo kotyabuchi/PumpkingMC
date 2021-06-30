@@ -19,6 +19,7 @@ import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.Blin
 import com.github.kotyabuchi.pumpkingmc.Class.Skill.ActiveSkill.SwordMaster.DoubleAttack
 import com.github.kotyabuchi.pumpkingmc.Command.HomeCommand
 import com.github.kotyabuchi.pumpkingmc.Command.SkillCommand
+import com.github.kotyabuchi.pumpkingmc.Command.TombStoneCommand
 import com.github.kotyabuchi.pumpkingmc.Command.UtilityCommand
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantment
 import com.github.kotyabuchi.pumpkingmc.CustomEnchantment.CustomEnchantmentManager
@@ -63,6 +64,7 @@ class Main : JavaPlugin() {
 
         // Command
         pm.registerEvents(homeCommand, this)
+        pm.registerEvents(TombStoneCommand, this)
 
         pm.registerEvents(DebugStuff(), this)
 
@@ -156,6 +158,7 @@ class Main : JavaPlugin() {
         this.getCommand("customencha")?.setExecutor(UtilityCommand)
         this.getCommand("skill")?.setExecutor(SkillCommand())
         this.getCommand("home")?.setExecutor(homeCommand)
+        this.getCommand("tombstone")?.setExecutor(TombStoneCommand)
     }
     
     private fun clearBossBar() {
