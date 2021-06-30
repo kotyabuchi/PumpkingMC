@@ -30,6 +30,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 import java.nio.file.Files
 import java.util.*
+import kotlin.math.roundToInt
 
 object TombStone: Listener {
 
@@ -113,6 +114,10 @@ object TombStone: Listener {
         }
         event.drops.clear()
         tombStones.set(player.uniqueId.toString(), playersTombStones)
+
+        val lore = listOf("X: ${tombStoneLoc.x.roundToInt()}", "Y: ${tombStoneLoc.y.roundToInt()}", "Z: ${tombStoneLoc.z.roundToInt()}")
+        val deathLog = ItemStackGenerator(Material.PAPER).setDisplayName("R.I.P ${player.name}").setLore(lore).addFakeEnchantment().generate()
+        event.itemsToKeep.add(deathLog)
     }
 
     @EventHandler
