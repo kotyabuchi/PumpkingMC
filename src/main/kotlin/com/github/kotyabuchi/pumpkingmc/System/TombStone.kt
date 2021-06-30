@@ -70,6 +70,13 @@ object TombStone: Listener {
         }
 
         if (equipments.isEmpty && storage.isEmpty) return
+        val tombStoneLoc = player.location.block.location.toCenterLocation()
+        val locationJson = JsonObject()
+        locationJson.set("world", tombStoneLoc.world.uid.toString())
+        locationJson.set("x", tombStoneLoc.x)
+        locationJson.set("y", tombStoneLoc.y)
+        locationJson.set("z", tombStoneLoc.z)
+        json.set("Location", locationJson)
         json.set("Equipment", equipments)
         json.set("Storage", storage)
 
