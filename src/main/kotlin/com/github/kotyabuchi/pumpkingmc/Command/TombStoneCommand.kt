@@ -16,6 +16,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.persistence.PersistentDataType
 import java.util.*
 
 object TombStoneCommand: CommandExecutor, TabCompleter, Listener {
@@ -100,32 +101,42 @@ object TombStoneCommand: CommandExecutor, TabCompleter, Listener {
                 TombStone.restoreItem(target, tombStone)
             }
             "remove" -> {
-                if (args.size < 3) return true
+                val removeTombStones = mutableListOf<ArmorStand>()
+                when (args.size) {
+                    2 -> {
+                        instance.server.worlds.forEach { world ->
+                            world.getEntitiesByClass(ArmorStand::class.java).forEach { armorStand ->
+                                if (armorStand.persistentDataContainer.has(TombStone.tombStoneKey, PersistentDataType.STRING)) removeTombStones.add(armorStand)
+                            }
+                        }
+                    }
+                    3 -> {
+                        val tombStoneJson = getTombStoneWithMessage(sender, args) ?: return true
+                        val playersTombStones = getPlayerTombStones(args[1]) ?: return true
+                        val num = args[2].toIntOrNull() ?: return true
+                        val tombStoneUUID = playersTombStones.names()[num]
+                        val locationJson = tombStoneJson.get("Location").asObject()
+                        val location = Location(
+                            instance.server.getWorld(UUID.fromString(locationJson.getString("world", ""))),
+                            locationJson.getDouble("x", .0), locationJson.getDouble("y", .0), locationJson.getDouble("z", .0))
+                        val nearTombStones = location.getNearbyEntitiesByType(ArmorStand::class.java, .1)
 
-                val tombStoneJson = getTombStoneWithMessage(sender, args) ?: return true
-                val playersTombStones = getPlayerTombStones(args[1]) ?: return true
-                val num = args[2].toIntOrNull() ?: return true
-                val tombStoneUUID = playersTombStones.names()[num]
-                val locationJson = tombStoneJson.get("Location").asObject()
-                val location = Location(
-                    instance.server.getWorld(UUID.fromString(locationJson.getString("world", ""))),
-                    locationJson.getDouble("x", .0), locationJson.getDouble("y", .0), locationJson.getDouble("z", .0))
-                val nearTombStones = location.getNearbyEntitiesByType(ArmorStand::class.java, .1)
-
-                var tombStone: ArmorStand? = null
-                nearTombStones.forEach {
-                    if (it.uniqueId.toString() == tombStoneUUID) {
-                        tombStone = it
+                        nearTombStones.forEach {
+                            if (it.uniqueId.toString() == tombStoneUUID) {
+                                removeTombStones.add(it)
+                            }
+                        }
                     }
                 }
-                if (tombStone == null) {
+
+                if (removeTombStones.isEmpty()) {
                     sender.sendMessage(Component.text("墓石が見つかりません", NamedTextColor.RED))
                     return true
                 }
-                tombStone?.let {
+                removeTombStones.forEach {
                     TombStone.removeTombStone(it)
-                    sender.sendMessage(Component.text("墓石を削除しました", NamedTextColor.GREEN))
                 }
+                sender.sendMessage(Component.text("${removeTombStones.size}個の墓石を削除しました", NamedTextColor.GREEN))
             }
         }
         return true
@@ -159,7 +170,7 @@ object TombStoneCommand: CommandExecutor, TabCompleter, Listener {
                 return
             }
             restoreModePlayer.remove(player)
-            val inventory = chest.blockInventory
+            val inventory = chest.inventory
             TombStone.restoreItem(inventory, tombStone)
             player.sendMessage(Component.text("アイテムを復元しました", NamedTextColor.GREEN))
         }

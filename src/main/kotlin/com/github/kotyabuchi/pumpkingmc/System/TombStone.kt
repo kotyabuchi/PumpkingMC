@@ -36,7 +36,7 @@ object TombStone: Listener {
 
     private val tombStoneFile = File(instance.dataFolder, "TombStones.json")
     val tombStones: JsonObject
-    private val tombStoneKey = NamespacedKey(instance, "TombStone")
+    val tombStoneKey = NamespacedKey(instance, "TombStone")
 
     init {
         tombStones = if (tombStoneFile.exists()) {
