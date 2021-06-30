@@ -22,7 +22,9 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
@@ -32,7 +34,7 @@ import java.util.*
 object TombStone: Listener {
 
     private val tombStoneFile = File(instance.dataFolder, "TombStones.json")
-    private val tombStones: JsonObject
+    val tombStones: JsonObject
     private val tombStoneKey = NamespacedKey(instance, "TombStone")
 
     init {
@@ -86,7 +88,6 @@ object TombStone: Listener {
         tombStoneItem.editMeta {
             it.setCustomModelData(100)
         }
-        val tombStoneLoc = player.location.block.location.toCenterLocation()
         tombStoneLoc.y = player.location.y
         EntityType.ARMOR_STAND.entityClass?.let {
             player.world.spawn(tombStoneLoc, it) { stand ->
@@ -156,54 +157,22 @@ object TombStone: Listener {
     private fun loadTombStoneItems(player: Player, tombStone: ArmorStand) {
         val pdc = tombStone.persistentDataContainer
         val uuid = pdc.get(tombStoneKey, PersistentDataType.STRING) ?: return
-        val playersTombStones = tombStones.get(uuid)?.asObject() ?: return
-        val tombStoneUUID = tombStone.uniqueId.toString()
-        val tombItems = playersTombStones.get(tombStoneUUID)?.asObject() ?: return
-
-        val equipmentItems = tombItems.get("Equipment").asObject()
-        val storageItems = tombItems.get("Storage").asObject()
 
         object : BukkitRunnable() {
             val loc = tombStone.location
             var count = 0
             override fun run() {
-                if (player.isDead) {
+                val playersTombStones = tombStones.get(uuid)?.asObject()
+                val tombStoneUUID = tombStone.uniqueId.toString()
+                val tombItems = playersTombStones?.get(tombStoneUUID)?.asObject()
+
+                if (tombItems == null || player.isDead) {
                     cancel()
                 } else {
                     if (count >= 2) {
-                        val inventory = player.inventory
+                        restoreItem(player, tombItems)
+                        removeTombStone(tombStone)
 
-                        val inventoryBackup = mutableListOf<ItemStack>()
-
-                        equipmentItems.forEach {
-                            val serializedStr = equipmentItems.getString(it.name, null)
-                            if (serializedStr != null) {
-                                val equipmentItem = inventory.getItem(EquipmentSlot.valueOf(it.name))
-                                if (equipmentItem != null && !equipmentItem.type.isAir) inventoryBackup.add(equipmentItem)
-                                inventory.setItem(EquipmentSlot.valueOf(it.name), ItemUtil.deserializeItem(serializedStr))
-                            }
-                        }
-                        storageItems.forEach {
-                            val serializedStr = storageItems.getString(it.name, null)
-                            if (serializedStr != null) {
-                                val slot = it.name.toInt()
-                                val storageItem = inventory.getItem(slot)
-                                if (storageItem != null && !storageItem.type.isAir) inventoryBackup.add(storageItem)
-                                inventory.setItem(slot,ItemUtil.deserializeItem(serializedStr))
-                            }
-                        }
-
-                        inventoryBackup.forEach { backupItem ->
-                            inventory.addItemOrDrop(player, backupItem)
-                        }
-                        pdc.set(tombStoneKey, PersistentDataType.STRING, "")
-                        playersTombStones.remove(tombStoneUUID)
-                        tombStones.set(uuid, playersTombStones)
-
-                        tombStone.passengers.forEach {
-                            it.remove()
-                        }
-                        tombStone.remove()
                         cancel()
                     }
                     player.world.playSound(loc, Sound.BLOCK_GRAVEL_BREAK, 1.5f, .5f)
@@ -211,6 +180,69 @@ object TombStone: Listener {
                 count++
             }
         }.runTaskTimer(instance, 0, 10)
+    }
+
+    fun restoreItem(inventory: Inventory, tombStone: JsonObject): List<ItemStack> {
+        val equipmentItems = tombStone.get("Equipment").asObject()
+        val storageItems = tombStone.get("Storage").asObject()
+
+        val inventoryBackup = mutableListOf<ItemStack>()
+
+        storageItems.forEach {
+            val serializedStr = storageItems.getString(it.name, null)
+            if (serializedStr != null) {
+                val slot = it.name.toInt()
+                val storageItem = inventory.getItem(slot)
+                if (storageItem != null && !storageItem.type.isAir) inventoryBackup.add(storageItem)
+                inventory.setItem(slot,ItemUtil.deserializeItem(serializedStr))
+            }
+        }
+
+        if (inventory is PlayerInventory) {
+            equipmentItems.forEach {
+                val serializedStr = equipmentItems.getString(it.name, null)
+                if (serializedStr != null) {
+                    val equipmentItem = inventory.getItem(EquipmentSlot.valueOf(it.name))
+                    if (equipmentItem != null && !equipmentItem.type.isAir) inventoryBackup.add(equipmentItem)
+                    inventory.setItem(EquipmentSlot.valueOf(it.name), ItemUtil.deserializeItem(serializedStr))
+                }
+            }
+        } else {
+            equipmentItems.forEachIndexed { index, item ->
+                val serializedStr = equipmentItems.getString(item.name, null)
+                if (serializedStr != null) {
+                    val slot = 9 * 4 + index
+                    val equipmentItem = inventory.getItem(slot)
+                    if (equipmentItem != null && !equipmentItem.type.isAir) inventoryBackup.add(equipmentItem)
+                    inventory.setItem(slot, ItemUtil.deserializeItem(serializedStr))
+                }
+            }
+        }
+
+        return inventoryBackup
+    }
+
+    fun restoreItem(player: Player, tombStone: JsonObject) {
+        val inventory = player.inventory
+        restoreItem(inventory, tombStone).forEach { backupItem ->
+            inventory.addItemOrDrop(player, backupItem)
+        }
+    }
+
+    fun removeTombStone(tombStone: ArmorStand) {
+        val pdc = tombStone.persistentDataContainer
+        val uuid = pdc.get(tombStoneKey, PersistentDataType.STRING) ?: return
+        val playersTombStones = tombStones.get(uuid)?.asObject() ?: return
+        val tombStoneUUID = tombStone.uniqueId.toString()
+
+        pdc.set(tombStoneKey, PersistentDataType.STRING, "")
+        playersTombStones.remove(tombStoneUUID)
+        tombStones.set(uuid, playersTombStones)
+
+        tombStone.passengers.forEach {
+            it.remove()
+        }
+        tombStone.remove()
     }
 
     fun saveTombStoneFile() {
